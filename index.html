@@ -6,366 +6,347 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="PS SAT">
-<meta name="theme-color" content="#003da5">
+<meta name="theme-color" content="#003da5" id="themeColorMeta">
 <link rel="manifest" href="manifest.json">
 <title>UÉ Pumping Station SAT</title>
 <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a0f14;
-    --surface: #111822;
-    --surface2: #16202e;
-    --border: #1e3048;
-    --accent: #00c6ff;
-    --accent2: #0066ff;
-    --green: #00e676;
-    --red: #ff3d3d;
-    --amber: #ffb300;
-    --text: #cdd8e8;
-    --text-dim: #5a7a99;
-    --text-bright: #eaf2ff;
-    --ue-blue: #003da5;
-    --ue-teal: #00857c;
-    --safe-top: env(safe-area-inset-top, 0px);
-    --safe-bot: env(safe-area-inset-bottom, 0px);
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html, body { height: 100%; overscroll-behavior: none; }
-  body {
-    background: var(--bg); color: var(--text);
-    font-family: 'Barlow', sans-serif; font-weight: 300;
-    padding-top: var(--safe-top); padding-bottom: var(--safe-bot);
-  }
-  body::before {
-    content: ''; position: fixed; inset: 0;
-    background-image: repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0,198,255,0.012) 3px, rgba(0,198,255,0.012) 4px);
-    pointer-events: none; z-index: 0;
-  }
-  /* STATUS BAR */
-  .status-bar {
-    position: sticky; top: 0; z-index: 50; background: var(--bg);
-    border-bottom: 1px solid var(--border); padding: 8px 14px;
-    display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  }
-  .status-bar-left { display: flex; align-items: center; gap: 10px; }
-  .ue-badge {
-    background: linear-gradient(135deg, var(--ue-blue), var(--ue-teal));
-    color: #fff; font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 900; font-size: 14px; letter-spacing: 1.5px; padding: 4px 9px;
-    clip-path: polygon(0 0, calc(100% - 5px) 0, 100% 5px, 100% 100%, 5px 100%, 0 calc(100% - 5px));
-    flex-shrink: 0;
-  }
-  .status-bar-title {
-    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
-    font-size: 15px; letter-spacing: 2px; text-transform: uppercase;
-    color: var(--text-bright); line-height: 1.1;
-  }
-  .status-bar-title small {
-    display: block; font-family: 'Share Tech Mono', monospace;
-    font-size: 9px; color: var(--accent); letter-spacing: 1.5px; font-weight: 400;
-  }
-  .status-indicators { display: flex; align-items: center; gap: 8px; }
-  .offline-pill {
-    display: none; font-family: 'Share Tech Mono', monospace; font-size: 9px;
-    padding: 3px 7px; background: rgba(255,179,0,0.12);
-    border: 1px solid var(--amber); color: var(--amber); letter-spacing: 1px;
-  }
-  .offline-pill.show { display: block; }
-  .save-pill {
-    font-family: 'Share Tech Mono', monospace; font-size: 9px;
-    padding: 3px 7px; background: rgba(0,230,118,0.08);
-    border: 1px solid rgba(0,230,118,0.3); color: var(--green);
-    letter-spacing: 1px; opacity: 0; transition: opacity 0.4s;
-  }
-  .save-pill.show { opacity: 1; }
-  /* INSTALL BANNER */
-  .install-banner {
-    display: none; background: linear-gradient(90deg, rgba(0,61,165,0.9), rgba(0,133,124,0.9));
-    border-bottom: 1px solid var(--border); padding: 10px 14px;
-    align-items: center; gap: 10px; z-index: 40;
-  }
-  .install-banner.show { display: flex; }
-  .install-banner p { flex: 1; font-size: 12px; color: #fff; line-height: 1.4; }
-  .install-banner p strong { font-weight: 600; }
-  .btn-install {
-    background: #fff; color: var(--ue-blue); border: none;
-    font-family: 'Barlow Condensed', sans-serif; font-weight: 700;
-    font-size: 13px; letter-spacing: 1.5px; padding: 7px 14px;
-    cursor: pointer; white-space: nowrap; flex-shrink: 0;
-  }
-  .btn-install-dismiss {
-    background: transparent; border: none; color: rgba(255,255,255,0.6);
-    font-size: 18px; cursor: pointer; padding: 0 4px; flex-shrink: 0;
-  }
-  /* PROGRESS BAR */
-  .progress-bar-track {
-    height: 3px; background: var(--border);
-    position: sticky; top: 57px; z-index: 49;
-  }
-  .progress-bar-fill {
-    height: 100%; background: linear-gradient(90deg, var(--accent2), var(--accent));
-    transition: width 0.4s ease;
-  }
-  /* CONTAINER */
-  .container { max-width: 700px; margin: 0 auto; padding: 14px 12px 80px; position: relative; z-index: 1; }
-  /* META STRIP */
-  .meta-strip {
-    background: var(--surface); border: 1px solid var(--border);
-    padding: 10px 14px; margin-bottom: 14px;
-    display: flex; flex-wrap: wrap; gap: 6px 20px; align-items: center;
-  }
-  .meta-field { display: flex; align-items: center; gap: 6px; }
-  .meta-field label {
-    font-family: 'Share Tech Mono', monospace; font-size: 9px;
-    color: var(--text-dim); letter-spacing: 1.5px; white-space: nowrap; text-transform: uppercase;
-  }
-  .meta-field input {
-    background: transparent; border: none; border-bottom: 1px solid var(--border);
-    color: var(--text); font-family: 'Share Tech Mono', monospace;
-    font-size: 11px; padding: 2px 4px; outline: none; min-width: 120px; transition: border-color 0.15s;
-  }
-  .meta-field input:focus { border-color: var(--accent); }
-  /* CHIPS */
-  .chips { display: flex; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
-  .chip {
-    font-family: 'Share Tech Mono', monospace; font-size: 11px;
-    padding: 5px 12px; border: 1px solid; display: flex; align-items: center; gap: 6px;
-  }
-  .chip-pass  { color: var(--green); border-color: rgba(0,230,118,0.3);  background: rgba(0,230,118,0.06); }
-  .chip-fail  { color: var(--red);   border-color: rgba(255,61,61,0.3);  background: rgba(255,61,61,0.06); }
-  .chip-na    { color: var(--amber); border-color: rgba(255,179,0,0.3);  background: rgba(255,179,0,0.06); }
-  .chip-pend  { color: var(--text-dim); border-color: var(--border); }
-  .chip .num  { font-size: 16px; font-weight: bold; line-height: 1; }
-  /* SECTION */
-  .section { margin-bottom: 10px; border: 1px solid var(--border); background: var(--surface); overflow: hidden; }
-  .section-header {
-    display: flex; align-items: center; gap: 10px; padding: 11px 13px;
-    background: var(--surface2); border-bottom: 1px solid var(--border);
-    cursor: pointer; user-select: none; -webkit-user-select: none; min-height: 48px;
-  }
-  .section-num {
-    font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--accent);
-    background: rgba(0,198,255,0.08); padding: 3px 7px;
-    border: 1px solid rgba(0,198,255,0.2); white-space: nowrap; flex-shrink: 0;
-  }
-  .section-title {
-    font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
-    font-size: 14px; letter-spacing: 1.5px; text-transform: uppercase;
-    color: var(--text-bright); flex: 1; line-height: 1.2;
-  }
-  .section-status {
-    font-family: 'Share Tech Mono', monospace; font-size: 9px;
-    padding: 3px 8px; border: 1px solid; white-space: nowrap; flex-shrink: 0;
-  }
-  .section-status.pending { color: var(--text-dim); border-color: var(--border); }
-  .section-status.pass    { color: var(--green);    border-color: var(--green);  background: rgba(0,230,118,0.06); }
-  .section-status.fail    { color: var(--red);      border-color: var(--red);    background: rgba(255,61,61,0.06); }
-  .section-status.partial { color: var(--amber);    border-color: var(--amber);  background: rgba(255,179,0,0.06); }
-  .section-chevron { color: var(--text-dim); font-size: 11px; transition: transform 0.2s; flex-shrink: 0; }
-  .section-chevron.open { transform: rotate(90deg); }
-  .section-body.collapsed { display: none; }
-  /* TEST ITEM */
-  .test-item { border-bottom: 1px solid var(--border); padding: 12px 13px; }
-  .test-item:last-child { border-bottom: none; }
-  .test-ref { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--accent); margin-bottom: 3px; letter-spacing: 1px; }
-  .test-desc { font-size: 13px; font-weight: 400; color: var(--text); line-height: 1.45; margin-bottom: 4px; }
-  .test-criteria { font-size: 11px; color: var(--text-dim); font-style: italic; line-height: 1.35; margin-bottom: 10px; }
-  .test-criteria strong { color: rgba(0,198,255,0.7); font-style: normal; font-weight: 500; }
-  /* CONTROLS */
-  .test-controls { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
-  .btn-group { display: flex; gap: 4px; }
-  .btn {
-    font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 0.5px;
-    padding: 8px 12px; border: 1px solid; background: transparent; cursor: pointer;
-    transition: all 0.12s; min-height: 40px; min-width: 56px;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .btn-pass { color: var(--text-dim); border-color: var(--border); }
-  .btn-fail { color: var(--text-dim); border-color: var(--border); }
-  .btn-na   { color: var(--text-dim); border-color: var(--border); }
-  .btn-pass.active { color: var(--green); border-color: var(--green); background: rgba(0,230,118,0.12); box-shadow: 0 0 10px rgba(0,230,118,0.2); }
-  .btn-fail.active { color: var(--red);   border-color: var(--red);   background: rgba(255,61,61,0.12);  box-shadow: 0 0 10px rgba(255,61,61,0.2); }
-  .btn-na.active   { color: var(--amber); border-color: var(--amber); background: rgba(255,179,0,0.12); }
-  .note-input {
-    flex: 1; min-width: 120px; background: var(--bg); border: 1px solid var(--border);
-    color: var(--text); font-family: 'Barlow', sans-serif; font-size: 12px;
-    padding: 8px 10px; outline: none; transition: border-color 0.15s; min-height: 40px;
-  }
-  .note-input:focus { border-color: var(--accent); }
-  .note-input::placeholder { color: var(--text-dim); }
-  /* PHOTO ROW */
-  .photo-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 4px; }
-  .btn-camera {
-    display: flex; align-items: center; gap: 6px;
-    font-family: 'Share Tech Mono', monospace; font-size: 10px; letter-spacing: 1px;
-    padding: 7px 12px; border: 1px dashed rgba(0,198,255,0.4);
-    background: rgba(0,198,255,0.04); color: var(--accent); cursor: pointer;
-    transition: all 0.15s; min-height: 38px; flex-shrink: 0;
-  }
-  .btn-camera:hover { background: rgba(0,198,255,0.1); border-color: var(--accent); }
-  .btn-camera.has-photos { border-style: solid; background: rgba(0,198,255,0.08); }
-  .photo-file-input { display: none; }
-  .photo-thumbs { display: flex; gap: 6px; flex-wrap: wrap; }
-  .photo-thumb-wrap { position: relative; width: 56px; height: 56px; flex-shrink: 0; }
-  .photo-thumb {
-    width: 56px; height: 56px; object-fit: cover;
-    border: 1px solid var(--border); cursor: pointer; transition: border-color 0.15s; display: block;
-  }
-  .photo-thumb:hover { border-color: var(--accent); }
-  .photo-thumb-del {
-    position: absolute; top: -6px; right: -6px;
-    width: 18px; height: 18px; background: var(--red); color: #fff;
-    border: none; border-radius: 50%; font-size: 11px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; line-height: 1;
-  }
-  /* LIGHTBOX */
-  .lightbox {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.96); z-index: 200;
-    display: none; align-items: center; justify-content: center;
-    flex-direction: column; gap: 12px; padding: 20px;
-  }
-  .lightbox.open { display: flex; }
-  .lightbox img { max-width: 100%; max-height: 72vh; border: 1px solid var(--border); object-fit: contain; }
-  .lightbox-meta { font-family: 'Share Tech Mono', monospace; font-size: 11px; color: var(--text-dim); text-align: center; }
-  .lightbox-close {
-    position: absolute; top: 16px; right: 16px;
-    background: transparent; border: 1px solid var(--border); color: var(--text-dim);
-    font-size: 18px; width: 36px; height: 36px; cursor: pointer;
-    display: flex; align-items: center; justify-content: center; transition: all 0.15s;
-  }
-  .lightbox-close:hover { border-color: var(--red); color: var(--red); }
-  .lightbox-dl {
-    padding: 8px 20px; background: transparent; border: 1px solid var(--accent);
-    color: var(--accent); font-family: 'Share Tech Mono', monospace;
-    font-size: 11px; letter-spacing: 1.5px; cursor: pointer; transition: all 0.15s;
-  }
-  .lightbox-dl:hover { background: rgba(0,198,255,0.1); }
-  /* VERDICT BAR */
-  .verdict-bar {
-    position: sticky; bottom: 0; z-index: 48; padding: 10px 12px;
-    font-family: 'Barlow Condensed', sans-serif; font-size: 14px;
-    font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
-    text-align: center; border-top: 2px solid; transition: all 0.3s;
-  }
-  .verdict-bar.pending { color: var(--text-dim); border-color: var(--border); background: var(--surface2); }
-  .verdict-bar.pass    { color: var(--green); border-color: var(--green); background: rgba(0,230,118,0.08); }
-  .verdict-bar.fail    { color: var(--red);   border-color: var(--red);   background: rgba(255,61,61,0.08); }
-  .verdict-bar.partial { color: var(--amber); border-color: var(--amber); background: rgba(255,179,0,0.08); }
-  /* FAIL LIST */
-  .fail-list { background: var(--surface); border: 1px solid rgba(255,61,61,0.3); margin-bottom: 10px; overflow: hidden; }
-  .fail-list-header { background: rgba(255,61,61,0.1); padding: 8px 13px; font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--red); letter-spacing: 2px; }
-  .fail-item { display: flex; align-items: flex-start; gap: 8px; padding: 8px 13px; border-top: 1px solid var(--border); font-size: 12px; }
-  .fail-tag { font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--red); background: rgba(255,61,61,0.1); padding: 2px 6px; white-space: nowrap; flex-shrink: 0; }
-  /* ACTION BUTTONS */
-  .btn-report {
-    display: flex; width: 100%; padding: 14px;
-    background: linear-gradient(90deg, var(--ue-blue), var(--ue-teal));
-    color: #fff; font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700; font-size: 16px; letter-spacing: 3px; text-transform: uppercase;
-    border: none; cursor: pointer; align-items: center; justify-content: center; gap: 10px;
-    margin-bottom: 10px; min-height: 52px; transition: opacity 0.2s;
-  }
-  .btn-report:hover { opacity: 0.88; }
-  .btn-clear {
-    display: block; width: 100%; padding: 12px; background: transparent;
-    border: 1px solid rgba(255,61,61,0.3); color: rgba(255,61,61,0.6);
-    font-family: 'Share Tech Mono', monospace; font-size: 11px; letter-spacing: 2px;
-    cursor: pointer; transition: all 0.2s; min-height: 44px;
-  }
-  .btn-clear:hover { border-color: var(--red); color: var(--red); background: rgba(255,61,61,0.05); }
-  /* MODAL */
-  .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100;
-    display: none; align-items: flex-end; justify-content: center;
-    padding-bottom: var(--safe-bot);
-  }
-  .modal-overlay.open { display: flex; }
-  .modal {
-    background: var(--surface); border: 1px solid var(--accent2); border-bottom: none;
-    width: 100%; max-width: 700px; max-height: 80vh; overflow-y: auto;
-    padding: 20px 18px 30px; position: relative; animation: slideUp 0.25s ease;
-  }
-  @keyframes slideUp { from { transform: translateY(40px); opacity:0; } to { transform: none; opacity:1; } }
-  .modal-drag { width: 40px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 16px; }
-  .modal h2 {
-    font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 17px;
-    letter-spacing: 3px; text-transform: uppercase; color: var(--text-bright);
-    margin-bottom: 14px; border-bottom: 1px solid var(--border); padding-bottom: 10px;
-  }
-  .modal pre {
-    font-family: 'Share Tech Mono', monospace; font-size: 11px;
-    line-height: 1.7; color: var(--text); white-space: pre-wrap; word-break: break-word;
-  }
-  .modal-actions { display: flex; gap: 8px; margin-top: 16px; }
-  .btn-modal-action {
-    flex: 1; padding: 11px; font-family: 'Barlow Condensed', sans-serif;
-    font-weight: 700; font-size: 14px; letter-spacing: 2px; text-transform: uppercase;
-    border: 1px solid; background: transparent; cursor: pointer; transition: all 0.15s; min-height: 44px;
-  }
-  .btn-modal-copy  { color: var(--accent);   border-color: var(--accent); }
-  .btn-modal-copy:hover  { background: rgba(0,198,255,0.08); }
-  .btn-modal-close { color: var(--text-dim); border-color: var(--border); }
-  .btn-modal-close:hover { color: var(--text); }
-  /* REPORT PHOTOS */
-  .report-photos-title {
-    font-family: 'Share Tech Mono', monospace; font-size: 10px; color: var(--accent);
-    letter-spacing: 2px; margin-top: 14px; margin-bottom: 8px;
-    border-top: 1px solid var(--border); padding-top: 10px;
-  }
-  .report-photo-grid {
-    display: grid; grid-template-columns: repeat(auto-fill, minmax(72px,1fr)); gap: 6px;
-  }
-  .report-photo-item img {
-    width: 100%; aspect-ratio: 1; object-fit: cover;
-    border: 1px solid var(--border); cursor: pointer; display: block;
-    transition: border-color 0.15s;
-  }
-  .report-photo-item img:hover { border-color: var(--accent); }
-  .report-photo-label {
-    font-family: 'Share Tech Mono', monospace; font-size: 8px;
-    color: var(--text-dim); text-align: center; margin-top: 2px;
-  }
-  /* CONFIRM */
-  .confirm-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 300;
-    display: none; align-items: center; justify-content: center; padding: 20px;
-  }
-  .confirm-overlay.open { display: flex; }
-  .confirm-box { background: var(--surface); border: 1px solid var(--red); padding: 24px 20px; max-width: 320px; width: 100%; text-align: center; }
-  .confirm-box h3 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 18px; letter-spacing: 2px; color: var(--red); text-transform: uppercase; margin-bottom: 10px; }
-  .confirm-box p { font-size: 13px; color: var(--text-dim); margin-bottom: 20px; line-height: 1.5; }
-  .confirm-actions { display: flex; gap: 8px; }
-  .btn-confirm-yes { flex: 1; padding: 12px; background: rgba(255,61,61,0.15); border: 1px solid var(--red); color: var(--red); font-family: 'Share Tech Mono', monospace; font-size: 12px; letter-spacing: 1px; cursor: pointer; min-height: 44px; }
-  .btn-confirm-no  { flex: 1; padding: 12px; background: transparent; border: 1px solid var(--border); color: var(--text-dim); font-family: 'Share Tech Mono', monospace; font-size: 12px; letter-spacing: 1px; cursor: pointer; min-height: 44px; }
+/* ═══════════════════════════════════════════════════
+   THEME TOKENS — dark (default) & light
+═══════════════════════════════════════════════════ */
+:root {
+  --bg:        #0a0f14;
+  --surface:   #111822;
+  --surface2:  #16202e;
+  --surface3:  #1c2d42;
+  --border:    #1e3048;
+  --border2:   #2a4060;
+  --accent:    #00c6ff;
+  --accent2:   #0066ff;
+  --green:     #00e676;
+  --red:       #ff4444;
+  --amber:     #ffb300;
+  --text:      #cdd8e8;
+  --text-dim:  #5a7a99;
+  --text-bright:#eaf2ff;
+  --ue-blue:   #003da5;
+  --ue-teal:   #00857c;
+  --safe-top:  env(safe-area-inset-top, 0px);
+  --safe-bot:  env(safe-area-inset-bottom, 0px);
+  --btn-h:     52px;
+  --scan-line: rgba(0,198,255,0.012);
+}
+body.light {
+  --bg:        #f0f4f8;
+  --surface:   #ffffff;
+  --surface2:  #e8eef5;
+  --surface3:  #d8e4f0;
+  --border:    #c0cfe0;
+  --border2:   #a0b8d0;
+  --accent:    #0055cc;
+  --accent2:   #0033aa;
+  --green:     #00a850;
+  --red:       #d42020;
+  --amber:     #c07800;
+  --text:      #1a2a3a;
+  --text-dim:  #6080a0;
+  --text-bright:#0a1a2a;
+  --scan-line: transparent;
+}
+
+/* ═══════════════════════════════════════════════════ BASE ═ */
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overscroll-behavior:none}
+body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font-weight:300;padding-top:var(--safe-top);padding-bottom:var(--safe-bot);transition:background .25s,color .25s}
+body::before{content:'';position:fixed;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 3px,var(--scan-line) 3px,var(--scan-line) 4px);pointer-events:none;z-index:0}
+
+/* ═══════════════════════════════════════════════════ STATUS BAR ═ */
+.status-bar{position:sticky;top:0;z-index:60;background:var(--bg);border-bottom:1px solid var(--border);padding:7px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;transition:background .25s,border-color .25s}
+.status-left{display:flex;align-items:center;gap:9px}
+.ue-badge{background:linear-gradient(135deg,var(--ue-blue),var(--ue-teal));color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:900;font-size:13px;letter-spacing:1.5px;padding:4px 9px;clip-path:polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));flex-shrink:0}
+.status-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:14px;letter-spacing:2px;text-transform:uppercase;color:var(--text-bright);line-height:1.1}
+.status-title small{display:block;font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--accent);letter-spacing:1.5px;font-weight:400}
+.status-right{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.pill{font-family:'Share Tech Mono',monospace;font-size:9px;padding:3px 7px;border:1px solid;letter-spacing:1px;white-space:nowrap}
+.pill-offline{border-color:var(--amber);color:var(--amber);background:rgba(255,179,0,0.1);display:none}
+.pill-offline.show{display:block}
+.pill-saved{border-color:rgba(0,230,118,0.4);color:var(--green);background:rgba(0,230,118,0.07);opacity:0;transition:opacity .4s}
+.pill-saved.show{opacity:1}
+.pill-storage{border-color:var(--border2);color:var(--text-dim);cursor:default}
+
+/* Theme + session toolbar */
+.toolbar{background:var(--surface2);border-bottom:1px solid var(--border);padding:5px 12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;transition:background .25s}
+.toolbar-btn{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;padding:5px 10px;border:1px solid var(--border2);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .15s;white-space:nowrap;min-height:34px}
+.toolbar-btn:hover{color:var(--text);border-color:var(--accent)}
+.toolbar-btn.active{color:var(--accent);border-color:var(--accent);background:rgba(0,198,255,0.08)}
+.session-label{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:1px}
+.session-select{background:var(--surface);border:1px solid var(--border2);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:10px;padding:4px 6px;outline:none;cursor:pointer;max-width:160px}
+.toolbar-sep{width:1px;height:20px;background:var(--border);flex-shrink:0}
+
+/* ═══════════════════════════════════════════════════ QUICK NAV ═ */
+.quick-nav{position:sticky;top:55px;z-index:59;background:var(--bg);border-bottom:1px solid var(--border);padding:0 10px;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;transition:background .25s}
+.quick-nav::-webkit-scrollbar{display:none}
+.qnav-btn{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:.5px;padding:7px 9px;border:none;background:transparent;color:var(--text-dim);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all .15s;position:relative;flex-shrink:0}
+.qnav-btn:hover{color:var(--text)}
+.qnav-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.qnav-btn.done{color:var(--green)}
+.qnav-btn.has-fail{color:var(--red)}
+.qnav-dot{position:absolute;top:5px;right:4px;width:5px;height:5px;border-radius:50%}
+
+/* ═══════════════════════════════════════════════════ PROGRESS ═ */
+.progress-track{height:3px;background:var(--border);position:sticky;top:96px;z-index:58}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--accent2),var(--accent));transition:width .4s ease}
+
+/* ═══════════════════════════════════════════════════ CONTAINER ═ */
+.container{max-width:700px;margin:0 auto;padding:12px 10px 90px;position:relative;z-index:1}
+
+/* ═══════════════════════════════════════════════════ META ═ */
+.meta-strip{background:var(--surface);border:1px solid var(--border);padding:10px 13px;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;transition:background .25s}
+.meta-field{display:flex;align-items:center;gap:6px}
+.meta-field label{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:1.5px;white-space:nowrap;text-transform:uppercase}
+.meta-field input{background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:11px;padding:2px 4px;outline:none;min-width:100px;transition:border-color .15s}
+.meta-field input:focus{border-color:var(--accent)}
+
+/* ═══════════════════════════════════════════════════ CHIPS ═ */
+.chips{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.chip{font-family:'Share Tech Mono',monospace;font-size:10px;padding:8px 6px;border:1px solid;display:flex;flex-direction:column;align-items:center;gap:2px;transition:background .15s}
+.chip .num{font-size:22px;font-weight:700;line-height:1}
+.chip-pass{color:var(--green);border-color:rgba(0,230,118,.3);background:rgba(0,230,118,.05)}
+.chip-fail{color:var(--red);border-color:rgba(255,68,68,.3);background:rgba(255,68,68,.05)}
+.chip-na{color:var(--amber);border-color:rgba(255,179,0,.3);background:rgba(255,179,0,.05)}
+.chip-pend{color:var(--text-dim);border-color:var(--border)}
+
+/* ═══════════════════════════════════════════════════ JUMP NEXT ═ */
+.jump-btn{display:flex;width:100%;margin-bottom:10px;padding:10px 14px;background:rgba(0,198,255,.06);border:1px dashed var(--accent);color:var(--accent);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;cursor:pointer;align-items:center;justify-content:center;gap:8px;transition:all .15s;min-height:42px}
+.jump-btn:hover{background:rgba(0,198,255,.12)}
+.jump-btn.hidden{display:none}
+
+/* ═══════════════════════════════════════════════════ SECTION ═ */
+.section{margin-bottom:10px;border:1px solid var(--border);background:var(--surface);overflow:hidden;transition:background .25s,border-color .25s}
+.section-header{display:flex;align-items:center;gap:8px;padding:11px 12px;background:var(--surface2);border-bottom:1px solid var(--border);cursor:pointer;user-select:none;-webkit-user-select:none;min-height:52px;transition:background .25s}
+.section-header:active{background:var(--surface3)}
+.section-num{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--accent);background:rgba(0,198,255,.08);padding:3px 7px;border:1px solid rgba(0,198,255,.2);white-space:nowrap;flex-shrink:0}
+
+/* SVG ring */
+.section-ring{width:28px;height:28px;flex-shrink:0}
+.ring-bg{fill:none;stroke:var(--border);stroke-width:3}
+.ring-fill{fill:none;stroke-width:3;stroke-linecap:round;transition:stroke-dashoffset .5s ease,stroke .3s}
+.ring-text{font-family:'Share Tech Mono',monospace;font-size:7px;fill:var(--text-dim);text-anchor:middle;dominant-baseline:middle}
+
+.section-title{font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:14px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-bright);flex:1;line-height:1.2}
+.section-status{font-family:'Share Tech Mono',monospace;font-size:9px;padding:3px 8px;border:1px solid;white-space:nowrap;flex-shrink:0}
+.section-status.pending{color:var(--text-dim);border-color:var(--border)}
+.section-status.pass{color:var(--green);border-color:var(--green);background:rgba(0,230,118,.06)}
+.section-status.fail{color:var(--red);border-color:var(--red);background:rgba(255,68,68,.06)}
+.section-status.partial{color:var(--amber);border-color:var(--amber);background:rgba(255,179,0,.06)}
+.section-chevron{color:var(--text-dim);font-size:11px;transition:transform .2s;flex-shrink:0}
+.section-chevron.open{transform:rotate(90deg)}
+.section-body.collapsed{display:none}
+
+/* ═══════════════════════════════════════════════════ TEST ITEM ═ */
+.test-item{border-bottom:1px solid var(--border);padding:12px 12px 10px;transition:background .15s}
+.test-item:last-child{border-bottom:none}
+.test-item.resolved{opacity:.65}
+.test-ref{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--accent);margin-bottom:3px;letter-spacing:1px}
+.test-desc{font-size:13.5px;font-weight:400;color:var(--text);line-height:1.45;margin-bottom:3px}
+.test-criteria{font-size:11px;color:var(--text-dim);font-style:italic;line-height:1.35;margin-bottom:10px}
+.test-criteria strong{color:rgba(0,198,255,.75);font-style:normal;font-weight:500}
+
+/* Measured value input (shown on applicable items) */
+.measured-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.measured-label{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:1px;white-space:nowrap}
+.measured-input{background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:11px;padding:5px 8px;outline:none;width:120px;transition:border-color .15s}
+.measured-input:focus{border-color:var(--accent)}
+.measured-unit{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim)}
+
+/* Controls row */
+.test-controls{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-bottom:7px}
+.btn-group{display:flex;gap:3px}
+.btn{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:.5px;padding:10px 13px;border:1px solid;background:transparent;cursor:pointer;transition:all .12s;min-height:46px;min-width:60px;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
+.btn-pass{color:var(--text-dim);border-color:var(--border)}
+.btn-fail{color:var(--text-dim);border-color:var(--border)}
+.btn-na{color:var(--text-dim);border-color:var(--border)}
+.btn-pass.active{color:var(--green);border-color:var(--green);background:rgba(0,230,118,.12);box-shadow:0 0 12px rgba(0,230,118,.18)}
+.btn-fail.active{color:var(--red);border-color:var(--red);background:rgba(255,68,68,.12);box-shadow:0 0 12px rgba(255,68,68,.18)}
+.btn-na.active{color:var(--amber);border-color:var(--amber);background:rgba(255,179,0,.1)}
+.note-input{flex:1;min-width:110px;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'Barlow',sans-serif;font-size:12px;padding:10px 10px;outline:none;transition:border-color .15s;min-height:46px}
+.note-input:focus{border-color:var(--accent)}
+.note-input::placeholder{color:var(--text-dim)}
+
+/* NCR severity — shown when FAIL is active */
+.ncr-row{display:none;align-items:center;gap:6px;margin-bottom:7px;flex-wrap:wrap}
+.ncr-row.show{display:flex}
+.ncr-label{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:1.5px;white-space:nowrap}
+.ncr-btn{font-family:'Share Tech Mono',monospace;font-size:10px;padding:5px 10px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .12s;min-height:34px}
+.ncr-btn[data-sev="minor"].active{color:var(--amber);border-color:var(--amber);background:rgba(255,179,0,.1)}
+.ncr-btn[data-sev="major"].active{color:#ff8800;border-color:#ff8800;background:rgba(255,136,0,.1)}
+.ncr-btn[data-sev="critical"].active{color:var(--red);border-color:var(--red);background:rgba(255,68,68,.12)}
+.retest-btn{font-family:'Share Tech Mono',monospace;font-size:10px;padding:5px 10px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .12s;min-height:34px;margin-left:auto}
+.retest-btn.active{color:var(--green);border-color:var(--green);background:rgba(0,230,118,.08)}
+
+/* Photo row */
+.photo-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:3px}
+.btn-camera{display:flex;align-items:center;gap:5px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;padding:7px 11px;border:1px dashed rgba(0,198,255,.4);background:rgba(0,198,255,.03);color:var(--accent);cursor:pointer;transition:all .15s;min-height:40px;flex-shrink:0}
+.btn-camera:hover,.btn-camera.has-photos{background:rgba(0,198,255,.09);border-style:solid}
+.photo-file-input{display:none}
+.photo-thumbs{display:flex;gap:5px;flex-wrap:wrap}
+.photo-thumb-wrap{position:relative;width:52px;height:52px;flex-shrink:0}
+.photo-thumb{width:52px;height:52px;object-fit:cover;border:1px solid var(--border);cursor:pointer;display:block;transition:border-color .15s}
+.photo-thumb:hover{border-color:var(--accent)}
+.photo-thumb-del{position:absolute;top:-5px;right:-5px;width:17px;height:17px;background:var(--red);color:#fff;border:none;border-radius:50%;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
+.storage-warn{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--amber);letter-spacing:1px;margin-top:4px;display:none}
+.storage-warn.show{display:block}
+
+/* ═══════════════════════════════════════════════════ FAIL LIST ═ */
+.fail-list{background:var(--surface);border:1px solid rgba(255,68,68,.3);margin-bottom:10px;overflow:hidden}
+.fail-list-header{background:rgba(255,68,68,.08);padding:8px 13px;font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--red);letter-spacing:2px}
+.fail-item{display:flex;align-items:flex-start;gap:7px;padding:8px 13px;border-top:1px solid var(--border);font-size:12px}
+.fail-tag{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--red);background:rgba(255,68,68,.1);padding:2px 5px;white-space:nowrap;flex-shrink:0}
+.sev-badge{font-family:'Share Tech Mono',monospace;font-size:8px;padding:1px 5px;border:1px solid;flex-shrink:0;align-self:flex-start;margin-top:1px}
+.sev-badge.minor{color:var(--amber);border-color:var(--amber)}
+.sev-badge.major{color:#ff8800;border-color:#ff8800}
+.sev-badge.critical{color:var(--red);border-color:var(--red)}
+
+/* ═══════════════════════════════════════════════════ ACTION BTNS ═ */
+.btn-report{display:flex;width:100%;padding:15px;background:linear-gradient(90deg,var(--ue-blue),var(--ue-teal));color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;letter-spacing:3px;text-transform:uppercase;border:none;cursor:pointer;align-items:center;justify-content:center;gap:10px;margin-bottom:8px;min-height:var(--btn-h);transition:opacity .2s}
+.btn-report:hover{opacity:.88}
+.btn-email{display:flex;width:100%;padding:12px;background:transparent;border:1px solid var(--border2);color:var(--text-dim);font-family:'Barlow Condensed',sans-serif;font-weight:600;font-size:15px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;align-items:center;justify-content:center;gap:8px;margin-bottom:8px;min-height:44px;transition:all .2s;text-decoration:none}
+.btn-email:hover{color:var(--text);border-color:var(--accent)}
+.btn-clear{display:block;width:100%;padding:11px;background:transparent;border:1px solid rgba(255,68,68,.25);color:rgba(255,68,68,.55);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;cursor:pointer;transition:all .2s;min-height:42px}
+.btn-clear:hover{border-color:var(--red);color:var(--red);background:rgba(255,68,68,.05)}
+
+/* ═══════════════════════════════════════════════════ VERDICT BAR ═ */
+.verdict-bar{position:sticky;bottom:0;z-index:55;padding:11px 14px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-align:center;border-top:2px solid;transition:all .3s}
+.verdict-bar.pending{color:var(--text-dim);border-color:var(--border);background:var(--surface2)}
+.verdict-bar.pass{color:var(--green);border-color:var(--green);background:rgba(0,230,118,.07)}
+.verdict-bar.fail{color:var(--red);border-color:var(--red);background:rgba(255,68,68,.07)}
+.verdict-bar.partial{color:var(--amber);border-color:var(--amber);background:rgba(255,179,0,.07)}
+
+/* ═══════════════════════════════════════════════════ LIGHTBOX ═ */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.96);z-index:200;display:none;align-items:center;justify-content:center;flex-direction:column;gap:10px;padding:20px}
+.lightbox.open{display:flex}
+.lightbox img{max-width:100%;max-height:70vh;border:1px solid var(--border);object-fit:contain}
+.lightbox-meta{font-family:'Share Tech Mono',monospace;font-size:10px;color:rgba(255,255,255,.5);text-align:center}
+.lightbox-close{position:absolute;top:14px;right:14px;background:transparent;border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.6);font-size:18px;width:36px;height:36px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.lightbox-close:hover{border-color:var(--red);color:var(--red)}
+.lightbox-dl{padding:7px 18px;background:transparent;border:1px solid var(--accent);color:var(--accent);font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1.5px;cursor:pointer;transition:all .15s}
+.lightbox-dl:hover{background:rgba(0,198,255,.1)}
+
+/* ═══════════════════════════════════════════════════ SIGNATURE PAD ═ */
+.sig-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:180;display:none;align-items:flex-end;justify-content:center}
+.sig-modal-overlay.open{display:flex}
+.sig-modal{background:var(--surface);border:1px solid var(--border2);border-bottom:none;width:100%;max-width:600px;padding:18px 16px 24px;animation:slideUp .25s ease}
+.sig-modal h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:16px;letter-spacing:2px;text-transform:uppercase;color:var(--text-bright);margin-bottom:4px}
+.sig-modal p{font-size:11px;color:var(--text-dim);margin-bottom:12px}
+.sig-tabs{display:flex;gap:4px;margin-bottom:12px}
+.sig-tab{font-family:'Share Tech Mono',monospace;font-size:10px;padding:6px 14px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;transition:all .15s}
+.sig-tab.active{color:var(--accent);border-color:var(--accent);background:rgba(0,198,255,.07)}
+.sig-canvas-wrap{position:relative;margin-bottom:10px}
+canvas.sig-canvas{background:var(--surface2);border:1px solid var(--border);display:block;width:100%;height:140px;cursor:crosshair;touch-action:none}
+body.light canvas.sig-canvas{background:#fff;border-color:var(--border)}
+.sig-signed-indicator{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--green);letter-spacing:1px;margin-bottom:6px;min-height:16px}
+.sig-actions{display:flex;gap:6px}
+.sig-btn{flex:1;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;padding:10px;border:1px solid;background:transparent;cursor:pointer;min-height:44px;transition:all .15s}
+.sig-btn-clear{color:var(--text-dim);border-color:var(--border)}
+.sig-btn-clear:hover{color:var(--red);border-color:var(--red)}
+.sig-btn-save{color:var(--green);border-color:var(--green)}
+.sig-btn-save:hover{background:rgba(0,230,118,.1)}
+.sig-btn-close{color:var(--text-dim);border-color:var(--border)}
+
+/* ═══════════════════════════════════════════════════ REPORT MODAL ═ */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:150;display:none;align-items:flex-end;justify-content:center;padding-bottom:var(--safe-bot)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--accent2);border-bottom:none;width:100%;max-width:700px;max-height:82vh;overflow-y:auto;padding:18px 16px 28px;position:relative;animation:slideUp .25s ease;transition:background .25s}
+@keyframes slideUp{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.modal-drag{width:40px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 14px}
+.modal h2{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:17px;letter-spacing:3px;text-transform:uppercase;color:var(--text-bright);margin-bottom:12px;border-bottom:1px solid var(--border);padding-bottom:10px}
+.modal pre{font-family:'Share Tech Mono',monospace;font-size:11px;line-height:1.7;color:var(--text);white-space:pre-wrap;word-break:break-word}
+.modal-actions{display:flex;gap:6px;margin-top:14px;flex-wrap:wrap}
+.btn-modal{flex:1;min-width:100px;padding:11px;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;letter-spacing:2px;text-transform:uppercase;border:1px solid;background:transparent;cursor:pointer;transition:all .15s;min-height:44px}
+.btn-modal-copy{color:var(--accent);border-color:var(--accent)}
+.btn-modal-copy:hover{background:rgba(0,198,255,.08)}
+.btn-modal-json{color:var(--amber);border-color:var(--amber)}
+.btn-modal-json:hover{background:rgba(255,179,0,.08)}
+.btn-modal-close{color:var(--text-dim);border-color:var(--border)}
+.sig-preview-row{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap}
+.sig-preview{flex:1;min-width:120px}
+.sig-preview-label{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:1.5px;margin-bottom:4px}
+.sig-preview img{width:100%;max-height:60px;object-fit:contain;border:1px solid var(--border);background:var(--surface2)}
+body.light .sig-preview img{background:#fff}
+.report-photos-title{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:2px;margin-top:14px;margin-bottom:7px;border-top:1px solid var(--border);padding-top:10px}
+.report-photo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(68px,1fr));gap:5px}
+.report-photo-item img{width:100%;aspect-ratio:1;object-fit:cover;border:1px solid var(--border);cursor:pointer;display:block}
+.report-photo-label{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-dim);text-align:center;margin-top:2px}
+
+/* ═══════════════════════════════════════════════════ INSTALL BANNER ═ */
+.install-banner{display:none;background:linear-gradient(90deg,rgba(0,61,165,.9),rgba(0,133,124,.9));border-bottom:1px solid var(--border);padding:9px 13px;align-items:center;gap:8px}
+.install-banner.show{display:flex}
+.install-banner p{flex:1;font-size:12px;color:#fff;line-height:1.4}
+.btn-install{background:#fff;color:var(--ue-blue);border:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:1.5px;padding:6px 12px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.btn-install-dismiss{background:transparent;border:none;color:rgba(255,255,255,.6);font-size:18px;cursor:pointer;padding:0 3px;flex-shrink:0}
+
+/* ═══════════════════════════════════════════════════ CONFIRM ═ */
+.confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
+.confirm-overlay.open{display:flex}
+.confirm-box{background:var(--surface);border:1px solid var(--red);padding:22px 18px;max-width:300px;width:100%;text-align:center}
+.confirm-box h3{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:18px;letter-spacing:2px;color:var(--red);text-transform:uppercase;margin-bottom:8px}
+.confirm-box p{font-size:12px;color:var(--text-dim);margin-bottom:18px;line-height:1.5}
+.confirm-actions{display:flex;gap:6px}
+.btn-confirm-yes{flex:1;padding:12px;background:rgba(255,68,68,.12);border:1px solid var(--red);color:var(--red);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;cursor:pointer;min-height:44px}
+.btn-confirm-no{flex:1;padding:12px;background:transparent;border:1px solid var(--border);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;cursor:pointer;min-height:44px}
 </style>
 </head>
 <body>
 
+<!-- STATUS BAR -->
 <div class="status-bar">
-  <div class="status-bar-left">
+  <div class="status-left">
     <div class="ue-badge">UÉ</div>
-    <div class="status-bar-title">
+    <div class="status-title">
       Pumping Station SAT
       <small>SAT-WPS-001 &nbsp;▸&nbsp; OFFLINE READY</small>
     </div>
   </div>
-  <div class="status-indicators">
-    <span class="offline-pill" id="offlinePill">OFFLINE</span>
-    <span class="save-pill" id="savePill">SAVED ✓</span>
+  <div class="status-right">
+    <span class="pill pill-storage" id="storagePill">0KB</span>
+    <span class="pill pill-offline" id="offlinePill">OFFLINE</span>
+    <span class="pill pill-saved" id="savePill">SAVED ✓</span>
   </div>
 </div>
 
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <span class="session-label">SESSION:</span>
+  <select class="session-select" id="sessionSelect" onchange="switchSession(this.value)">
+    <option value="default">Default SAT</option>
+  </select>
+  <button class="toolbar-btn" onclick="newSession()">+ NEW</button>
+  <div class="toolbar-sep"></div>
+  <button class="toolbar-btn" id="themeBtn" onclick="toggleTheme()">☀ LIGHT</button>
+  <button class="toolbar-btn" onclick="collapseAll()">⊟ ALL</button>
+  <button class="toolbar-btn" onclick="expandAll()">⊞ ALL</button>
+  <button class="toolbar-btn" onclick="openSigModal()">✍ SIGN</button>
+</div>
+
+<!-- INSTALL BANNER -->
 <div class="install-banner" id="installBanner">
   <p><strong>Install as App</strong> — works offline on site, no signal needed</p>
   <button class="btn-install" id="btnInstall">INSTALL</button>
   <button class="btn-install-dismiss" id="btnDismiss">✕</button>
 </div>
 
-<div class="progress-bar-track">
-  <div class="progress-bar-fill" id="progressFill" style="width:0%"></div>
+<!-- QUICK NAV -->
+<div class="quick-nav" id="quickNav"></div>
+
+<!-- PROGRESS -->
+<div class="progress-track">
+  <div class="progress-fill" id="progressFill" style="width:0%"></div>
 </div>
 
+<!-- MAIN -->
 <div class="container">
+
+  <!-- META -->
   <div class="meta-strip">
     <div class="meta-field"><label>CONTRACT</label><input type="text" id="contractRef" value="UÉ-CON-2026-0142" oninput="saveAll()"></div>
     <div class="meta-field"><label>ASSET</label><input type="text" id="assetName" value="Ballybeg PS" oninput="saveAll()"></div>
@@ -373,19 +354,31 @@
     <div class="meta-field"><label>INSPECTOR</label><input type="text" id="inspectorName" value="Site Inspector" oninput="saveAll()"></div>
   </div>
 
+  <!-- CHIPS -->
   <div class="chips">
-    <div class="chip chip-pass"><span class="num" id="chipPass">0</span> PASS</div>
-    <div class="chip chip-fail"><span class="num" id="chipFail">0</span> FAIL</div>
-    <div class="chip chip-na"><span class="num" id="chipNA">0</span> N/A</div>
-    <div class="chip chip-pend"><span class="num" id="chipPend">0</span> PENDING</div>
+    <div class="chip chip-pass"><span class="num" id="chipPass">0</span>PASS</div>
+    <div class="chip chip-fail"><span class="num" id="chipFail">0</span>FAIL</div>
+    <div class="chip chip-na"><span class="num" id="chipNA">0</span>N/A</div>
+    <div class="chip chip-pend"><span class="num" id="chipPend">0</span>PENDING</div>
   </div>
 
+  <!-- JUMP NEXT -->
+  <button class="jump-btn" id="jumpNextBtn" onclick="jumpNext()">▶ JUMP TO NEXT UNRESOLVED ITEM</button>
+
+  <!-- SECTIONS -->
   <div id="testSections"></div>
+
+  <!-- FAIL LIST -->
   <div class="fail-list" id="failList" style="display:none"></div>
+
+  <!-- ACTIONS -->
   <button class="btn-report" onclick="openReport()">◈ GENERATE SAT REPORT</button>
-  <button class="btn-clear" onclick="showConfirm()">CLEAR ALL & RESET SAT</button>
+  <a class="btn-email" id="emailLink" href="#" onclick="emailReport(event)">✉ EMAIL REPORT</a>
+  <button class="btn-clear" onclick="showConfirm()">CLEAR SESSION & RESET</button>
+
 </div>
 
+<!-- VERDICT BAR -->
 <div class="verdict-bar pending" id="verdictBar">AWAITING TEST COMPLETION</div>
 
 <!-- LIGHTBOX -->
@@ -393,7 +386,28 @@
   <button class="lightbox-close" onclick="closeLightbox()">✕</button>
   <img id="lightboxImg" src="" alt="Site photo">
   <div class="lightbox-meta" id="lightboxMeta"></div>
-  <button class="lightbox-dl" id="lightboxDl">⬇ DOWNLOAD PHOTO</button>
+  <button class="lightbox-dl" id="lightboxDl">⬇ DOWNLOAD</button>
+</div>
+
+<!-- SIGNATURE MODAL -->
+<div class="sig-modal-overlay" id="sigModalOverlay">
+  <div class="sig-modal">
+    <h3>Signature Capture</h3>
+    <p>Sign below using your finger or stylus</p>
+    <div class="sig-tabs">
+      <button class="sig-tab active" id="sigTabContractor" onclick="switchSigTab('contractor')">CONTRACTOR REP</button>
+      <button class="sig-tab" id="sigTabUE" onclick="switchSigTab('ue')">UÉ REPRESENTATIVE</button>
+    </div>
+    <div class="sig-canvas-wrap">
+      <canvas class="sig-canvas" id="sigCanvas" width="560" height="140"></canvas>
+    </div>
+    <div class="sig-signed-indicator" id="sigSignedIndicator"></div>
+    <div class="sig-actions">
+      <button class="sig-btn sig-btn-clear" onclick="clearSig()">CLEAR</button>
+      <button class="sig-btn sig-btn-save" onclick="saveSig()">SAVE SIGNATURE</button>
+      <button class="sig-btn sig-btn-close" onclick="closeSigModal()">CLOSE</button>
+    </div>
+  </div>
 </div>
 
 <!-- REPORT MODAL -->
@@ -402,10 +416,12 @@
     <div class="modal-drag"></div>
     <h2>SAT Report — Export</h2>
     <pre id="reportText"></pre>
+    <div class="sig-preview-row" id="sigPreviewRow"></div>
     <div id="reportPhotos"></div>
     <div class="modal-actions">
-      <button class="btn-modal-action btn-modal-copy" onclick="copyReport()">⊡ COPY TEXT</button>
-      <button class="btn-modal-action btn-modal-close" onclick="closeReport()">CLOSE</button>
+      <button class="btn-modal btn-modal-copy" onclick="copyReport()">⊡ COPY</button>
+      <button class="btn-modal btn-modal-json" onclick="exportJSON()">⬇ JSON</button>
+      <button class="btn-modal btn-modal-close" onclick="closeReport()">CLOSE</button>
     </div>
   </div>
 </div>
@@ -413,16 +429,19 @@
 <!-- CONFIRM -->
 <div class="confirm-overlay" id="confirmOverlay">
   <div class="confirm-box">
-    <h3>Reset SAT?</h3>
-    <p>This will clear all results, notes, and photos. Cannot be undone.</p>
+    <h3>Reset Session?</h3>
+    <p>All results, notes, photos and signatures in this session will be cleared. Cannot be undone.</p>
     <div class="confirm-actions">
-      <button class="btn-confirm-yes" onclick="clearAll()">CLEAR ALL</button>
+      <button class="btn-confirm-yes" onclick="clearAll()">CLEAR</button>
       <button class="btn-confirm-no" onclick="hideConfirm()">CANCEL</button>
     </div>
   </div>
 </div>
 
 <script>
+/* ════════════════════════════════════════════════════════════
+   SAT DATA
+════════════════════════════════════════════════════════════ */
 const SAT_SECTIONS = [
   { id:"S1", title:"Documentation & Pre-Test Checks", items:[
     {ref:"S1.01",desc:"As-built drawings submitted and accepted by UÉ Representative",criteria:"Stamped as-built drawings on site, referenced to project specification"},
@@ -433,14 +452,14 @@ const SAT_SECTIONS = [
   ]},
   { id:"S2", title:"Civil & Structural Works", items:[
     {ref:"S2.01",desc:"Wet well dimensions, levels, and wall finish compliant with drawings",criteria:"Invert, crown, and soffit levels within ±10mm of design. Smooth render, no honeycombing"},
-    {ref:"S2.02",desc:"Wet well water-tightness test passed (IS EN 1610 Section 13)",criteria:"Infiltration/exfiltration ≤ 0.15 l/(m²·day). Test certificate on file"},
+    {ref:"S2.02",desc:"Wet well water-tightness test passed (IS EN 1610 Section 13)",criteria:"Infiltration/exfiltration ≤ 0.15 l/(m²·day). Test certificate on file",measured:true,unit:"l/(m²·day)"},
     {ref:"S2.03",desc:"Access covers, frames, and gratings to correct loading class and flush with finished grade",criteria:"Cover class D400 min in trafficked areas. No rocking. Anti-tilt feature fitted"},
     {ref:"S2.04",desc:"Site drainage, paving, and boundary fencing complete",criteria:"Hardstand graded to drain away from kiosk. 2.4m security fencing with lock-bar gate"},
     {ref:"S2.05",desc:"Concrete kiosk/structure free from cracks, spalling, or defects",criteria:"Visual inspection — no structural cracks >0.3mm, no exposed rebar"}
   ]},
   { id:"S3", title:"Mechanical & Pipework", items:[
     {ref:"S3.01",desc:"Pump units installed per manufacturer drawings and UÉ spec (duty/standby)",criteria:"Correct pump model, impeller size confirmed against approval schedule"},
-    {ref:"S3.02",desc:"Rising main hydraulic pressure test passed (IS EN 805)",criteria:"Test pressure = 1.5 × DP for 1 hour. Zero leakage. Witnessed & certified"},
+    {ref:"S3.02",desc:"Rising main hydraulic pressure test passed (IS EN 805)",criteria:"Test pressure = 1.5 × DP for 1 hour. Zero leakage. Witnessed & certified",measured:true,unit:"bar"},
     {ref:"S3.03",desc:"Non-return valves, isolating valves, and penstock in correct orientation and operable",criteria:"NRVs free from sticking; spindle valves close fully; penstock seats flush"},
     {ref:"S3.04",desc:"Pump guide rails, chains, and auto-coupling system fitted and correctly aligned",criteria:"Pump seats fully on coupling with no rocking. Guide rails plumb to ±2mm"},
     {ref:"S3.05",desc:"Vent pipe and odour control arrangement installed where specified",criteria:"Vent to atmosphere min 500mm above cover level or carbon filter as specified"},
@@ -448,18 +467,18 @@ const SAT_SECTIONS = [
   ]},
   { id:"S4", title:"Electrical & Control Panel (MCC/SCADA)", items:[
     {ref:"S4.01",desc:"Motor Control Centre (MCC) installed, secured, and IP rating correct",criteria:"IP55 minimum in pumping station. Cable entries made good, no open knockouts"},
-    {ref:"S4.02",desc:"Power supply, earthing, and lightning protection installed and tested",criteria:"Earth loop impedance tested and within limits. RCD tested. SPD fitted"},
+    {ref:"S4.02",desc:"Power supply, earthing, and lightning protection installed and tested",criteria:"Earth loop impedance tested and within limits. RCD tested. SPD fitted",measured:true,unit:"Ω"},
     {ref:"S4.03",desc:"Emergency stop buttons positioned per layout drawing and tested",criteria:"E-stops accessible at each pump and at panel. Latching type, key/tool release"},
     {ref:"S4.04",desc:"SCADA/telemetry RTU connected and communicating with UÉ National OCC",criteria:"Live data feed confirmed by OCC. All required data points mapped and tagged"},
-    {ref:"S4.05",desc:"Generator changeover panel (ATS) installed and tested",criteria:"Auto changeover tested — transfer time ≤30s. Manual changeover also tested"},
+    {ref:"S4.05",desc:"Generator changeover panel (ATS) installed and tested",criteria:"Auto changeover tested — transfer time ≤30s. Manual changeover also tested",measured:true,unit:"s"},
     {ref:"S4.06",desc:"Level monitoring (float switches / ultrasonic / pressure transducers) calibrated",criteria:"Start, stop, and high-high levels verified against wetwell as-built levels"}
   ]},
   { id:"S5", title:"Functional Pump Testing", items:[
-    {ref:"S5.01",desc:"Duty pump run test — minimum 2-hour continuous operation at design flow",criteria:"Flow rate and head confirmed ±10% of design point. No unusual vibration/noise"},
-    {ref:"S5.02",desc:"Standby pump run test — minimum 1-hour continuous operation",criteria:"Standby pump performs to same criteria as duty pump"},
-    {ref:"S5.03",desc:"Duty/standby auto-changeover tested (on fault and on manual command)",criteria:"Changeover occurs within 5 seconds. Alarm generated in MCC and at SCADA"},
+    {ref:"S5.01",desc:"Duty pump run test — minimum 2-hour continuous operation at design flow",criteria:"Flow rate and head confirmed ±10% of design point. No unusual vibration/noise",measured:true,unit:"l/s"},
+    {ref:"S5.02",desc:"Standby pump run test — minimum 1-hour continuous operation",criteria:"Standby pump performs to same criteria as duty pump",measured:true,unit:"l/s"},
+    {ref:"S5.03",desc:"Duty/standby auto-changeover tested (on fault and on manual command)",criteria:"Changeover occurs within 5 seconds. Alarm generated in MCC and at SCADA",measured:true,unit:"s"},
     {ref:"S5.04",desc:"Float/level control start and stop sequencing verified",criteria:"Pumps start and stop at correct wetwell levels. Levels match control set-points"},
-    {ref:"S5.05",desc:"High-level alarm tested and confirmed at SCADA/OCC",criteria:"SMS/SCADA alarm received by OCC within 2 minutes of trigger"},
+    {ref:"S5.05",desc:"High-level alarm tested and confirmed at SCADA/OCC",criteria:"SMS/SCADA alarm received by OCC within 2 minutes of trigger",measured:true,unit:"min"},
     {ref:"S5.06",desc:"Dry run protection (undercurrent / dry run relay) tested",criteria:"Pump trips within set time delay when running dry. Alarm generated"}
   ]},
   { id:"S6", title:"Health, Safety & Environment", items:[
@@ -471,57 +490,216 @@ const SAT_SECTIONS = [
   ]}
 ];
 
-const STORAGE_KEY = 'ue_sat_v2';
-let state = {};
-SAT_SECTIONS.forEach(s => s.items.forEach(i => { state[i.ref] = {result:null,note:'',photos:[]}; }));
+/* ════════════════════════════════════════════════════════════
+   SESSION MANAGEMENT
+════════════════════════════════════════════════════════════ */
+const SESSIONS_KEY = 'ue_sat_sessions_v1';
+let currentSession = 'default';
+let sessions = {};
 
-// ── PERSIST ──────────────────────────────────────────────────────────────
-function saveAll() {
-  const meta = {
-    contractRef:   document.getElementById('contractRef').value,
-    assetName:     document.getElementById('assetName').value,
-    satDate:       document.getElementById('satDate').value,
-    inspectorName: document.getElementById('inspectorName').value
-  };
+function freshState() {
+  const s = {};
+  SAT_SECTIONS.forEach(sec => sec.items.forEach(i => {
+    s[i.ref] = {result:null,note:'',photos:[],severity:null,retested:false,measured:''};
+  }));
+  return s;
+}
+
+function loadSessions() {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify({state,meta}));
+    const raw = localStorage.getItem(SESSIONS_KEY);
+    if (raw) sessions = JSON.parse(raw);
+  } catch(e) {}
+  if (!sessions.default) sessions.default = {state:freshState(),meta:{},sigs:{contractor:null,ue:null},theme:'dark'};
+}
+
+function saveSessions() {
+  // Capture current UI meta into session
+  if (sessions[currentSession]) {
+    sessions[currentSession].meta = {
+      contractRef:   document.getElementById('contractRef').value,
+      assetName:     document.getElementById('assetName').value,
+      satDate:       document.getElementById('satDate').value,
+      inspectorName: document.getElementById('inspectorName').value
+    };
+    sessions[currentSession].state = state;
+    sessions[currentSession].sigs  = sigs;
+  }
+  try {
+    localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions));
     flashSaved();
-  } catch(e) { console.warn('Storage quota hit — too many photos'); }
+    updateStoragePill();
+  } catch(e) {
+    console.warn('Storage quota exceeded');
+    document.querySelector('.storage-warn.show')?.classList.remove('show');
+  }
+}
+
+function saveAll() { saveSessions(); updateSummary(); }
+
+function newSession() {
+  const name = prompt('Session name (e.g. "Ballybeg PS — Run 2"):');
+  if (!name || !name.trim()) return;
+  const key = 'sess_' + Date.now();
+  sessions[key] = {name:name.trim(), state:freshState(), meta:{}, sigs:{contractor:null,ue:null}, theme:currentTheme};
+  currentSession = key;
+  rebuildSessionSelect();
+  loadSessionIntoUI();
+  saveAll();
+}
+
+function switchSession(key) {
+  saveAll(); // save current first
+  currentSession = key;
+  loadSessionIntoUI();
   updateSummary();
 }
 
-function loadSaved() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return;
-    const {state:s, meta} = JSON.parse(raw);
-    if (s) Object.keys(s).forEach(ref => { if (state[ref]) state[ref] = {photos:[],...s[ref]}; });
-    if (meta) ['contractRef','assetName','satDate','inspectorName'].forEach(id => {
-      if (meta[id] !== undefined) document.getElementById(id).value = meta[id];
-    });
-  } catch(e) {}
+function rebuildSessionSelect() {
+  const sel = document.getElementById('sessionSelect');
+  sel.innerHTML = '';
+  Object.keys(sessions).forEach(key => {
+    const opt = document.createElement('option');
+    opt.value = key;
+    opt.textContent = sessions[key].name || (key === 'default' ? 'Default SAT' : key);
+    opt.selected = key === currentSession;
+    sel.appendChild(opt);
+  });
 }
 
-let saveTimer;
-function flashSaved() {
-  const p = document.getElementById('savePill');
-  p.classList.add('show');
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => p.classList.remove('show'), 1800);
+function loadSessionIntoUI() {
+  const sess = sessions[currentSession];
+  if (!sess) return;
+  state = sess.state || freshState();
+  sigs  = sess.sigs  || {contractor:null, ue:null};
+  const meta = sess.meta || {};
+  ['contractRef','assetName','satDate','inspectorName'].forEach(id => {
+    document.getElementById(id).value = meta[id] || '';
+  });
+  if (!document.getElementById('satDate').value)
+    document.getElementById('satDate').value = new Date().toISOString().split('T')[0];
+  // Restore button states
+  SAT_SECTIONS.forEach(sec => sec.items.forEach(item => {
+    const r = state[item.ref]?.result;
+    ['pass','fail','na'].forEach(t => document.getElementById(`btn-${t}-${item.ref}`)?.classList.toggle('active', t===r));
+    const nEl = document.getElementById(`note-${item.ref}`);
+    if (nEl) nEl.value = state[item.ref]?.note || '';
+    const mEl = document.getElementById(`measured-${item.ref}`);
+    if (mEl) mEl.value = state[item.ref]?.measured || '';
+    // NCR
+    const ncrRow = document.getElementById(`ncr-${item.ref}`);
+    if (ncrRow) {
+      ncrRow.classList.toggle('show', r==='fail');
+      ncrRow.querySelectorAll('.ncr-btn').forEach(b => b.classList.toggle('active', b.dataset.sev === state[item.ref]?.severity));
+      const rt = ncrRow.querySelector('.retest-btn');
+      if (rt) rt.classList.toggle('active', !!state[item.ref]?.retested);
+    }
+    renderPhotos(item.ref);
+  }));
 }
 
-// ── RENDER ───────────────────────────────────────────────────────────────
+/* ════════════════════════════════════════════════════════════
+   THEME
+════════════════════════════════════════════════════════════ */
+let currentTheme = 'dark';
+function toggleTheme() {
+  currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+  applyTheme();
+  if (sessions[currentSession]) sessions[currentSession].theme = currentTheme;
+  saveAll();
+}
+function applyTheme() {
+  document.body.classList.toggle('light', currentTheme === 'light');
+  document.getElementById('themeBtn').textContent = currentTheme === 'dark' ? '☀ LIGHT' : '☾ DARK';
+  document.getElementById('themeColorMeta').content = currentTheme === 'dark' ? '#003da5' : '#e0ecf8';
+}
+
+/* ════════════════════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════════════════════ */
+let state = freshState();
+let sigs  = {contractor:null, ue:null};
+
+/* ════════════════════════════════════════════════════════════
+   INIT
+════════════════════════════════════════════════════════════ */
 function init() {
-  document.getElementById('satDate').value = new Date().toISOString().split('T')[0];
-  loadSaved();
+  loadSessions();
+  // Restore theme from session
+  currentTheme = sessions[currentSession]?.theme || 'dark';
+  applyTheme();
+  rebuildSessionSelect();
 
+  buildQuickNav();
+  buildSections();
+  loadSessionIntoUI();
+  updateSummary();
+  registerSW();
+  setupInstallPrompt();
+  setupOfflineDetection();
+  setupSigPad();
+  updateStoragePill();
+}
+
+/* ════════════════════════════════════════════════════════════
+   QUICK NAV
+════════════════════════════════════════════════════════════ */
+function buildQuickNav() {
+  const nav = document.getElementById('quickNav');
+  SAT_SECTIONS.forEach(sec => {
+    const btn = document.createElement('button');
+    btn.className = 'qnav-btn';
+    btn.id = 'qnav-' + sec.id;
+    btn.innerHTML = `${sec.id}<span class="qnav-dot" id="qdot-${sec.id}"></span>`;
+    btn.onclick = () => {
+      document.getElementById('sec-' + sec.id)?.scrollIntoView({behavior:'smooth', block:'start'});
+    };
+    nav.appendChild(btn);
+  });
+  // Expand all nav label
+  const spacer = document.createElement('div');spacer.style.flex='1';nav.appendChild(spacer);
+}
+
+function updateQuickNav() {
+  SAT_SECTIONS.forEach(sec => {
+    const btn = document.getElementById('qnav-' + sec.id);
+    const dot = document.getElementById('qdot-' + sec.id);
+    if (!btn || !dot) return;
+    let hasPass=false, hasFail=false, hasNa=false, hasPend=false;
+    sec.items.forEach(item => {
+      const r = state[item.ref]?.result;
+      if(r==='pass') hasPass=true;
+      else if(r==='fail') hasFail=true;
+      else if(r==='na') hasNa=true;
+      else hasPend=true;
+    });
+    btn.className = 'qnav-btn';
+    dot.style.background = 'transparent';
+    if (hasFail) { btn.classList.add('has-fail'); dot.style.background='var(--red)'; }
+    else if (!hasPend) { btn.classList.add('done'); dot.style.background='var(--green)'; }
+    else if (hasPass||hasNa) { dot.style.background='var(--amber)'; }
+  });
+}
+
+/* ════════════════════════════════════════════════════════════
+   BUILD SECTIONS
+════════════════════════════════════════════════════════════ */
+function buildSections() {
   const container = document.getElementById('testSections');
   SAT_SECTIONS.forEach(sec => {
     const div = document.createElement('div');
     div.className = 'section';
+    div.id = 'sec-' + sec.id;
     div.innerHTML = `
       <div class="section-header" onclick="toggleSection('${sec.id}')">
         <span class="section-num">${sec.id}</span>
+        <svg class="section-ring" viewBox="0 0 28 28" id="ring-${sec.id}">
+          <circle class="ring-bg" cx="14" cy="14" r="11"/>
+          <circle class="ring-fill" id="ringFill-${sec.id}" cx="14" cy="14" r="11"
+            stroke="var(--accent)" stroke-dasharray="69.1" stroke-dashoffset="69.1"
+            transform="rotate(-90 14 14)"/>
+          <text class="ring-text" x="14" y="14.5" id="ringText-${sec.id}">0%</text>
+        </svg>
         <span class="section-title">${sec.title}</span>
         <span class="section-status pending" id="secStatus-${sec.id}">PENDING</span>
         <span class="section-chevron open" id="secChevron-${sec.id}">▶</span>
@@ -531,38 +709,42 @@ function init() {
       </div>`;
     container.appendChild(div);
   });
-
-  SAT_SECTIONS.forEach(sec => sec.items.forEach(item => {
-    const r = state[item.ref].result;
-    if (r) ['pass','fail','na'].forEach(t => document.getElementById(`btn-${t}-${item.ref}`)?.classList.toggle('active', t===r));
-    const n = document.getElementById(`note-${item.ref}`);
-    if (n) n.value = state[item.ref].note || '';
-    renderPhotos(item.ref);
-  }));
-
-  updateSummary();
-  registerSW();
-  setupInstallPrompt();
-  setupOfflineDetection();
 }
 
 function renderItem(item) {
+  const measuredRow = item.measured ? `
+    <div class="measured-row">
+      <span class="measured-label">MEASURED VALUE</span>
+      <input class="measured-input" type="text" placeholder="Enter result…"
+        id="measured-${item.ref}" oninput="setMeasured('${item.ref}',this.value)">
+      <span class="measured-unit">${item.unit||''}</span>
+    </div>` : '';
+
   return `
     <div class="test-item" id="item-${item.ref}">
       <div class="test-ref">${item.ref}</div>
       <div class="test-desc">${item.desc}</div>
       <div class="test-criteria"><strong>Criteria:</strong> ${item.criteria}</div>
+      ${measuredRow}
       <div class="test-controls">
         <div class="btn-group">
           <button class="btn btn-pass" id="btn-pass-${item.ref}" onclick="setResult('${item.ref}','pass')">✓ PASS</button>
           <button class="btn btn-fail" id="btn-fail-${item.ref}" onclick="setResult('${item.ref}','fail')">✗ FAIL</button>
           <button class="btn btn-na"   id="btn-na-${item.ref}"   onclick="setResult('${item.ref}','na')">N/A</button>
         </div>
-        <input class="note-input" type="text" placeholder="Note / NCR ref…" id="note-${item.ref}" oninput="setNote('${item.ref}',this.value)">
+        <input class="note-input" type="text" placeholder="Note / NCR ref…"
+          id="note-${item.ref}" oninput="setNote('${item.ref}',this.value)">
+      </div>
+      <div class="ncr-row" id="ncr-${item.ref}">
+        <span class="ncr-label">SEVERITY:</span>
+        <button class="ncr-btn" data-sev="minor"    onclick="setSeverity('${item.ref}','minor')">MINOR</button>
+        <button class="ncr-btn" data-sev="major"    onclick="setSeverity('${item.ref}','major')">MAJOR</button>
+        <button class="ncr-btn" data-sev="critical" onclick="setSeverity('${item.ref}','critical')">CRITICAL</button>
+        <button class="retest-btn" id="retest-${item.ref}" onclick="toggleRetest('${item.ref}')">✓ RE-TESTED</button>
       </div>
       <div class="photo-row" id="photoRow-${item.ref}">
         <button class="btn-camera" id="camBtn-${item.ref}" onclick="triggerCamera('${item.ref}')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
           PHOTO
         </button>
         <input type="file" accept="image/*" capture="environment"
@@ -570,11 +752,78 @@ function renderItem(item) {
           onchange="handlePhoto('${item.ref}',this)">
         <div class="photo-thumbs" id="thumbs-${item.ref}"></div>
       </div>
+      <div class="storage-warn" id="storWarn-${item.ref}">⚠ Storage nearly full — delete some photos</div>
     </div>`;
 }
 
-// ── PHOTO ────────────────────────────────────────────────────────────────
-function triggerCamera(ref) { document.getElementById(`photoInput-${ref}`).click(); }
+/* ════════════════════════════════════════════════════════════
+   INTERACTIONS
+════════════════════════════════════════════════════════════ */
+function toggleSection(id) {
+  document.getElementById('secBody-'+id).classList.toggle('collapsed');
+  document.getElementById('secChevron-'+id).classList.toggle('open');
+}
+function collapseAll() { SAT_SECTIONS.forEach(s => { document.getElementById('secBody-'+s.id).classList.add('collapsed'); document.getElementById('secChevron-'+s.id).classList.remove('open'); }); }
+function expandAll()   { SAT_SECTIONS.forEach(s => { document.getElementById('secBody-'+s.id).classList.remove('collapsed'); document.getElementById('secChevron-'+s.id).classList.add('open'); }); }
+
+function setResult(ref, result) {
+  if (!state[ref]) state[ref] = {result:null,note:'',photos:[],severity:null,retested:false,measured:''};
+  state[ref].result = result;
+  ['pass','fail','na'].forEach(r => document.getElementById(`btn-${r}-${ref}`)?.classList.toggle('active', r===result));
+  // NCR row
+  const ncrRow = document.getElementById('ncr-'+ref);
+  if (ncrRow) ncrRow.classList.toggle('show', result==='fail');
+  // Haptic
+  if (navigator.vibrate) navigator.vibrate(result==='fail' ? [30,20,30] : 20);
+  saveAll();
+}
+
+function setNote(ref, val) { if(state[ref]) state[ref].note = val; saveSessions(); }
+function setMeasured(ref, val) { if(state[ref]) state[ref].measured = val; saveSessions(); }
+
+function setSeverity(ref, sev) {
+  if (!state[ref]) return;
+  state[ref].severity = sev;
+  const row = document.getElementById('ncr-'+ref);
+  if (row) row.querySelectorAll('.ncr-btn').forEach(b => b.classList.toggle('active', b.dataset.sev===sev));
+  saveAll();
+}
+
+function toggleRetest(ref) {
+  if (!state[ref]) return;
+  state[ref].retested = !state[ref].retested;
+  const btn = document.getElementById('retest-'+ref);
+  if (btn) btn.classList.toggle('active', state[ref].retested);
+  document.getElementById('item-'+ref)?.classList.toggle('resolved', state[ref].retested);
+  saveAll();
+}
+
+/* ════════════════════════════════════════════════════════════
+   JUMP TO NEXT UNRESOLVED
+════════════════════════════════════════════════════════════ */
+function jumpNext() {
+  for (const sec of SAT_SECTIONS) {
+    for (const item of sec.items) {
+      if (!state[item.ref]?.result) {
+        // Expand section
+        document.getElementById('secBody-'+sec.id).classList.remove('collapsed');
+        document.getElementById('secChevron-'+sec.id).classList.add('open');
+        setTimeout(() => {
+          document.getElementById('item-'+item.ref)?.scrollIntoView({behavior:'smooth',block:'center'});
+          // Flash highlight
+          const el = document.getElementById('item-'+item.ref);
+          if (el) { el.style.background='rgba(0,198,255,.1)'; setTimeout(()=>el.style.background='',800); }
+        }, 100);
+        return;
+      }
+    }
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   PHOTOS
+════════════════════════════════════════════════════════════ */
+function triggerCamera(ref) { document.getElementById('photoInput-'+ref).click(); }
 
 function handlePhoto(ref, input) {
   const file = input.files[0];
@@ -584,16 +833,29 @@ function handlePhoto(ref, input) {
     const img = new Image();
     img.onload = () => {
       const MAX = 900;
-      let w = img.width, h = img.height;
-      if (w > MAX) { h = Math.round(h * MAX / w); w = MAX; }
+      let w=img.width, h=img.height;
+      if (w>MAX){h=Math.round(h*MAX/w);w=MAX;}
       const canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      canvas.width=w; canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
       const dataUrl = canvas.toDataURL('image/jpeg', 0.78);
-      const ts = new Date().toLocaleTimeString('en-IE', {hour:'2-digit',minute:'2-digit'});
-      state[ref].photos.push({dataUrl, caption:ref, ts});
-      renderPhotos(ref);
-      saveAll();
+      const ts = new Date().toLocaleTimeString('en-IE',{hour:'2-digit',minute:'2-digit'});
+      // Try GPS
+      const pushPhoto = (loc) => {
+        if (!state[ref]) return;
+        state[ref].photos.push({dataUrl, ts, loc: loc||null});
+        renderPhotos(ref);
+        try { saveAll(); } catch(e) {
+          document.getElementById('storWarn-'+ref)?.classList.add('show');
+        }
+      };
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          p => pushPhoto(`${p.coords.latitude.toFixed(5)},${p.coords.longitude.toFixed(5)}`),
+          () => pushPhoto(null),
+          {timeout:3000}
+        );
+      } else { pushPhoto(null); }
     };
     img.src = e.target.result;
   };
@@ -602,15 +864,13 @@ function handlePhoto(ref, input) {
 }
 
 function renderPhotos(ref) {
-  const thumbsEl = document.getElementById(`thumbs-${ref}`);
+  const thumbsEl = document.getElementById('thumbs-'+ref);
   if (!thumbsEl) return;
-  const photos = state[ref].photos || [];
-  const camBtn = document.getElementById(`camBtn-${ref}`);
+  const photos = state[ref]?.photos || [];
+  const camBtn = document.getElementById('camBtn-'+ref);
   if (camBtn) {
-    camBtn.classList.toggle('has-photos', photos.length > 0);
-    camBtn.innerHTML = `
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-      ${photos.length > 0 ? `+PHOTO (${photos.length})` : 'PHOTO'}`;
+    camBtn.classList.toggle('has-photos', photos.length>0);
+    camBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>${photos.length>0?`+PHOTO (${photos.length})`:'PHOTO'}`;
   }
   thumbsEl.innerHTML = photos.map((p,idx) => `
     <div class="photo-thumb-wrap">
@@ -620,56 +880,58 @@ function renderPhotos(ref) {
 }
 
 function deletePhoto(ref, idx) {
-  state[ref].photos.splice(idx, 1);
+  state[ref]?.photos.splice(idx,1);
   renderPhotos(ref);
+  document.getElementById('storWarn-'+ref)?.classList.remove('show');
   saveAll();
 }
 
-// ── LIGHTBOX ─────────────────────────────────────────────────────────────
 function openLightbox(ref, idx) {
-  const p = state[ref].photos[idx];
+  const p = state[ref]?.photos[idx];
+  if (!p) return;
   document.getElementById('lightboxImg').src = p.dataUrl;
-  document.getElementById('lightboxMeta').textContent = `${p.caption} — ${p.ts}`;
+  document.getElementById('lightboxMeta').textContent = `${ref} — ${p.ts}${p.loc?' — GPS '+p.loc:''}`;
   document.getElementById('lightboxDl').onclick = () => {
-    const a = document.createElement('a');
-    a.href = p.dataUrl;
-    a.download = `SAT-${ref}-photo${idx+1}.jpg`;
-    a.click();
+    const a=document.createElement('a'); a.href=p.dataUrl; a.download=`SAT-${ref}-photo${idx+1}.jpg`; a.click();
   };
   document.getElementById('lightbox').classList.add('open');
 }
-function closeLightbox() {
-  document.getElementById('lightbox').classList.remove('open');
-  document.getElementById('lightboxImg').src = '';
-}
+function closeLightbox(){document.getElementById('lightbox').classList.remove('open');document.getElementById('lightboxImg').src='';}
 
-// ── INTERACTIONS ──────────────────────────────────────────────────────────
-function toggleSection(id) {
-  document.getElementById('secBody-'+id).classList.toggle('collapsed');
-  document.getElementById('secChevron-'+id).classList.toggle('open');
-}
-function setResult(ref, result) {
-  state[ref].result = result;
-  ['pass','fail','na'].forEach(r => document.getElementById(`btn-${r}-${ref}`)?.classList.toggle('active', r===result));
-  saveAll();
-}
-function setNote(ref, val) { state[ref].note = val; saveAll(); }
-
-// ── SUMMARY ───────────────────────────────────────────────────────────────
+/* ════════════════════════════════════════════════════════════
+   SUMMARY
+════════════════════════════════════════════════════════════ */
 function updateSummary() {
   let pass=0,fail=0,na=0,pend=0,total=0;
   SAT_SECTIONS.forEach(sec => {
     let sp=0,sf=0,sn=0,spe=0;
     sec.items.forEach(item => {
       total++;
-      const r = state[item.ref].result;
-      if(r==='pass'){pass++;sp++;}else if(r==='fail'){fail++;sf++;}else if(r==='na'){na++;sn++;}else{pend++;spe++;}
+      const r = state[item.ref]?.result;
+      if(r==='pass'){pass++;sp++;}
+      else if(r==='fail'){fail++;sf++;}
+      else if(r==='na'){na++;sn++;}
+      else{pend++;spe++;}
     });
     const el = document.getElementById('secStatus-'+sec.id);
     if (!el) return;
+    const total_s = sec.items.length;
+    const done_s = sp+sf+sn;
+    // Ring
+    const circ = 2*Math.PI*11; // ≈69.1
+    const pct_s = total_s > 0 ? done_s/total_s : 0;
+    const offset = circ*(1-pct_s);
+    const ringFill = document.getElementById('ringFill-'+sec.id);
+    const ringText = document.getElementById('ringText-'+sec.id);
+    if (ringFill) {
+      ringFill.style.strokeDashoffset = offset;
+      ringFill.style.stroke = sf>0 ? 'var(--red)' : spe===0 ? 'var(--green)' : 'var(--accent)';
+    }
+    if (ringText) ringText.textContent = Math.round(pct_s*100)+'%';
+    // Status badge
     if(sf>0){el.className='section-status fail';el.textContent=`${sf} FAIL`;}
     else if(spe>0){el.className='section-status pending';el.textContent='IN PROGRESS';}
-    else if(sn===sec.items.length){el.className='section-status partial';el.textContent='ALL N/A';}
+    else if(sn===total_s){el.className='section-status partial';el.textContent='ALL N/A';}
     else{el.className='section-status pass';el.textContent='PASS';}
   });
   document.getElementById('chipPass').textContent=pass;
@@ -678,28 +940,105 @@ function updateSummary() {
   document.getElementById('chipPend').textContent=pend;
   const done=pass+fail+na, pct=total>0?Math.round((done/total)*100):0;
   document.getElementById('progressFill').style.width=pct+'%';
+  // Verdict
   const vbar=document.getElementById('verdictBar');
-  if(pend>0){vbar.className='verdict-bar pending';vbar.textContent=`${pct}% COMPLETE — ${pend} ITEMS OUTSTANDING`;}
+  if(pend>0){vbar.className='verdict-bar pending';vbar.textContent=`${pct}% COMPLETE — ${pend} OUTSTANDING`;}
   else if(fail===0){vbar.className='verdict-bar pass';vbar.textContent='✓ SAT PASSED — RECOMMENDED FOR PROVISIONAL HANDOVER';}
   else if(fail<=3){vbar.className='verdict-bar partial';vbar.textContent=`⚠ CONDITIONAL — ${fail} NCR(s) REQUIRE RESOLUTION`;}
-  else{vbar.className='verdict-bar fail';vbar.textContent=`✗ SAT FAILED — ${fail} DEFECTS. DO NOT HANDOVER`;}
+  else{vbar.className='verdict-bar fail';vbar.textContent=`✗ SAT FAILED — ${fail} DEFECTS — DO NOT HANDOVER`;}
+  // Jump button
+  const hasUnresolved = pend > 0;
+  document.getElementById('jumpNextBtn').classList.toggle('hidden', !hasUnresolved);
+  // Fail list
   const fl=document.getElementById('failList');
   const fails=[];
-  SAT_SECTIONS.forEach(sec=>sec.items.forEach(item=>{if(state[item.ref].result==='fail')fails.push(item);}));
+  SAT_SECTIONS.forEach(sec=>sec.items.forEach(item=>{if(state[item.ref]?.result==='fail')fails.push(item);}));
   if(fails.length>0){
     fl.style.display='block';
-    fl.innerHTML=`<div class="fail-list-header">▸ OUTSTANDING FAILURES / NCRs</div>`+
-      fails.map(f=>`<div class="fail-item"><span class="fail-tag">${f.ref}</span><span>${f.desc}${state[f.ref].note?` — <em style="color:var(--text-dim)">${state[f.ref].note}</em>`:''}${state[f.ref].photos.length>0?` <span style="color:var(--accent);font-size:10px;font-family:monospace">📷${state[f.ref].photos.length}</span>`:''}</span></div>`).join('');
+    fl.innerHTML=`<div class="fail-list-header">▸ OUTSTANDING FAILURES / NCRs (${fails.length})</div>`+
+      fails.map(f=>{
+        const s=state[f.ref];
+        const sevBadge=s.severity?`<span class="sev-badge ${s.severity}">${s.severity.toUpperCase()}</span>`:'';
+        const retested=s.retested?`<span style="color:var(--green);font-family:monospace;font-size:9px"> ✓ RE-TESTED</span>`:'';
+        const pc=s.photos.length>0?`<span style="color:var(--accent);font-size:9px;font-family:monospace"> 📷${s.photos.length}</span>`:'';
+        return `<div class="fail-item"><span class="fail-tag">${f.ref}</span>${sevBadge}<span>${f.desc}${s.note?` — <em style="color:var(--text-dim)">${s.note}</em>`:''}${pc}${retested}</span></div>`;
+      }).join('');
   } else { fl.style.display='none'; }
+  updateQuickNav();
 }
 
-// ── REPORT ────────────────────────────────────────────────────────────────
-function openReport() {
-  const lines=[], date=document.getElementById('satDate').value||new Date().toISOString().split('T')[0];
+/* ════════════════════════════════════════════════════════════
+   SIGNATURE PAD
+════════════════════════════════════════════════════════════ */
+let currentSigTab = 'contractor';
+let sigDrawing = false;
+let sigCanvas, sigCtx;
+
+function setupSigPad() {
+  sigCanvas = document.getElementById('sigCanvas');
+  sigCtx = sigCanvas.getContext('2d');
+  const getPos = e => {
+    const rect = sigCanvas.getBoundingClientRect();
+    const scaleX = sigCanvas.width / rect.width;
+    const scaleY = sigCanvas.height / rect.height;
+    const src = e.touches ? e.touches[0] : e;
+    return {x:(src.clientX-rect.left)*scaleX, y:(src.clientY-rect.top)*scaleY};
+  };
+  const start = e => { e.preventDefault(); sigDrawing=true; const p=getPos(e); sigCtx.beginPath(); sigCtx.moveTo(p.x,p.y); };
+  const draw  = e => { if(!sigDrawing) return; e.preventDefault(); const p=getPos(e); sigCtx.lineTo(p.x,p.y); sigCtx.strokeStyle=currentTheme==='light'?'#001830':'#c0d8f0'; sigCtx.lineWidth=2; sigCtx.lineCap='round'; sigCtx.stroke(); };
+  const end   = e => { e.preventDefault(); sigDrawing=false; };
+  sigCanvas.addEventListener('mousedown',start); sigCanvas.addEventListener('mousemove',draw); sigCanvas.addEventListener('mouseup',end);
+  sigCanvas.addEventListener('touchstart',start,{passive:false}); sigCanvas.addEventListener('touchmove',draw,{passive:false}); sigCanvas.addEventListener('touchend',end,{passive:false});
+}
+
+function openSigModal() { document.getElementById('sigModalOverlay').classList.add('open'); loadSigForTab(); }
+function closeSigModal() { document.getElementById('sigModalOverlay').classList.remove('open'); }
+
+function switchSigTab(tab) {
+  currentSigTab = tab;
+  document.getElementById('sigTabContractor').classList.toggle('active', tab==='contractor');
+  document.getElementById('sigTabUE').classList.toggle('active', tab==='ue');
+  clearSig();
+  loadSigForTab();
+}
+
+function loadSigForTab() {
+  const existing = sigs[currentSigTab];
+  const ind = document.getElementById('sigSignedIndicator');
+  clearSig();
+  if (existing) {
+    ind.textContent = '✓ SIGNATURE SAVED';
+    const img = new Image();
+    img.onload = () => sigCtx.drawImage(img,0,0,sigCanvas.width,sigCanvas.height);
+    img.src = existing;
+  } else {
+    ind.textContent = '';
+  }
+}
+
+function clearSig() {
+  sigCtx.clearRect(0,0,sigCanvas.width,sigCanvas.height);
+  sigDrawing = false;
+}
+
+function saveSig() {
+  sigs[currentSigTab] = sigCanvas.toDataURL('image/png');
+  document.getElementById('sigSignedIndicator').textContent = '✓ SIGNATURE SAVED';
+  if (navigator.vibrate) navigator.vibrate(30);
+  saveAll();
+}
+
+/* ════════════════════════════════════════════════════════════
+   REPORT
+════════════════════════════════════════════════════════════ */
+function buildReportLines() {
+  const lines=[];
+  const date=document.getElementById('satDate').value||new Date().toISOString().split('T')[0];
   lines.push('════════════════════════════════════════════════════════');
   lines.push('  UISCE ÉIREANN — SITE ACCEPTANCE TEST REPORT');
   lines.push('  Wastewater Pumping Station');
   lines.push('════════════════════════════════════════════════════════');
+  lines.push(`  Session      : ${sessions[currentSession]?.name||'Default SAT'}`);
   lines.push(`  Contract Ref : ${document.getElementById('contractRef').value}`);
   lines.push(`  Asset        : ${document.getElementById('assetName').value}`);
   lines.push(`  SAT Date     : ${date}`);
@@ -710,12 +1049,15 @@ function openReport() {
   SAT_SECTIONS.forEach(sec=>{
     lines.push('');lines.push(`  [${sec.id}] ${sec.title.toUpperCase()}`);lines.push('  '+'─'.repeat(52));
     sec.items.forEach(item=>{
-      const r=state[item.ref].result;
+      const r=state[item.ref]?.result;
       const tag=r==='pass'?'PASS':r==='fail'?'FAIL':r==='na'?'N/A ':'----';
-      const note=state[item.ref].note?`  → ${state[item.ref].note}`:'';
-      const pc=state[item.ref].photos.length;
+      const note=state[item.ref]?.note?`  → ${state[item.ref].note}`:'';
+      const sev=state[item.ref]?.severity?` [${state[item.ref].severity.toUpperCase()}]`:'';
+      const retested=state[item.ref]?.retested?' [RE-TESTED ✓]':'';
+      const meas=state[item.ref]?.measured?`  [Measured: ${state[item.ref].measured} ${SAT_SECTIONS.flatMap(s=>s.items).find(i=>i.ref===item.ref)?.unit||''}]`:'';
+      const pc=state[item.ref]?.photos.length||0;
       const pt=pc>0?`  [${pc} photo${pc>1?'s':''}]`:'';
-      lines.push(`  ${item.ref}  [${tag}]  ${item.desc}${note}${pt}`);
+      lines.push(`  ${item.ref}  [${tag}]${sev}${retested}  ${item.desc}${note}${meas}${pt}`);
       if(r==='pass')tp++;else if(r==='fail')tf++;else if(r==='na')tn++;else tpe++;
       if(pc>0){totalPhotos+=pc;photoItems.push(item);}
     });
@@ -728,53 +1070,138 @@ function openReport() {
   lines.push(`  VERDICT : ${document.getElementById('verdictBar').textContent}`);
   lines.push('════════════════════════════════════════════════════════');
   lines.push('');
-  lines.push('  Contractor Representative: ________________________');
-  lines.push('  UÉ Representative:         ________________________');
+  lines.push(`  Contractor Representative: ${sigs.contractor?'[SIGNED — see attached]':'________________________'}`);
+  lines.push(`  UÉ Representative:         ${sigs.ue?'[SIGNED — see attached]':'________________________'}`);
   lines.push('  Date:                      ________________________');
   lines.push('════════════════════════════════════════════════════════');
+  return {lines, photoItems, totalPhotos};
+}
+
+function openReport() {
+  const {lines,photoItems,totalPhotos}=buildReportLines();
   document.getElementById('reportText').textContent=lines.join('\n');
+  // Sig previews
+  const spRow=document.getElementById('sigPreviewRow');
+  if(sigs.contractor||sigs.ue){
+    spRow.innerHTML='';
+    ['contractor','ue'].forEach(tab=>{
+      if(sigs[tab]){
+        const label=tab==='contractor'?'Contractor Rep':'UÉ Representative';
+        spRow.innerHTML+=`<div class="sig-preview"><div class="sig-preview-label">${label}</div><img src="${sigs[tab]}" alt="Signature"></div>`;
+      }
+    });
+  } else { spRow.innerHTML=''; }
+  // Photos
   const rpEl=document.getElementById('reportPhotos');
   if(photoItems.length>0){
     let html=`<div class="report-photos-title">▸ ATTACHED SITE PHOTOS (${totalPhotos})</div><div class="report-photo-grid">`;
     photoItems.forEach(item=>{
-      state[item.ref].photos.forEach((p,idx)=>{
-        html+=`<div class="report-photo-item"><img src="${p.dataUrl}" onclick="openLightbox('${item.ref}',${idx})"><div class="report-photo-label">${item.ref} #${idx+1}<br>${p.ts}</div></div>`;
+      state[item.ref]?.photos.forEach((p,idx)=>{
+        html+=`<div class="report-photo-item"><img src="${p.dataUrl}" onclick="openLightbox('${item.ref}',${idx})"><div class="report-photo-label">${item.ref} #${idx+1}${p.loc?'<br>📍':'<br>'+p.ts}</div></div>`;
       });
     });
     html+=`</div>`;rpEl.innerHTML=html;
-  } else { rpEl.innerHTML=''; }
+  } else {rpEl.innerHTML='';}
   document.getElementById('modalOverlay').classList.add('open');
 }
+
 function closeReport(){document.getElementById('modalOverlay').classList.remove('open');}
 function copyReport(){
-  navigator.clipboard.writeText(document.getElementById('reportText').textContent).then(()=>{
+  const {lines}=buildReportLines();
+  navigator.clipboard.writeText(lines.join('\n')).then(()=>{
     const btn=document.querySelector('.btn-modal-copy');
-    btn.textContent='✓ COPIED';
-    setTimeout(()=>btn.textContent='⊡ COPY TEXT',2000);
+    btn.textContent='✓ COPIED';setTimeout(()=>btn.textContent='⊡ COPY',2000);
   });
 }
 
-// ── CLEAR ────────────────────────────────────────────────────────────────
+function exportJSON() {
+  const payload = {
+    session: sessions[currentSession]?.name||'Default SAT',
+    meta: {
+      contractRef:   document.getElementById('contractRef').value,
+      assetName:     document.getElementById('assetName').value,
+      satDate:       document.getElementById('satDate').value,
+      inspectorName: document.getElementById('inspectorName').value
+    },
+    verdict: document.getElementById('verdictBar').textContent,
+    items: {}
+  };
+  SAT_SECTIONS.forEach(sec=>sec.items.forEach(item=>{
+    const s=state[item.ref]||{};
+    payload.items[item.ref]={
+      description: item.desc,
+      result:    s.result||null,
+      severity:  s.severity||null,
+      retested:  s.retested||false,
+      note:      s.note||'',
+      measured:  s.measured||'',
+      photoCount:s.photos?.length||0
+    };
+  }));
+  const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download=`SAT-${document.getElementById('assetName').value||'report'}-${new Date().toISOString().split('T')[0]}.json`;a.click();
+  URL.revokeObjectURL(url);
+}
+
+function emailReport(e) {
+  e.preventDefault();
+  const {lines}=buildReportLines();
+  const subject=encodeURIComponent(`SAT Report — ${document.getElementById('assetName').value} — ${document.getElementById('satDate').value}`);
+  const body=encodeURIComponent(lines.join('\n'));
+  window.location.href=`mailto:?subject=${subject}&body=${body}`;
+}
+
+/* ════════════════════════════════════════════════════════════
+   CLEAR
+════════════════════════════════════════════════════════════ */
 function showConfirm(){document.getElementById('confirmOverlay').classList.add('open');}
 function hideConfirm(){document.getElementById('confirmOverlay').classList.remove('open');}
 function clearAll(){
-  SAT_SECTIONS.forEach(s=>s.items.forEach(i=>{state[i.ref]={result:null,note:'',photos:[]};}));
-  localStorage.removeItem(STORAGE_KEY);
+  state=freshState();
+  sigs={contractor:null,ue:null};
+  if(sessions[currentSession]){sessions[currentSession].state=state;sessions[currentSession].sigs=sigs;}
+  localStorage.setItem(SESSIONS_KEY,JSON.stringify(sessions));
   hideConfirm();
   document.querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.note-input').forEach(n=>n.value='');
+  document.querySelectorAll('.measured-input').forEach(n=>n.value='');
+  document.querySelectorAll('.ncr-row').forEach(r=>r.classList.remove('show'));
   SAT_SECTIONS.forEach(s=>s.items.forEach(i=>renderPhotos(i.ref)));
   updateSummary();
 }
 
-// ── PWA ───────────────────────────────────────────────────────────────────
+/* ════════════════════════════════════════════════════════════
+   UTILS
+════════════════════════════════════════════════════════════ */
+let saveFlashTimer;
+function flashSaved(){
+  const p=document.getElementById('savePill');
+  p.classList.add('show');clearTimeout(saveFlashTimer);
+  saveFlashTimer=setTimeout(()=>p.classList.remove('show'),1800);
+}
+
+function updateStoragePill(){
+  try {
+    const raw=localStorage.getItem(SESSIONS_KEY)||'';
+    const kb=Math.round(raw.length*2/1024);
+    const pill=document.getElementById('storagePill');
+    pill.textContent=kb+'KB';
+    pill.style.borderColor=kb>3500?'var(--red)':kb>2000?'var(--amber)':'var(--border2)';
+    pill.style.color=kb>3500?'var(--red)':kb>2000?'var(--amber)':'var(--text-dim)';
+  } catch(e){}
+}
+
+/* ════════════════════════════════════════════════════════════
+   PWA
+════════════════════════════════════════════════════════════ */
 function registerSW(){
   if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(e=>console.warn('SW:',e));
 }
 let deferredPrompt=null;
 function setupInstallPrompt(){
   window.addEventListener('beforeinstallprompt',e=>{
-    e.preventDefault(); deferredPrompt=e;
+    e.preventDefault();deferredPrompt=e;
     if(!window.matchMedia('(display-mode: standalone)').matches)
       document.getElementById('installBanner').classList.add('show');
   });
@@ -790,6 +1217,7 @@ function setupOfflineDetection(){
   const update=()=>pill.classList.toggle('show',!navigator.onLine);
   window.addEventListener('online',update);window.addEventListener('offline',update);update();
 }
+
 window.addEventListener('DOMContentLoaded',init);
 </script>
 </body>
