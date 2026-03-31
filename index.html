@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="Offline-ready site acceptance test checklist for Uisce Eireann wastewater pumping stations.">
+<meta name="color-scheme" content="dark light">
+<meta name="format-detection" content="telephone=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="PS SAT">
@@ -59,6 +62,11 @@ body.light {
 html,body{height:100%;overscroll-behavior:none}
 body{background:var(--bg);color:var(--text);font-family:'Barlow',sans-serif;font-weight:300;padding-top:var(--safe-top);padding-bottom:var(--safe-bot);transition:background .25s,color .25s}
 body::before{content:'';position:fixed;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 3px,var(--scan-line) 3px,var(--scan-line) 4px);pointer-events:none;z-index:0}
+button,input,select,a{font:inherit}
+button{border-radius:0}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.skip-link{position:fixed;top:10px;left:10px;z-index:500;transform:translateY(-150%);padding:8px 12px;background:var(--surface);border:1px solid var(--accent);color:var(--text-bright);text-decoration:none;transition:transform .15s ease}
+.skip-link:focus{transform:translateY(0)}
 
 /* ═══════════════════════════════════════════════════ STATUS BAR ═ */
 .status-bar{position:sticky;top:0;z-index:60;background:var(--bg);border-bottom:1px solid var(--border);padding:7px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;transition:background .25s,border-color .25s}
@@ -123,7 +131,7 @@ body::before{content:'';position:fixed;inset:0;background-image:repeating-linear
 
 /* ═══════════════════════════════════════════════════ SECTION ═ */
 .section{margin-bottom:10px;border:1px solid var(--border);background:var(--surface);overflow:hidden;transition:background .25s,border-color .25s}
-.section-header{display:flex;align-items:center;gap:8px;padding:11px 12px;background:var(--surface2);border-bottom:1px solid var(--border);cursor:pointer;user-select:none;-webkit-user-select:none;min-height:52px;transition:background .25s}
+.section-header{display:flex;align-items:center;gap:8px;padding:11px 12px;background:var(--surface2);border:none;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;-webkit-user-select:none;min-height:52px;transition:background .25s;width:100%;text-align:left}
 .section-header:active{background:var(--surface3)}
 .section-num{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--accent);background:rgba(0,198,255,.08);padding:3px 7px;border:1px solid rgba(0,198,255,.2);white-space:nowrap;flex-shrink:0}
 
@@ -279,8 +287,8 @@ body.light .sig-preview img{background:#fff}
 .report-photo-label{font-family:'Share Tech Mono',monospace;font-size:8px;color:var(--text-dim);text-align:center;margin-top:2px}
 
 /* ═══════════════════════════════════════════════════ INSTALL BANNER ═ */
-.install-banner{display:none;background:linear-gradient(90deg,rgba(0,61,165,.9),rgba(0,133,124,.9));border-bottom:1px solid var(--border);padding:9px 13px;align-items:center;gap:8px}
-.install-banner.show{display:flex}
+.install-banner{display:flex;background:linear-gradient(90deg,rgba(0,61,165,.9),rgba(0,133,124,.9));border-bottom:1px solid var(--border);padding:9px 13px;align-items:center;gap:8px}
+.install-banner[hidden]{display:none}
 .install-banner p{flex:1;font-size:12px;color:#fff;line-height:1.4}
 .btn-install{background:#fff;color:var(--ue-blue);border:none;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;letter-spacing:1.5px;padding:6px 12px;cursor:pointer;white-space:nowrap;flex-shrink:0}
 .btn-install-dismiss{background:transparent;border:none;color:rgba(255,255,255,.6);font-size:18px;cursor:pointer;padding:0 3px;flex-shrink:0}
@@ -294,12 +302,17 @@ body.light .sig-preview img{background:#fff}
 .confirm-actions{display:flex;gap:6px}
 .btn-confirm-yes{flex:1;padding:12px;background:rgba(255,68,68,.12);border:1px solid var(--red);color:var(--red);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;cursor:pointer;min-height:44px}
 .btn-confirm-no{flex:1;padding:12px;background:transparent;border:1px solid var(--border);color:var(--text-dim);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;cursor:pointer;min-height:44px}
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
 </style>
 </head>
 <body>
+<a class="skip-link" href="#mainContent">Skip to checklist</a>
 
 <!-- STATUS BAR -->
-<div class="status-bar">
+<header class="status-bar">
   <div class="status-left">
     <div class="ue-badge">UÉ</div>
     <div class="status-title">
@@ -308,35 +321,35 @@ body.light .sig-preview img{background:#fff}
     </div>
   </div>
   <div class="status-right">
-    <span class="pill pill-storage" id="storagePill">0KB</span>
-    <span class="pill pill-offline" id="offlinePill">OFFLINE</span>
-    <span class="pill pill-saved" id="savePill">SAVED ✓</span>
+    <span class="pill pill-storage" id="storagePill" aria-live="polite">0KB</span>
+    <span class="pill pill-offline" id="offlinePill" aria-live="polite">OFFLINE</span>
+    <span class="pill pill-saved" id="savePill" aria-live="polite">SAVED ✓</span>
   </div>
-</div>
+</header>
 
 <!-- TOOLBAR -->
-<div class="toolbar">
+<div class="toolbar" role="toolbar" aria-label="Session controls">
   <span class="session-label">SESSION:</span>
-  <select class="session-select" id="sessionSelect" onchange="switchSession(this.value)">
+  <select class="session-select" id="sessionSelect" aria-label="Active session" onchange="switchSession(this.value)">
     <option value="default">Default SAT</option>
   </select>
-  <button class="toolbar-btn" onclick="newSession()">+ NEW</button>
+  <button class="toolbar-btn" type="button" onclick="newSession()">+ NEW</button>
   <div class="toolbar-sep"></div>
-  <button class="toolbar-btn" id="themeBtn" onclick="toggleTheme()">☀ LIGHT</button>
-  <button class="toolbar-btn" onclick="collapseAll()">⊟ ALL</button>
-  <button class="toolbar-btn" onclick="expandAll()">⊞ ALL</button>
-  <button class="toolbar-btn" onclick="openSigModal()">✍ SIGN</button>
+  <button class="toolbar-btn" type="button" id="themeBtn" onclick="toggleTheme()">☀ LIGHT</button>
+  <button class="toolbar-btn" type="button" onclick="collapseAll()">⊟ ALL</button>
+  <button class="toolbar-btn" type="button" onclick="expandAll()">⊞ ALL</button>
+  <button class="toolbar-btn" type="button" onclick="openSigModal()">✍ SIGN</button>
 </div>
 
 <!-- INSTALL BANNER -->
-<div class="install-banner" id="installBanner">
+<div class="install-banner" id="installBanner" hidden>
   <p><strong>Install as App</strong> — works offline on site, no signal needed</p>
-  <button class="btn-install" id="btnInstall">INSTALL</button>
-  <button class="btn-install-dismiss" id="btnDismiss">✕</button>
+  <button class="btn-install" type="button" id="btnInstall">INSTALL</button>
+  <button class="btn-install-dismiss" type="button" id="btnDismiss" aria-label="Dismiss install prompt">✕</button>
 </div>
 
 <!-- QUICK NAV -->
-<div class="quick-nav" id="quickNav"></div>
+<nav class="quick-nav" id="quickNav" aria-label="Checklist sections"></nav>
 
 <!-- PROGRESS -->
 <div class="progress-track">
@@ -344,14 +357,14 @@ body.light .sig-preview img{background:#fff}
 </div>
 
 <!-- MAIN -->
-<div class="container">
+<main class="container" id="mainContent">
 
   <!-- META -->
   <div class="meta-strip">
-    <div class="meta-field"><label>CONTRACT</label><input type="text" id="contractRef" value="UÉ-CON-2026-0142" oninput="saveAll()"></div>
-    <div class="meta-field"><label>ASSET</label><input type="text" id="assetName" value="Ballybeg PS" oninput="saveAll()"></div>
-    <div class="meta-field"><label>DATE</label><input type="date" id="satDate" oninput="saveAll()"></div>
-    <div class="meta-field"><label>INSPECTOR</label><input type="text" id="inspectorName" value="Site Inspector" oninput="saveAll()"></div>
+    <div class="meta-field"><label for="contractRef">CONTRACT</label><input type="text" id="contractRef" value="UÉ-CON-2026-0142" oninput="saveAll()"></div>
+    <div class="meta-field"><label for="assetName">ASSET</label><input type="text" id="assetName" value="Ballybeg PS" oninput="saveAll()"></div>
+    <div class="meta-field"><label for="satDate">DATE</label><input type="date" id="satDate" oninput="saveAll()"></div>
+    <div class="meta-field"><label for="inspectorName">INSPECTOR</label><input type="text" id="inspectorName" value="Site Inspector" oninput="saveAll()"></div>
   </div>
 
   <!-- CHIPS -->
@@ -363,7 +376,7 @@ body.light .sig-preview img{background:#fff}
   </div>
 
   <!-- JUMP NEXT -->
-  <button class="jump-btn" id="jumpNextBtn" onclick="jumpNext()">▶ JUMP TO NEXT UNRESOLVED ITEM</button>
+  <button class="jump-btn" type="button" id="jumpNextBtn" onclick="jumpNext()">▶ JUMP TO NEXT UNRESOLVED ITEM</button>
 
   <!-- SECTIONS -->
   <div id="testSections"></div>
@@ -372,68 +385,68 @@ body.light .sig-preview img{background:#fff}
   <div class="fail-list" id="failList" style="display:none"></div>
 
   <!-- ACTIONS -->
-  <button class="btn-report" onclick="openReport()">◈ GENERATE SAT REPORT</button>
+  <button class="btn-report" type="button" onclick="openReport()">◈ GENERATE SAT REPORT</button>
   <a class="btn-email" id="emailLink" href="#" onclick="emailReport(event)">✉ EMAIL REPORT</a>
-  <button class="btn-clear" onclick="showConfirm()">CLEAR SESSION & RESET</button>
+  <button class="btn-clear" type="button" onclick="showConfirm()">CLEAR SESSION & RESET</button>
 
-</div>
+</main>
 
 <!-- VERDICT BAR -->
-<div class="verdict-bar pending" id="verdictBar">AWAITING TEST COMPLETION</div>
+<div class="verdict-bar pending" id="verdictBar" aria-live="polite">AWAITING TEST COMPLETION</div>
 
 <!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox">
-  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-hidden="true">
+  <button class="lightbox-close" type="button" onclick="closeLightbox()" aria-label="Close photo viewer">✕</button>
   <img id="lightboxImg" src="" alt="Site photo">
   <div class="lightbox-meta" id="lightboxMeta"></div>
-  <button class="lightbox-dl" id="lightboxDl">⬇ DOWNLOAD</button>
+  <button class="lightbox-dl" type="button" id="lightboxDl">⬇ DOWNLOAD</button>
 </div>
 
 <!-- SIGNATURE MODAL -->
-<div class="sig-modal-overlay" id="sigModalOverlay">
+<div class="sig-modal-overlay" id="sigModalOverlay" role="dialog" aria-modal="true" aria-hidden="true">
   <div class="sig-modal">
     <h3>Signature Capture</h3>
     <p>Sign below using your finger or stylus</p>
     <div class="sig-tabs">
-      <button class="sig-tab active" id="sigTabContractor" onclick="switchSigTab('contractor')">CONTRACTOR REP</button>
-      <button class="sig-tab" id="sigTabUE" onclick="switchSigTab('ue')">UÉ REPRESENTATIVE</button>
+      <button class="sig-tab active" type="button" id="sigTabContractor" onclick="switchSigTab('contractor')">CONTRACTOR REP</button>
+      <button class="sig-tab" type="button" id="sigTabUE" onclick="switchSigTab('ue')">UÉ REPRESENTATIVE</button>
     </div>
     <div class="sig-canvas-wrap">
       <canvas class="sig-canvas" id="sigCanvas" width="560" height="140"></canvas>
     </div>
     <div class="sig-signed-indicator" id="sigSignedIndicator"></div>
     <div class="sig-actions">
-      <button class="sig-btn sig-btn-clear" onclick="clearSig()">CLEAR</button>
-      <button class="sig-btn sig-btn-save" onclick="saveSig()">SAVE SIGNATURE</button>
-      <button class="sig-btn sig-btn-close" onclick="closeSigModal()">CLOSE</button>
+      <button class="sig-btn sig-btn-clear" type="button" onclick="clearSig()">CLEAR</button>
+      <button class="sig-btn sig-btn-save" type="button" onclick="saveSig()">SAVE SIGNATURE</button>
+      <button class="sig-btn sig-btn-close" type="button" onclick="closeSigModal()">CLOSE</button>
     </div>
   </div>
 </div>
 
 <!-- REPORT MODAL -->
-<div class="modal-overlay" id="modalOverlay">
+<div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-hidden="true">
   <div class="modal">
     <div class="modal-drag"></div>
     <h2>SAT Report — Export</h2>
-    <pre id="reportText"></pre>
+    <pre id="reportText" tabindex="0"></pre>
     <div class="sig-preview-row" id="sigPreviewRow"></div>
     <div id="reportPhotos"></div>
     <div class="modal-actions">
-      <button class="btn-modal btn-modal-copy" onclick="copyReport()">⊡ COPY</button>
-      <button class="btn-modal btn-modal-json" onclick="exportJSON()">⬇ JSON</button>
-      <button class="btn-modal btn-modal-close" onclick="closeReport()">CLOSE</button>
+      <button class="btn-modal btn-modal-copy" type="button" onclick="copyReport()">⊡ COPY</button>
+      <button class="btn-modal btn-modal-json" type="button" onclick="exportJSON()">⬇ JSON</button>
+      <button class="btn-modal btn-modal-close" type="button" onclick="closeReport()">CLOSE</button>
     </div>
   </div>
 </div>
 
 <!-- CONFIRM -->
-<div class="confirm-overlay" id="confirmOverlay">
+<div class="confirm-overlay" id="confirmOverlay" role="dialog" aria-modal="true" aria-hidden="true">
   <div class="confirm-box">
     <h3>Reset Session?</h3>
     <p>All results, notes, photos and signatures in this session will be cleared. Cannot be undone.</p>
     <div class="confirm-actions">
-      <button class="btn-confirm-yes" onclick="clearAll()">CLEAR</button>
-      <button class="btn-confirm-no" onclick="hideConfirm()">CANCEL</button>
+      <button class="btn-confirm-yes" type="button" onclick="clearAll()">CLEAR</button>
+      <button class="btn-confirm-no" type="button" onclick="hideConfirm()">CANCEL</button>
     </div>
   </div>
 </div>
@@ -496,6 +509,7 @@ const SAT_SECTIONS = [
 const SESSIONS_KEY = 'ue_sat_sessions_v1';
 let currentSession = 'default';
 let sessions = {};
+let pendingSWRefresh = false;
 
 function freshState() {
   const s = {};
@@ -505,23 +519,38 @@ function freshState() {
   return s;
 }
 
+function getDefaultMeta() {
+  return {
+    contractRef: document.getElementById('contractRef').defaultValue || '',
+    assetName: document.getElementById('assetName').defaultValue || '',
+    satDate: document.getElementById('satDate').defaultValue || new Date().toISOString().split('T')[0],
+    inspectorName: document.getElementById('inspectorName').defaultValue || ''
+  };
+}
+
+function getCurrentMeta() {
+  return {
+    contractRef: document.getElementById('contractRef').value,
+    assetName: document.getElementById('assetName').value,
+    satDate: document.getElementById('satDate').value,
+    inspectorName: document.getElementById('inspectorName').value
+  };
+}
+
 function loadSessions() {
   try {
     const raw = localStorage.getItem(SESSIONS_KEY);
     if (raw) sessions = JSON.parse(raw);
   } catch(e) {}
-  if (!sessions.default) sessions.default = {state:freshState(),meta:{},sigs:{contractor:null,ue:null},theme:'dark'};
+  if (!sessions.default) {
+    sessions.default = {state:freshState(),meta:getDefaultMeta(),sigs:{contractor:null,ue:null},theme:'dark'};
+  }
 }
 
 function saveSessions() {
   // Capture current UI meta into session
   if (sessions[currentSession]) {
-    sessions[currentSession].meta = {
-      contractRef:   document.getElementById('contractRef').value,
-      assetName:     document.getElementById('assetName').value,
-      satDate:       document.getElementById('satDate').value,
-      inspectorName: document.getElementById('inspectorName').value
-    };
+    sessions[currentSession].meta = getCurrentMeta();
     sessions[currentSession].state = state;
     sessions[currentSession].sigs  = sigs;
   }
@@ -541,7 +570,7 @@ function newSession() {
   const name = prompt('Session name (e.g. "Ballybeg PS — Run 2"):');
   if (!name || !name.trim()) return;
   const key = 'sess_' + Date.now();
-  sessions[key] = {name:name.trim(), state:freshState(), meta:{}, sigs:{contractor:null,ue:null}, theme:currentTheme};
+  sessions[key] = {name:name.trim(), state:freshState(), meta:getCurrentMeta(), sigs:{contractor:null,ue:null}, theme:currentTheme};
   currentSession = key;
   rebuildSessionSelect();
   loadSessionIntoUI();
@@ -572,7 +601,7 @@ function loadSessionIntoUI() {
   if (!sess) return;
   state = sess.state || freshState();
   sigs  = sess.sigs  || {contractor:null, ue:null};
-  const meta = sess.meta || {};
+  const meta = {...getDefaultMeta(), ...(sess.meta || {})};
   ['contractRef','assetName','satDate','inspectorName'].forEach(id => {
     document.getElementById(id).value = meta[id] || '';
   });
@@ -610,6 +639,7 @@ function toggleTheme() {
 }
 function applyTheme() {
   document.body.classList.toggle('light', currentTheme === 'light');
+  document.documentElement.style.colorScheme = currentTheme;
   document.getElementById('themeBtn').textContent = currentTheme === 'dark' ? '☀ LIGHT' : '☾ DARK';
   document.getElementById('themeColorMeta').content = currentTheme === 'dark' ? '#003da5' : '#e0ecf8';
 }
@@ -638,6 +668,7 @@ function init() {
   setupInstallPrompt();
   setupOfflineDetection();
   setupSigPad();
+  setupGlobalUI();
   updateStoragePill();
 }
 
@@ -646,10 +677,13 @@ function init() {
 ════════════════════════════════════════════════════════════ */
 function buildQuickNav() {
   const nav = document.getElementById('quickNav');
+  nav.innerHTML = '';
   SAT_SECTIONS.forEach(sec => {
     const btn = document.createElement('button');
     btn.className = 'qnav-btn';
     btn.id = 'qnav-' + sec.id;
+    btn.type = 'button';
+    btn.setAttribute('aria-label', `${sec.id} ${sec.title}`);
     btn.innerHTML = `${sec.id}<span class="qnav-dot" id="qdot-${sec.id}"></span>`;
     btn.onclick = () => {
       document.getElementById('sec-' + sec.id)?.scrollIntoView({behavior:'smooth', block:'start'});
@@ -686,12 +720,13 @@ function updateQuickNav() {
 ════════════════════════════════════════════════════════════ */
 function buildSections() {
   const container = document.getElementById('testSections');
+  container.innerHTML = '';
   SAT_SECTIONS.forEach(sec => {
     const div = document.createElement('div');
     div.className = 'section';
     div.id = 'sec-' + sec.id;
     div.innerHTML = `
-      <div class="section-header" onclick="toggleSection('${sec.id}')">
+      <button class="section-header" type="button" onclick="toggleSection('${sec.id}')" aria-expanded="true" aria-controls="secBody-${sec.id}" id="secToggle-${sec.id}">
         <span class="section-num">${sec.id}</span>
         <svg class="section-ring" viewBox="0 0 28 28" id="ring-${sec.id}">
           <circle class="ring-bg" cx="14" cy="14" r="11"/>
@@ -703,7 +738,7 @@ function buildSections() {
         <span class="section-title">${sec.title}</span>
         <span class="section-status pending" id="secStatus-${sec.id}">PENDING</span>
         <span class="section-chevron open" id="secChevron-${sec.id}">▶</span>
-      </div>
+      </button>
       <div class="section-body" id="secBody-${sec.id}">
         ${sec.items.map(renderItem).join('')}
       </div>`;
@@ -714,9 +749,9 @@ function buildSections() {
 function renderItem(item) {
   const measuredRow = item.measured ? `
     <div class="measured-row">
-      <span class="measured-label">MEASURED VALUE</span>
+      <label class="measured-label" for="measured-${item.ref}">MEASURED VALUE</label>
       <input class="measured-input" type="text" placeholder="Enter result…"
-        id="measured-${item.ref}" oninput="setMeasured('${item.ref}',this.value)">
+        id="measured-${item.ref}" inputmode="decimal" oninput="setMeasured('${item.ref}',this.value)">
       <span class="measured-unit">${item.unit||''}</span>
     </div>` : '';
 
@@ -728,22 +763,23 @@ function renderItem(item) {
       ${measuredRow}
       <div class="test-controls">
         <div class="btn-group">
-          <button class="btn btn-pass" id="btn-pass-${item.ref}" onclick="setResult('${item.ref}','pass')">✓ PASS</button>
-          <button class="btn btn-fail" id="btn-fail-${item.ref}" onclick="setResult('${item.ref}','fail')">✗ FAIL</button>
-          <button class="btn btn-na"   id="btn-na-${item.ref}"   onclick="setResult('${item.ref}','na')">N/A</button>
+          <button class="btn btn-pass" type="button" id="btn-pass-${item.ref}" onclick="setResult('${item.ref}','pass')">✓ PASS</button>
+          <button class="btn btn-fail" type="button" id="btn-fail-${item.ref}" onclick="setResult('${item.ref}','fail')">✗ FAIL</button>
+          <button class="btn btn-na" type="button" id="btn-na-${item.ref}" onclick="setResult('${item.ref}','na')">N/A</button>
         </div>
         <input class="note-input" type="text" placeholder="Note / NCR ref…"
+          aria-label="Note for ${item.ref}"
           id="note-${item.ref}" oninput="setNote('${item.ref}',this.value)">
       </div>
       <div class="ncr-row" id="ncr-${item.ref}">
         <span class="ncr-label">SEVERITY:</span>
-        <button class="ncr-btn" data-sev="minor"    onclick="setSeverity('${item.ref}','minor')">MINOR</button>
-        <button class="ncr-btn" data-sev="major"    onclick="setSeverity('${item.ref}','major')">MAJOR</button>
-        <button class="ncr-btn" data-sev="critical" onclick="setSeverity('${item.ref}','critical')">CRITICAL</button>
-        <button class="retest-btn" id="retest-${item.ref}" onclick="toggleRetest('${item.ref}')">✓ RE-TESTED</button>
+        <button class="ncr-btn" type="button" data-sev="minor" onclick="setSeverity('${item.ref}','minor')">MINOR</button>
+        <button class="ncr-btn" type="button" data-sev="major" onclick="setSeverity('${item.ref}','major')">MAJOR</button>
+        <button class="ncr-btn" type="button" data-sev="critical" onclick="setSeverity('${item.ref}','critical')">CRITICAL</button>
+        <button class="retest-btn" type="button" id="retest-${item.ref}" onclick="toggleRetest('${item.ref}')">✓ RE-TESTED</button>
       </div>
       <div class="photo-row" id="photoRow-${item.ref}">
-        <button class="btn-camera" id="camBtn-${item.ref}" onclick="triggerCamera('${item.ref}')">
+        <button class="btn-camera" type="button" id="camBtn-${item.ref}" onclick="triggerCamera('${item.ref}')">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
           PHOTO
         </button>
@@ -760,11 +796,14 @@ function renderItem(item) {
    INTERACTIONS
 ════════════════════════════════════════════════════════════ */
 function toggleSection(id) {
-  document.getElementById('secBody-'+id).classList.toggle('collapsed');
+  const body = document.getElementById('secBody-'+id);
+  const toggle = document.getElementById('secToggle-'+id);
+  body.classList.toggle('collapsed');
   document.getElementById('secChevron-'+id).classList.toggle('open');
+  toggle?.setAttribute('aria-expanded', String(!body.classList.contains('collapsed')));
 }
-function collapseAll() { SAT_SECTIONS.forEach(s => { document.getElementById('secBody-'+s.id).classList.add('collapsed'); document.getElementById('secChevron-'+s.id).classList.remove('open'); }); }
-function expandAll()   { SAT_SECTIONS.forEach(s => { document.getElementById('secBody-'+s.id).classList.remove('collapsed'); document.getElementById('secChevron-'+s.id).classList.add('open'); }); }
+function collapseAll() { SAT_SECTIONS.forEach(s => { document.getElementById('secBody-'+s.id).classList.add('collapsed'); document.getElementById('secChevron-'+s.id).classList.remove('open'); document.getElementById('secToggle-'+s.id)?.setAttribute('aria-expanded','false'); }); }
+function expandAll()   { SAT_SECTIONS.forEach(s => { document.getElementById('secBody-'+s.id).classList.remove('collapsed'); document.getElementById('secChevron-'+s.id).classList.add('open'); document.getElementById('secToggle-'+s.id)?.setAttribute('aria-expanded','true'); }); }
 
 function setResult(ref, result) {
   if (!state[ref]) state[ref] = {result:null,note:'',photos:[],severity:null,retested:false,measured:''};
@@ -874,8 +913,8 @@ function renderPhotos(ref) {
   }
   thumbsEl.innerHTML = photos.map((p,idx) => `
     <div class="photo-thumb-wrap">
-      <img class="photo-thumb" src="${p.dataUrl}" onclick="openLightbox('${ref}',${idx})">
-      <button class="photo-thumb-del" onclick="deletePhoto('${ref}',${idx})">×</button>
+      <img class="photo-thumb" src="${p.dataUrl}" alt="Site photo for ${ref}" onclick="openLightbox('${ref}',${idx})">
+      <button class="photo-thumb-del" type="button" aria-label="Delete photo ${idx + 1} for ${ref}" onclick="deletePhoto('${ref}',${idx})">×</button>
     </div>`).join('');
 }
 
@@ -894,9 +933,9 @@ function openLightbox(ref, idx) {
   document.getElementById('lightboxDl').onclick = () => {
     const a=document.createElement('a'); a.href=p.dataUrl; a.download=`SAT-${ref}-photo${idx+1}.jpg`; a.click();
   };
-  document.getElementById('lightbox').classList.add('open');
+  setOverlayOpen('lightbox', true);
 }
-function closeLightbox(){document.getElementById('lightbox').classList.remove('open');document.getElementById('lightboxImg').src='';}
+function closeLightbox(){setOverlayOpen('lightbox', false);document.getElementById('lightboxImg').src='';}
 
 /* ════════════════════════════════════════════════════════════
    SUMMARY
@@ -991,8 +1030,8 @@ function setupSigPad() {
   sigCanvas.addEventListener('touchstart',start,{passive:false}); sigCanvas.addEventListener('touchmove',draw,{passive:false}); sigCanvas.addEventListener('touchend',end,{passive:false});
 }
 
-function openSigModal() { document.getElementById('sigModalOverlay').classList.add('open'); loadSigForTab(); }
-function closeSigModal() { document.getElementById('sigModalOverlay').classList.remove('open'); }
+function openSigModal() { setOverlayOpen('sigModalOverlay', true); loadSigForTab(); }
+function closeSigModal() { setOverlayOpen('sigModalOverlay', false); }
 
 function switchSigTab(tab) {
   currentSigTab = tab;
@@ -1102,16 +1141,16 @@ function openReport() {
     });
     html+=`</div>`;rpEl.innerHTML=html;
   } else {rpEl.innerHTML='';}
-  document.getElementById('modalOverlay').classList.add('open');
+  setOverlayOpen('modalOverlay', true);
 }
 
-function closeReport(){document.getElementById('modalOverlay').classList.remove('open');}
+function closeReport(){setOverlayOpen('modalOverlay', false);}
 function copyReport(){
   const {lines}=buildReportLines();
   navigator.clipboard.writeText(lines.join('\n')).then(()=>{
     const btn=document.querySelector('.btn-modal-copy');
     btn.textContent='✓ COPIED';setTimeout(()=>btn.textContent='⊡ COPY',2000);
-  });
+  }).catch(()=>window.alert('Copy failed. Select the report text and copy it manually.'));
 }
 
 function exportJSON() {
@@ -1155,12 +1194,14 @@ function emailReport(e) {
 /* ════════════════════════════════════════════════════════════
    CLEAR
 ════════════════════════════════════════════════════════════ */
-function showConfirm(){document.getElementById('confirmOverlay').classList.add('open');}
-function hideConfirm(){document.getElementById('confirmOverlay').classList.remove('open');}
+function showConfirm(){setOverlayOpen('confirmOverlay', true);}
+function hideConfirm(){setOverlayOpen('confirmOverlay', false);}
 function clearAll(){
   state=freshState();
   sigs={contractor:null,ue:null};
-  if(sessions[currentSession]){sessions[currentSession].state=state;sessions[currentSession].sigs=sigs;}
+  const defaults = getDefaultMeta();
+  Object.keys(defaults).forEach(id => { document.getElementById(id).value = defaults[id]; });
+  if(sessions[currentSession]){sessions[currentSession].state=state;sessions[currentSession].sigs=sigs;sessions[currentSession].meta=defaults;}
   localStorage.setItem(SESSIONS_KEY,JSON.stringify(sessions));
   hideConfirm();
   document.querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));
@@ -1168,6 +1209,8 @@ function clearAll(){
   document.querySelectorAll('.measured-input').forEach(n=>n.value='');
   document.querySelectorAll('.ncr-row').forEach(r=>r.classList.remove('show'));
   SAT_SECTIONS.forEach(s=>s.items.forEach(i=>renderPhotos(i.ref)));
+  updateStoragePill();
+  flashSaved();
   updateSummary();
 }
 
@@ -1181,12 +1224,40 @@ function flashSaved(){
   saveFlashTimer=setTimeout(()=>p.classList.remove('show'),1800);
 }
 
+function setOverlayOpen(id, open) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.classList.toggle('open', open);
+  el.setAttribute('aria-hidden', String(!open));
+}
+
+function setupGlobalUI() {
+  ['lightbox','sigModalOverlay','modalOverlay','confirmOverlay'].forEach(id => {
+    const overlay = document.getElementById(id);
+    overlay?.addEventListener('click', event => {
+      if (event.target !== overlay) return;
+      if (id === 'lightbox') closeLightbox();
+      if (id === 'sigModalOverlay') closeSigModal();
+      if (id === 'modalOverlay') closeReport();
+      if (id === 'confirmOverlay') hideConfirm();
+    });
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key !== 'Escape') return;
+    if (document.getElementById('confirmOverlay').classList.contains('open')) return hideConfirm();
+    if (document.getElementById('modalOverlay').classList.contains('open')) return closeReport();
+    if (document.getElementById('sigModalOverlay').classList.contains('open')) return closeSigModal();
+    if (document.getElementById('lightbox').classList.contains('open')) return closeLightbox();
+  });
+}
+
 function updateStoragePill(){
   try {
     const raw=localStorage.getItem(SESSIONS_KEY)||'';
     const kb=Math.round(raw.length*2/1024);
     const pill=document.getElementById('storagePill');
     pill.textContent=kb+'KB';
+    pill.setAttribute('aria-label', `Local session storage usage ${kb} kilobytes`);
     pill.style.borderColor=kb>3500?'var(--red)':kb>2000?'var(--amber)':'var(--border2)';
     pill.style.color=kb>3500?'var(--red)':kb>2000?'var(--amber)':'var(--text-dim)';
   } catch(e){}
@@ -1196,21 +1267,43 @@ function updateStoragePill(){
    PWA
 ════════════════════════════════════════════════════════════ */
 function registerSW(){
-  if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').catch(e=>console.warn('SW:',e));
+  if (!('serviceWorker' in navigator)) return;
+  navigator.serviceWorker.register('./sw.js').then(registration => {
+    if (registration.waiting) {
+      pendingSWRefresh = true;
+      registration.waiting.postMessage({type:'SKIP_WAITING'});
+    }
+    registration.addEventListener('updatefound', () => {
+      const installing = registration.installing;
+      if (!installing) return;
+      installing.addEventListener('statechange', () => {
+        if (installing.state === 'installed' && navigator.serviceWorker.controller) {
+          pendingSWRefresh = true;
+        }
+      });
+    });
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (!pendingSWRefresh) return;
+      pendingSWRefresh = false;
+      window.location.reload();
+    });
+  }).catch(e=>console.warn('SW:',e));
 }
 let deferredPrompt=null;
 function setupInstallPrompt(){
+  const banner = document.getElementById('installBanner');
   window.addEventListener('beforeinstallprompt',e=>{
     e.preventDefault();deferredPrompt=e;
     if(!window.matchMedia('(display-mode: standalone)').matches)
-      document.getElementById('installBanner').classList.add('show');
+      banner.hidden = false;
   });
   document.getElementById('btnInstall').addEventListener('click',()=>{
     if(!deferredPrompt)return;
     deferredPrompt.prompt();
-    deferredPrompt.userChoice.then(()=>{deferredPrompt=null;document.getElementById('installBanner').classList.remove('show');});
+    deferredPrompt.userChoice.then(()=>{deferredPrompt=null;banner.hidden = true;});
   });
-  document.getElementById('btnDismiss').addEventListener('click',()=>document.getElementById('installBanner').classList.remove('show'));
+  document.getElementById('btnDismiss').addEventListener('click',()=>{banner.hidden = true;});
+  window.addEventListener('appinstalled',()=>{deferredPrompt=null;banner.hidden = true;});
 }
 function setupOfflineDetection(){
   const pill=document.getElementById('offlinePill');

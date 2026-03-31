@@ -1,62 +1,95 @@
-const CACHE_NAME = 'ue-sat-v1';
-const ASSETS = [
-  './index.html',
-  './manifest.json',
-  'https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500&display=swap'
-];
+const VERSION = 'v2';
+const APP_CACHE = `ue-sat-app-${VERSION}`;
+const RUNTIME_CACHE = `ue-sat-runtime-${VERSION}`;
+const CORE_ASSETS = ['./', './index.html', './manifest.json', './sw.js'];
 
-// Install — cache all assets
+function isSameOrigin(url) {
+  return url.origin === self.location.origin;
+}
+
+function isGoogleFont(url) {
+  return url.hostname === 'fonts.googleapis.com' || url.hostname === 'fonts.gstatic.com';
+}
+
+async function cacheFirst(request, cacheName) {
+  const cached = await caches.match(request);
+  if (cached) return cached;
+  const response = await fetch(request);
+  if (response && (response.ok || response.type === 'opaque')) {
+    const cache = await caches.open(cacheName);
+    cache.put(request, response.clone());
+  }
+  return response;
+}
+
+async function staleWhileRevalidate(request, cacheName) {
+  const cache = await caches.open(cacheName);
+  const cached = await cache.match(request);
+  const networkPromise = fetch(request).then(response => {
+    if (response && (response.ok || response.type === 'opaque')) {
+      cache.put(request, response.clone());
+    }
+    return response;
+  });
+  return cached || networkPromise;
+}
+
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      // Core assets cached; fonts may fail in restricted environments — that's OK
-      return cache.addAll(['./index.html', './manifest.json']).then(() => {
-        return cache.add('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@300;400;600;700;900&family=Barlow:wght@300;400;500&display=swap').catch(() => {});
-      });
-    })
+    caches.open(APP_CACHE).then(cache => cache.addAll(CORE_ASSETS))
   );
   self.skipWaiting();
 });
 
-// Activate — clean up old caches
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
-      Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
-    )
+      Promise.all(
+        keys
+          .filter(key => ![APP_CACHE, RUNTIME_CACHE].includes(key))
+          .map(key => caches.delete(key))
+      )
+    ).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
-// Fetch — cache-first for app shell, network-first for everything else
+self.addEventListener('message', event => {
+  if (event.data?.type === 'SKIP_WAITING') {
+    self.skipWaiting();
+  }
+});
+
 self.addEventListener('fetch', event => {
-  const url = new URL(event.request.url);
+  const {request} = event;
+  if (request.method !== 'GET') return;
 
-  // App shell: always serve from cache if available
-  if (url.pathname.endsWith('index.html') || url.pathname.endsWith('manifest.json')) {
-    event.respondWith(
-      caches.match(event.request).then(cached => cached || fetch(event.request))
-    );
-    return;
-  }
+  const url = new URL(request.url);
 
-  // Google Fonts: cache on first load, serve cached thereafter
-  if (url.hostname.includes('fonts.g')) {
+  if (request.mode === 'navigate') {
     event.respondWith(
-      caches.match(event.request).then(cached => {
-        if (cached) return cached;
-        return fetch(event.request).then(response => {
-          const clone = response.clone();
-          caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+      fetch(request)
+        .then(response => {
+          const copy = response.clone();
+          caches.open(APP_CACHE).then(cache => cache.put('./index.html', copy));
           return response;
-        }).catch(() => new Response('', { status: 503 }));
-      })
+        })
+        .catch(() => caches.match('./index.html'))
     );
     return;
   }
 
-  // Default: network with cache fallback
-  event.respondWith(
-    fetch(event.request).catch(() => caches.match(event.request))
-  );
+  if (isSameOrigin(url)) {
+    if (CORE_ASSETS.includes(url.pathname.endsWith('/') ? './' : `.${url.pathname}`)) {
+      event.respondWith(cacheFirst(request, APP_CACHE));
+      return;
+    }
+    event.respondWith(staleWhileRevalidate(request, RUNTIME_CACHE));
+    return;
+  }
+
+  if (isGoogleFont(url)) {
+    event.respondWith(
+      cacheFirst(request, RUNTIME_CACHE).catch(() => caches.match(request))
+    );
+  }
 });

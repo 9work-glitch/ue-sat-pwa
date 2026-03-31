@@ -1,9 +1,12 @@
 {
-  "name": "UÉ Pumping Station SAT",
+  "id": "./",
+  "name": "Uisce Éireann Pumping Station SAT",
   "short_name": "PS SAT",
-  "description": "Uisce Éireann Wastewater Pumping Station Site Acceptance Test",
+  "description": "Offline-ready checklist for wastewater pumping station site acceptance testing.",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "orientation": "portrait",
   "background_color": "#0a0f14",
   "theme_color": "#003da5",
@@ -21,6 +24,16 @@
       "purpose": "any maskable"
     }
   ],
-  "categories": ["utilities", "productivity"],
-  "lang": "en-IE"
+  "categories": ["business", "utilities", "productivity"],
+  "lang": "en-IE",
+  "dir": "ltr",
+  "prefer_related_applications": false,
+  "shortcuts": [
+    {
+      "name": "Open SAT Checklist",
+      "short_name": "Checklist",
+      "description": "Open the pumping station SAT checklist.",
+      "url": "./index.html"
+    }
+  ]
 }
