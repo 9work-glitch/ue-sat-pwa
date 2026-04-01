@@ -202,6 +202,22 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .flow-step-desc{font-size:15px;line-height:1.45;color:var(--text);margin-bottom:12px}
 .flow-criteria{display:grid;gap:6px;margin-bottom:14px}
 .flow-criteria-item{padding:9px 10px;border-left:2px solid rgba(0,198,255,.35);background:rgba(0,198,255,.04);font-size:12px;line-height:1.45;color:var(--text)}
+.flow-page-grid{display:grid;gap:12px}
+.flow-group-item{padding:12px;border:1px solid var(--border);background:rgba(255,255,255,.02);border-radius:18px}
+.flow-group-item.resolved{border-color:rgba(0,198,255,.22)}
+.flow-group-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+.flow-item-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:7px}
+.flow-item-ref{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--accent);padding:4px 7px;border:1px solid rgba(0,198,255,.35);background:rgba(0,198,255,.08)}
+.flow-item-state{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;padding:3px 7px;border:1px solid var(--border2);color:var(--text-dim)}
+.flow-item-state.pass{color:var(--green);border-color:rgba(0,230,118,.4);background:rgba(0,230,118,.08)}
+.flow-item-state.fail{color:var(--red);border-color:rgba(255,68,68,.4);background:rgba(255,68,68,.08)}
+.flow-item-state.na{color:var(--amber);border-color:rgba(255,179,0,.45);background:rgba(255,179,0,.08)}
+.flow-item-desc{font-size:14px;line-height:1.45;color:var(--text);margin-bottom:10px}
+.flow-item-criteria{display:grid;gap:6px;margin-bottom:10px}
+.flow-item-note{width:100%;border:1px solid var(--border);background:var(--surface2);color:var(--text);padding:10px 12px;border-radius:12px;outline:none}
+.flow-item-note:focus{border-color:var(--accent)}
+.flow-inline-support{display:grid;gap:8px}
+.flow-severity-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .flow-action-row,.flow-nav{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .flow-nav{grid-template-columns:repeat(2,1fr);margin-top:12px}
 .flow-btn{min-height:48px;border:1px solid var(--border2);border-radius:14px;background:var(--surface2);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--text);cursor:pointer}
@@ -473,6 +489,7 @@ body.light .sig-preview img{background:#fff}
   .workflow-steps{grid-template-columns:repeat(5,minmax(0,1fr))}
   .workflow-step-pill{font-size:8px;padding:7px 3px}
   .flow-step-title{font-size:19px}
+  .flow-severity-row{grid-template-columns:1fr}
   .selection-elements{margin-left:0}
 }
 </style>
@@ -660,6 +677,8 @@ const INTRO_SELECTIONS = SAT_SECTIONS.map(section => {
 });
 const WORKFLOW_STAGES = ['overview','project','selection','testing','signoff','results'];
 const NUMBERED_WORKFLOW_STAGES = ['project','selection','testing','signoff','results'];
+const FLOW_PAGE_MAX_ITEMS = 4;
+const FLOW_PAGE_MAX_CHARS = 1050;
 const WORKFLOW_STAGE_LABELS = {
   project: 'Project',
   selection: 'SATs',
@@ -1522,12 +1541,6 @@ function getRecommendedWorkflowStage() {
   return 'results';
 }
 
-function getCurrentFlowItem() {
-  const currentRef = ensureFocusedItemRef();
-  if (!currentRef) return null;
-  return getActiveItems().find(item => item.ref === currentRef) || null;
-}
-
 function getFlowCompletionCounts() {
   const items = getActiveItems();
   const resolved = items.filter(item => !!state[item.ref]?.result).length;
@@ -1550,6 +1563,72 @@ function getSelectedElementSummary() {
       return `${selection.title}: ${chosen.map(element => element.title).join(', ')}`;
     })
     .filter(Boolean);
+}
+
+function estimateFlowItemWeight(item) {
+  return String(item.desc || '').length + String(item.criteria || '').length;
+}
+
+function buildSectionFlowPages(section) {
+  const sectionItems = section.items.map(item => ({
+    ...item,
+    sectionId: section.id,
+    sectionTitle: section.title
+  }));
+  const packs = [];
+  let chunk = [];
+  let charCount = 0;
+  sectionItems.forEach(item => {
+    const weight = estimateFlowItemWeight(item);
+    const shouldSplit = chunk.length && (chunk.length >= FLOW_PAGE_MAX_ITEMS || (charCount + weight) > FLOW_PAGE_MAX_CHARS);
+    if (shouldSplit) {
+      packs.push(chunk);
+      chunk = [];
+      charCount = 0;
+    }
+    chunk.push(item);
+    charCount += weight;
+  });
+  if (chunk.length) packs.push(chunk);
+  return packs.map((items, index) => ({
+    id: `${section.id}-pack-${index + 1}`,
+    sectionId: section.id,
+    sectionTitle: section.title,
+    packNumber: index + 1,
+    packCount: packs.length,
+    anchorRef: items[0].ref,
+    items
+  }));
+}
+
+function getFlowPages() {
+  return getActiveSections().flatMap(buildSectionFlowPages);
+}
+
+function isFlowPageComplete(page) {
+  return page.items.every(item => !!state[item.ref]?.result);
+}
+
+function getCurrentFlowPage() {
+  const pages = getFlowPages();
+  if (!pages.length) {
+    focusedItemRef = null;
+    return null;
+  }
+  let page = pages.find(entry => entry.items.some(item => item.ref === focusedItemRef));
+  if (!page) page = pages.find(entry => !isFlowPageComplete(entry)) || pages[0];
+  if (page && focusedItemRef !== page.anchorRef) focusedItemRef = page.anchorRef;
+  return page;
+}
+
+function getFlowPageIndex(page = getCurrentFlowPage()) {
+  if (!page) return -1;
+  return getFlowPages().findIndex(entry => entry.id === page.id);
+}
+
+function isRefOnCurrentFlowPage(ref) {
+  const page = getCurrentFlowPage();
+  return !!page?.items.some(item => item.ref === ref);
 }
 
 function toggleSectionSelection(sectionId, checked) {
@@ -1629,39 +1708,97 @@ function openSignatureFor(role) {
 }
 
 function moveFlowStep(offset) {
-  const items = getActiveItems();
-  const current = getCurrentFlowItem();
-  if (!items.length || !current) return;
-  const index = items.findIndex(item => item.ref === current.ref);
-  const target = items[index + offset];
+  const pages = getFlowPages();
+  const currentPage = getCurrentFlowPage();
+  const index = getFlowPageIndex(currentPage);
+  if (!pages.length || index < 0) return;
+  const target = pages[index + offset];
   if (!target) {
     if (offset > 0 && areActiveTestsComplete()) {
       goToWorkflowStage('signoff', {direction:'next'});
     }
     return;
   }
-  focusedItemRef = target.ref;
+  focusedItemRef = target.anchorRef;
   renderWorkflowPanel({direction: offset > 0 ? 'next' : 'back'});
 }
 
-function setFlowResult(result) {
-  const current = getCurrentFlowItem();
-  if (!current) return;
-  setResult(current.ref, result);
+function setFlowItemResult(ref, result) {
+  const currentPage = getCurrentFlowPage();
+  const currentIndex = getFlowPageIndex(currentPage);
+  const pages = getFlowPages();
+  setResult(ref, result);
   renderWorkflowPanel({direction:'next', animate:false});
-  if (result === 'fail') return;
-  const items = getActiveItems();
-  const index = items.findIndex(item => item.ref === current.ref);
-  const next = items[index + 1];
+  if (result === 'fail' || !currentPage) return;
+  const updatedPage = pages[currentIndex];
+  if (!updatedPage || !isFlowPageComplete(updatedPage)) return;
+  const nextPage = pages[currentIndex + 1];
   window.clearTimeout(flowAnimationTimer);
   flowAnimationTimer = window.setTimeout(() => {
-    if (next) {
-      focusedItemRef = next.ref;
+    if (nextPage) {
+      focusedItemRef = nextPage.anchorRef;
       renderWorkflowPanel({direction:'next'});
     } else if (areActiveTestsComplete()) {
       goToWorkflowStage('signoff', {direction:'next'});
     }
-  }, 220);
+  }, 240);
+}
+
+function renderFlowGroupItem(item) {
+  const itemState = state[item.ref] || {};
+  const criteria = getCriteriaLines(item.criteria).map(line => `<div class="flow-criteria-item">${escapeHtml(line)}</div>`).join('');
+  const photos = itemState.photos || [];
+  const statusClass = itemState.result ? itemState.result : '';
+  const statusText = itemState.result === 'pass' ? 'PASS' : itemState.result === 'fail' ? (itemState.retested ? 'FAIL / RETEST' : 'FAIL') : itemState.result === 'na' ? 'N/A' : 'PENDING';
+  const measured = item.measured ? `
+    <div class="workflow-field">
+      <label for="flowMeasured-${item.ref}">Measured value ${item.unit ? `(${escapeHtml(item.unit)})` : ''}</label>
+      <input id="flowMeasured-${item.ref}" type="text" inputmode="decimal" value="${escapeAttr(itemState.measured || '')}" oninput="setMeasured('${item.ref}',this.value)">
+    </div>` : '';
+  const failControls = itemState.result === 'fail' ? `
+    <div class="flow-inline-support">
+      <div class="workflow-subtitle">Failure detail</div>
+      <div class="flow-severity-row">
+        <button class="flow-btn ${itemState.severity === 'minor' ? 'active' : ''}" type="button" onclick="setSeverity('${item.ref}','minor');renderWorkflowPanel({direction:'next',animate:false})">MINOR</button>
+        <button class="flow-btn ${itemState.severity === 'major' ? 'active' : ''}" type="button" onclick="setSeverity('${item.ref}','major');renderWorkflowPanel({direction:'next',animate:false})">MAJOR</button>
+        <button class="flow-btn ${itemState.severity === 'critical' ? 'active' : ''}" type="button" onclick="setSeverity('${item.ref}','critical');renderWorkflowPanel({direction:'next',animate:false})">CRITICAL</button>
+      </div>
+      <button class="flow-btn ${itemState.retested ? 'active' : ''}" type="button" onclick="toggleRetest('${item.ref}');renderWorkflowPanel({direction:'next',animate:false})">MARK RE-TESTED</button>
+    </div>` : '';
+  const photosMarkup = photos.length ? `
+    <div class="flow-photo-strip">
+      ${photos.map((photo, photoIndex) => `
+        <div class="flow-photo-chip">
+          <img src="${photo.dataUrl}" alt="Photo for ${item.ref}" onclick="openLightbox('${item.ref}',${photoIndex})">
+          <button type="button" onclick="deletePhoto('${item.ref}',${photoIndex})">×</button>
+        </div>`).join('')}
+    </div>` : '';
+  return `
+    <div class="flow-group-item ${itemState.result ? 'resolved' : ''}">
+      <div class="flow-group-head">
+        <div>
+          <div class="flow-item-meta">
+            <span class="flow-item-ref">${escapeHtml(item.ref)}</span>
+            <span class="flow-item-state ${statusClass}">${statusText}</span>
+          </div>
+          <div class="flow-item-desc">${escapeHtml(item.desc)}</div>
+        </div>
+      </div>
+      <div class="flow-item-criteria">${criteria || '<div class="flow-criteria-item">No expected result captured in the workbook for this line.</div>'}</div>
+      ${measured}
+      <div class="flow-action-row">
+        <button class="flow-btn pass ${itemState.result === 'pass' ? 'active' : ''}" type="button" onclick="setFlowItemResult('${item.ref}','pass')">PASS</button>
+        <button class="flow-btn fail ${itemState.result === 'fail' ? 'active' : ''}" type="button" onclick="setFlowItemResult('${item.ref}','fail')">FAIL</button>
+        <button class="flow-btn na ${itemState.result === 'na' ? 'active' : ''}" type="button" onclick="setFlowItemResult('${item.ref}','na')">N/A</button>
+      </div>
+      <div class="flow-inline-note">
+        <div class="workflow-subtitle">Notes and evidence</div>
+        <input class="flow-item-note" type="text" placeholder="Notes, NCR ref, observations..." value="${escapeAttr(itemState.note || '')}" oninput="setNote('${item.ref}',this.value)">
+        <button class="flow-btn primary" type="button" onclick="triggerCamera('${item.ref}')">ADD PHOTO</button>
+        ${photosMarkup}
+      </div>
+      ${failControls}
+    </div>`;
 }
 
 function renderWorkflowPanel({direction = 'next', animate = true} = {}) {
@@ -1854,8 +1991,8 @@ function renderSelectionStage() {
 }
 
 function renderTestingStage() {
-  const current = getCurrentFlowItem();
-  if (!current) {
+  const currentPage = getCurrentFlowPage();
+  if (!currentPage) {
     return `
       <div class="workflow-top">
         <div>
@@ -1870,74 +2007,38 @@ function renderTestingStage() {
         <button class="flow-btn primary" type="button" onclick="goToWorkflowStage('selection',{direction:'back'})">CHOOSE SATs</button>
       </div>`;
   }
-  const items = getActiveItems();
-  const index = items.findIndex(item => item.ref === current.ref);
+  const pages = getFlowPages();
+  const index = getFlowPageIndex(currentPage);
   const counts = getFlowCompletionCounts();
   const progress = counts.total ? Math.round((counts.resolved / counts.total) * 100) : 0;
-  const currentState = state[current.ref] || {};
-  const criteria = getCriteriaLines(current.criteria).map(line => `<div class="flow-criteria-item">${escapeHtml(line)}</div>`).join('');
-  const photoStrip = (currentState.photos || []).length ? `
-    <div class="flow-photo-strip">
-      ${(currentState.photos || []).map((photo, photoIndex) => `
-        <div class="flow-photo-chip">
-          <img src="${photo.dataUrl}" alt="Photo for ${current.ref}" onclick="openLightbox('${current.ref}',${photoIndex})">
-          <button type="button" onclick="deletePhoto('${current.ref}',${photoIndex})">×</button>
-        </div>`).join('')}
-    </div>` : '';
-  const measured = current.measured ? `
-    <div class="workflow-field">
-      <label for="flowMeasured-${current.ref}">Measured value ${current.unit ? `(${escapeHtml(current.unit)})` : ''}</label>
-      <input id="flowMeasured-${current.ref}" type="text" inputmode="decimal" value="${escapeAttr(currentState.measured || '')}" oninput="setMeasured('${current.ref}',this.value)">
-    </div>` : '';
-  const failControls = currentState.result === 'fail' ? `
-    <div class="flow-inline-note">
-      <div class="workflow-subtitle">Failure detail</div>
-      <div class="flow-action-row">
-        <button class="flow-btn ${currentState.severity === 'minor' ? 'active' : ''}" type="button" onclick="setSeverity('${current.ref}','minor');renderWorkflowPanel({direction:'next',animate:false})">MINOR</button>
-        <button class="flow-btn ${currentState.severity === 'major' ? 'active' : ''}" type="button" onclick="setSeverity('${current.ref}','major');renderWorkflowPanel({direction:'next',animate:false})">MAJOR</button>
-        <button class="flow-btn ${currentState.severity === 'critical' ? 'active' : ''}" type="button" onclick="setSeverity('${current.ref}','critical');renderWorkflowPanel({direction:'next',animate:false})">CRITICAL</button>
-      </div>
-      <button class="flow-btn ${currentState.retested ? 'active' : ''}" type="button" onclick="toggleRetest('${current.ref}');renderWorkflowPanel({direction:'next',animate:false})">MARK RE-TESTED</button>
-    </div>` : '';
+  const pageDone = currentPage.items.filter(item => !!state[item.ref]?.result).length;
+  const pageMarkup = currentPage.items.map(renderFlowGroupItem).join('');
   return `
     <div class="workflow-top">
       <div>
         <div class="workflow-kicker">Step 3</div>
         <div class="workflow-title">Run The SAT</div>
       </div>
-      <div class="workflow-step-badge">${index + 1} / ${items.length}</div>
+      <div class="workflow-step-badge">CARD ${index + 1} / ${pages.length}</div>
     </div>
-    <div class="workflow-copy">Follow each action one screen at a time, compare it against the expected or required result, and record the outcome before moving on.</div>
+    <div class="workflow-copy">Each card now groups a short run of related workbook actions together. You still record every line, but you move between grouped cards instead of hundreds of individual pages.</div>
     <div class="flow-progress">
-      <div class="flow-progress-copy"><span>${escapeHtml(current.sectionTitle)}</span><span>${progress}% COMPLETE</span></div>
+      <div class="flow-progress-copy"><span>${escapeHtml(currentPage.sectionTitle)} · PACK ${currentPage.packNumber} OF ${currentPage.packCount}</span><span>${progress}% COMPLETE</span></div>
       <div class="flow-progress-track"><div class="flow-progress-fill" style="width:${progress}%"></div></div>
     </div>
     <div class="flow-step-card">
       <div class="flow-step-top">
         <div>
-          <div class="flow-step-title">${escapeHtml(current.sectionTitle)}</div>
-          <div class="flow-step-desc">${escapeHtml(current.desc)}</div>
+          <div class="flow-step-title">${escapeHtml(currentPage.sectionTitle)}</div>
+          <div class="flow-step-desc">${pageDone} of ${currentPage.items.length} checks recorded on this card.</div>
         </div>
-        <div class="flow-step-ref">${escapeHtml(current.ref)}</div>
+        <div class="flow-step-ref">${escapeHtml(currentPage.anchorRef)}</div>
       </div>
-      <div class="flow-criteria">${criteria || '<div class="flow-criteria-item">No expected result captured in the workbook for this line.</div>'}</div>
-      ${measured}
-      <div class="flow-action-row">
-        <button class="flow-btn pass ${currentState.result === 'pass' ? 'active' : ''}" type="button" onclick="setFlowResult('pass')">PASS</button>
-        <button class="flow-btn fail ${currentState.result === 'fail' ? 'active' : ''}" type="button" onclick="setFlowResult('fail')">FAIL</button>
-        <button class="flow-btn na ${currentState.result === 'na' ? 'active' : ''}" type="button" onclick="setFlowResult('na')">N/A</button>
-      </div>
-      <div class="flow-inline-note">
-        <div class="workflow-subtitle">Notes and evidence</div>
-        <textarea class="flow-textarea" placeholder="Notes, NCR reference, observations..." oninput="setNote('${current.ref}',this.value)">${escapeHtml(currentState.note || '')}</textarea>
-        <button class="flow-btn primary" type="button" onclick="triggerCamera('${current.ref}')">ADD PHOTO</button>
-        ${photoStrip}
-      </div>
-      ${failControls}
+      <div class="flow-page-grid">${pageMarkup}</div>
     </div>
     <div class="flow-nav">
       <button class="flow-btn" type="button" onclick="moveFlowStep(-1)" ${index === 0 ? 'disabled' : ''}>PREVIOUS</button>
-      <button class="flow-btn primary" type="button" onclick="${index === items.length - 1 ? "continueWorkflow()" : "moveFlowStep(1)"}" ${index === items.length - 1 && !areActiveTestsComplete() ? 'disabled' : ''}>${index === items.length - 1 ? 'SIGN OFF' : 'NEXT STEP'}</button>
+      <button class="flow-btn primary" type="button" onclick="${index === pages.length - 1 ? "continueWorkflow()" : "moveFlowStep(1)"}" ${index === pages.length - 1 && !areActiveTestsComplete() ? 'disabled' : ''}>${index === pages.length - 1 ? 'SIGN OFF' : 'NEXT CARD'}</button>
     </div>`;
 }
 
@@ -2148,7 +2249,7 @@ function handlePhoto(ref, input) {
           }
           state[ref].photos.push(photo);
           renderPhotos(ref);
-          if (focusedItemRef === ref) renderWorkflowPanel({direction:'next', animate:false});
+          if (isRefOnCurrentFlowPage(ref)) renderWorkflowPanel({direction:'next', animate:false});
           document.getElementById('storWarn-'+ref)?.classList.remove('show');
           saveAll();
         } catch(e) {
@@ -2190,7 +2291,7 @@ function renderPhotos(ref) {
 async function deletePhoto(ref, idx) {
   const removed = state[ref]?.photos.splice(idx,1)?.[0];
   renderPhotos(ref);
-  if (focusedItemRef === ref) renderWorkflowPanel({direction:'next', animate:false});
+  if (isRefOnCurrentFlowPage(ref)) renderWorkflowPanel({direction:'next', animate:false});
   document.getElementById('storWarn-'+ref)?.classList.remove('show');
   if (supportsMediaDB() && removed?.id) {
     try {
