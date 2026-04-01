@@ -1,7 +1,7 @@
-const VERSION = 'v2';
+const VERSION = 'v3';
 const APP_CACHE = `ue-sat-app-${VERSION}`;
 const RUNTIME_CACHE = `ue-sat-runtime-${VERSION}`;
-const CORE_ASSETS = ['./', './index.html', './manifest.json', './sw.js'];
+const CORE_ASSETS = ['./', './index.html', './manifest.json', './sat-data.js', './sw.js'];
 
 function isSameOrigin(url) {
   return url.origin === self.location.origin;

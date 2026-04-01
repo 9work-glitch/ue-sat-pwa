@@ -129,6 +129,95 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .jump-btn:hover{background:rgba(0,198,255,.12)}
 .jump-btn.hidden{display:none}
 
+/* ═══════════════════════════════════════════════════ WORKFLOW ═ */
+.workflow-shell{display:none;margin-bottom:14px}
+.workflow-stage{position:relative;perspective:1400px;transform-style:preserve-3d;min-height:440px}
+.workflow-card{position:relative;background:linear-gradient(180deg,rgba(0,198,255,.06),rgba(17,24,34,.96) 18%,rgba(10,15,20,.98));border:1px solid var(--border2);box-shadow:0 22px 55px rgba(0,0,0,.28);padding:18px 16px 18px;border-radius:24px;overflow:hidden;transform-origin:center center}
+.workflow-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at top right,rgba(0,198,255,.12),transparent 38%);pointer-events:none}
+.workflow-card.roll-out-next{animation:rollOutNext .22s ease forwards}
+.workflow-card.roll-in-next{animation:rollInNext .42s cubic-bezier(.2,.8,.2,1) both}
+.workflow-card.roll-out-back{animation:rollOutBack .22s ease forwards}
+.workflow-card.roll-in-back{animation:rollInBack .42s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rollInNext{
+  from{opacity:0;transform:translateX(24%) rotateY(-26deg) rotateZ(3deg) scale(.94)}
+  to{opacity:1;transform:translateX(0) rotateY(0) rotateZ(0) scale(1)}
+}
+@keyframes rollOutNext{
+  from{opacity:1;transform:translateX(0) rotateY(0) rotateZ(0) scale(1)}
+  to{opacity:0;transform:translateX(-14%) rotateY(18deg) rotateZ(-2deg) scale(.97)}
+}
+@keyframes rollInBack{
+  from{opacity:0;transform:translateX(-24%) rotateY(26deg) rotateZ(-3deg) scale(.94)}
+  to{opacity:1;transform:translateX(0) rotateY(0) rotateZ(0) scale(1)}
+}
+@keyframes rollOutBack{
+  from{opacity:1;transform:translateX(0) rotateY(0) rotateZ(0) scale(1)}
+  to{opacity:0;transform:translateX(14%) rotateY(-18deg) rotateZ(2deg) scale(.97)}
+}
+.workflow-top{position:relative;z-index:1;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:16px}
+.workflow-kicker{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1.8px;color:var(--accent);text-transform:uppercase;margin-bottom:7px}
+.workflow-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:27px;line-height:1.05;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-bright)}
+.workflow-copy{position:relative;z-index:1;font-size:13px;line-height:1.5;color:var(--text);margin-bottom:16px}
+.workflow-step-badge{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--text-dim);padding:6px 9px;border:1px solid var(--border2);background:rgba(255,255,255,.03);white-space:nowrap}
+.workflow-steps{position:relative;z-index:1;display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:16px}
+.workflow-step-pill{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;padding:8px 6px;border:1px solid var(--border);background:rgba(255,255,255,.02);color:var(--text-dim);text-align:center}
+.workflow-step-pill.active{border-color:var(--accent);color:var(--accent);background:rgba(0,198,255,.09)}
+.workflow-step-pill.done{border-color:rgba(0,230,118,.35);color:var(--green)}
+.workflow-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:16px}
+.workflow-field{display:grid;gap:5px}
+.workflow-field label,.workflow-subtitle{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:var(--text-dim)}
+.workflow-field input,.workflow-field textarea{width:100%;border:1px solid var(--border);background:var(--surface2);color:var(--text);padding:12px 12px;border-radius:14px;outline:none}
+.workflow-field textarea{min-height:110px;resize:vertical}
+.workflow-field input:focus,.workflow-field textarea:focus{border-color:var(--accent)}
+.workflow-section{position:relative;z-index:1;margin-bottom:16px}
+.selection-list{display:grid;gap:10px}
+.selection-card{border:1px solid var(--border);background:rgba(255,255,255,.02);border-radius:18px;padding:12px}
+.selection-head{display:flex;align-items:flex-start;gap:10px}
+.selection-check{width:18px;height:18px;accent-color:#00c6ff;margin-top:2px;flex-shrink:0}
+.selection-title{font-family:'Barlow Condensed',sans-serif;font-size:20px;line-height:1;color:var(--text-bright);letter-spacing:1px;text-transform:uppercase}
+.selection-meta{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--text-dim);margin-top:4px}
+.selection-elements{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px;margin-left:28px}
+.selection-chip{display:flex;align-items:center;gap:6px;padding:7px 10px;border:1px solid var(--border2);border-radius:999px;background:rgba(255,255,255,.03);font-size:11px;color:var(--text)}
+.selection-chip input{accent-color:#00c6ff}
+.flow-progress{position:relative;z-index:1;display:grid;gap:10px;margin-bottom:14px}
+.flow-progress-track{height:6px;border-radius:999px;background:var(--border)}
+.flow-progress-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--ue-blue),var(--accent));transition:width .28s ease}
+.flow-progress-copy{display:flex;justify-content:space-between;gap:10px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--text-dim)}
+.flow-step-card{position:relative;z-index:1;border:1px solid var(--border);background:rgba(255,255,255,.02);border-radius:20px;padding:14px 14px 12px;margin-bottom:14px}
+.flow-step-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
+.flow-step-ref{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--accent);padding:5px 8px;border:1px solid rgba(0,198,255,.35);background:rgba(0,198,255,.08)}
+.flow-step-title{font-family:'Barlow Condensed',sans-serif;font-size:21px;line-height:1.05;color:var(--text-bright);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px}
+.flow-step-desc{font-size:15px;line-height:1.45;color:var(--text);margin-bottom:12px}
+.flow-criteria{display:grid;gap:6px;margin-bottom:14px}
+.flow-criteria-item{padding:9px 10px;border-left:2px solid rgba(0,198,255,.35);background:rgba(0,198,255,.04);font-size:12px;line-height:1.45;color:var(--text)}
+.flow-action-row,.flow-nav{position:relative;z-index:1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.flow-nav{grid-template-columns:repeat(2,1fr);margin-top:12px}
+.flow-btn{min-height:48px;border:1px solid var(--border2);border-radius:14px;background:var(--surface2);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--text);cursor:pointer}
+.flow-btn.pass{border-color:rgba(0,230,118,.35);color:var(--green)}
+.flow-btn.fail{border-color:rgba(255,68,68,.35);color:var(--red)}
+.flow-btn.na{border-color:rgba(255,179,0,.4);color:var(--amber)}
+.flow-btn.primary{border-color:rgba(0,198,255,.35);color:var(--accent)}
+.flow-btn.active{box-shadow:0 0 0 1px currentColor inset,0 0 16px rgba(0,0,0,.12);background:rgba(255,255,255,.05)}
+.flow-btn[disabled]{opacity:.45;cursor:not-allowed}
+.flow-inline-note{position:relative;z-index:1;display:grid;gap:8px;margin-top:12px}
+.flow-textarea{width:100%;min-height:88px;border:1px solid var(--border);background:var(--surface2);color:var(--text);padding:11px 12px;border-radius:14px;resize:vertical}
+.flow-photo-strip{display:flex;gap:6px;flex-wrap:wrap}
+.flow-photo-chip{position:relative;width:66px;height:66px;border-radius:14px;overflow:hidden;border:1px solid var(--border)}
+.flow-photo-chip img{width:100%;height:100%;object-fit:cover}
+.flow-photo-chip button{position:absolute;top:4px;right:4px;width:18px;height:18px;border:none;border-radius:50%;background:rgba(255,68,68,.92);color:#fff;font-size:11px;cursor:pointer}
+.flow-status-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px}
+.flow-stat{padding:12px;border:1px solid var(--border);background:rgba(255,255,255,.02);border-radius:18px}
+.flow-stat-value{font-family:'Barlow Condensed',sans-serif;font-size:30px;line-height:1;color:var(--text-bright)}
+.flow-stat-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--text-dim);margin-top:3px}
+.signature-grid{position:relative;z-index:1;display:grid;gap:10px;margin-bottom:14px}
+.signature-card{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;border:1px solid var(--border);background:rgba(255,255,255,.02);border-radius:18px}
+.signature-meta strong{display:block;font-family:'Barlow Condensed',sans-serif;font-size:18px;line-height:1;color:var(--text-bright);letter-spacing:1px;text-transform:uppercase}
+.signature-meta span{display:block;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--text-dim);margin-top:4px}
+.signature-meta span.ok{color:var(--green)}
+.flow-summary-list{position:relative;z-index:1;display:grid;gap:8px;margin-bottom:14px}
+.flow-summary-item{padding:10px 12px;border:1px solid var(--border);border-radius:16px;background:rgba(255,255,255,.02);font-size:12px;line-height:1.45;color:var(--text)}
+.flow-cta-stack{position:relative;z-index:1;display:grid;gap:8px;margin-top:12px}
+
 /* ═══════════════════════════════════════════════════ SECTION ═ */
 .section{margin-bottom:10px;border:1px solid var(--border);background:var(--surface);overflow:hidden;transition:background .25s,border-color .25s}
 .section-header{display:flex;align-items:center;gap:8px;padding:11px 12px;background:var(--surface2);border:none;border-bottom:1px solid var(--border);cursor:pointer;user-select:none;-webkit-user-select:none;min-height:52px;transition:background .25s;width:100%;text-align:left}
@@ -149,6 +238,9 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .section-status.partial{color:var(--amber);border-color:var(--amber);background:rgba(255,179,0,.06)}
 .section-chevron{color:var(--text-dim);font-size:11px;transition:transform .2s;flex-shrink:0}
 .section-chevron.open{transform:rotate(90deg)}
+.section-intro{margin:10px 12px 2px;padding:10px 12px;border:1px dashed var(--border2);background:rgba(0,198,255,.04)}
+.section-intro-label{display:block;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1.5px;color:var(--accent);margin-bottom:6px}
+.section-intro-text{font-size:11px;line-height:1.5;color:var(--text)}
 .section-body.collapsed{display:none}
 
 /* ═══════════════════════════════════════════════════ TEST ITEM ═ */
@@ -332,6 +424,7 @@ body.light .sig-preview img{background:#fff}
 
 @media (max-width: 820px){
   .container{padding:10px 8px 160px}
+  .workflow-shell{display:block}
   .chips{grid-template-columns:repeat(2,1fr)}
   .meta-strip{gap:10px;padding:10px}
   .meta-field{width:calc(50% - 5px);min-width:0;flex-direction:column;align-items:flex-start;gap:4px}
@@ -362,6 +455,12 @@ body.light .sig-preview img{background:#fff}
   .mobile-dock-btn.fail{border-color:rgba(255,68,68,.35);color:var(--red)}
   .mobile-dock-btn.na{border-color:rgba(255,179,0,.35);color:var(--amber)}
   .mobile-dock-btn.next{border-color:rgba(0,198,255,.35);color:var(--accent)}
+  .meta-strip,.chips,.jump-btn,#testSections,#failList,.quick-nav,.progress-track,.action-stack,.mobile-dock{display:none!important}
+  .workflow-grid,.flow-status-grid{grid-template-columns:1fr}
+  .workflow-steps{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .workflow-step-pill{font-size:8px;padding:7px 3px}
+  .flow-step-title{font-size:19px}
+  .selection-elements{margin-left:0}
 }
 </style>
 </head>
@@ -432,6 +531,10 @@ body.light .sig-preview img{background:#fff}
     <div class="chip chip-pend"><span class="num" id="chipPend">0</span>PENDING</div>
   </div>
 
+  <section class="workflow-shell" id="workflowShell" aria-live="polite">
+    <div class="workflow-stage" id="workflowStage"></div>
+  </section>
+
   <!-- JUMP NEXT -->
   <button class="jump-btn" type="button" id="jumpNextBtn" onclick="jumpNext()">▶ JUMP TO NEXT UNRESOLVED ITEM</button>
 
@@ -442,9 +545,11 @@ body.light .sig-preview img{background:#fff}
   <div class="fail-list" id="failList" style="display:none"></div>
 
   <!-- ACTIONS -->
-  <button class="btn-report" type="button" onclick="openReport()">◈ GENERATE SAT REPORT</button>
-  <a class="btn-email" id="emailLink" href="#" onclick="emailReport(event)">✉ EMAIL REPORT</a>
-  <button class="btn-clear" type="button" onclick="showConfirm()">CLEAR SESSION & RESET</button>
+  <div class="action-stack" id="actionStack">
+    <button class="btn-report" type="button" onclick="openReport()">◈ GENERATE SAT REPORT</button>
+    <a class="btn-email" id="emailLink" href="#" onclick="emailReport(event)">✉ EMAIL REPORT</a>
+    <button class="btn-clear" type="button" onclick="showConfirm()">CLEAR SESSION & RESET</button>
+  </div>
 
 </main>
 
@@ -520,64 +625,29 @@ body.light .sig-preview img{background:#fff}
   </div>
 </div>
 
+<script src="sat-data.js"></script>
 <script>
 /* ════════════════════════════════════════════════════════════
    SAT DATA
 ════════════════════════════════════════════════════════════ */
-const SAT_SECTIONS = [
-  { id:"S1", title:"Documentation & Pre-Test Checks", items:[
-    {ref:"S1.01",desc:"As-built drawings submitted and accepted by UÉ Representative",criteria:"Stamped as-built drawings on site, referenced to project specification"},
-    {ref:"S1.02",desc:"O&M manuals and manufacturer data sheets available on site",criteria:"Minimum draft O&M manuals for all mechanical and electrical plant"},
-    {ref:"S1.03",desc:"PSDP / PSCS Safety File in place and up to date",criteria:"Safety File available for inspection per SI 504 of 2013"},
-    {ref:"S1.04",desc:"Electrical completion certificate (ETCI) issued",criteria:"Signed ETCI National Rules for Electrical Installations cert on file"},
-    {ref:"S1.05",desc:"Contractor's Test & Commissioning records submitted",criteria:"FAT records and pre-commissioning records on file"}
-  ]},
-  { id:"S2", title:"Civil & Structural Works", items:[
-    {ref:"S2.01",desc:"Wet well dimensions, levels, and wall finish compliant with drawings",criteria:"Invert, crown, and soffit levels within ±10mm of design. Smooth render, no honeycombing"},
-    {ref:"S2.02",desc:"Wet well water-tightness test passed (IS EN 1610 Section 13)",criteria:"Infiltration/exfiltration ≤ 0.15 l/(m²·day). Test certificate on file",measured:true,unit:"l/(m²·day)",measurementSpec:{max:0.15,label:"≤ 0.15"}},
-    {ref:"S2.03",desc:"Access covers, frames, and gratings to correct loading class and flush with finished grade",criteria:"Cover class D400 min in trafficked areas. No rocking. Anti-tilt feature fitted"},
-    {ref:"S2.04",desc:"Site drainage, paving, and boundary fencing complete",criteria:"Hardstand graded to drain away from kiosk. 2.4m security fencing with lock-bar gate"},
-    {ref:"S2.05",desc:"Concrete kiosk/structure free from cracks, spalling, or defects",criteria:"Visual inspection — no structural cracks >0.3mm, no exposed rebar"}
-  ]},
-  { id:"S3", title:"Mechanical & Pipework", items:[
-    {ref:"S3.01",desc:"Pump units installed per manufacturer drawings and UÉ spec (duty/standby)",criteria:"Correct pump model, impeller size confirmed against approval schedule"},
-    {ref:"S3.02",desc:"Rising main hydraulic pressure test passed (IS EN 805)",criteria:"Test pressure = 1.5 × DP for 1 hour. Zero leakage. Witnessed & certified",measured:true,unit:"bar"},
-    {ref:"S3.03",desc:"Non-return valves, isolating valves, and penstock in correct orientation and operable",criteria:"NRVs free from sticking; spindle valves close fully; penstock seats flush"},
-    {ref:"S3.04",desc:"Pump guide rails, chains, and auto-coupling system fitted and correctly aligned",criteria:"Pump seats fully on coupling with no rocking. Guide rails plumb to ±2mm"},
-    {ref:"S3.05",desc:"Vent pipe and odour control arrangement installed where specified",criteria:"Vent to atmosphere min 500mm above cover level or carbon filter as specified"},
-    {ref:"S3.06",desc:"Pipework support, expansion joints, and thrust blocks per design",criteria:"No unsupported pipe spans exceeding specification. Adequate clearance from walls"}
-  ]},
-  { id:"S4", title:"Electrical & Control Panel (MCC/SCADA)", items:[
-    {ref:"S4.01",desc:"Motor Control Centre (MCC) installed, secured, and IP rating correct",criteria:"IP55 minimum in pumping station. Cable entries made good, no open knockouts"},
-    {ref:"S4.02",desc:"Power supply, earthing, and lightning protection installed and tested",criteria:"Earth loop impedance tested and within limits. RCD tested. SPD fitted",measured:true,unit:"Ω"},
-    {ref:"S4.03",desc:"Emergency stop buttons positioned per layout drawing and tested",criteria:"E-stops accessible at each pump and at panel. Latching type, key/tool release"},
-    {ref:"S4.04",desc:"SCADA/telemetry RTU connected and communicating with UÉ National OCC",criteria:"Live data feed confirmed by OCC. All required data points mapped and tagged"},
-    {ref:"S4.05",desc:"Generator changeover panel (ATS) installed and tested",criteria:"Auto changeover tested — transfer time ≤30s. Manual changeover also tested",measured:true,unit:"s",measurementSpec:{max:30,label:"≤ 30"}},
-    {ref:"S4.06",desc:"Level monitoring (float switches / ultrasonic / pressure transducers) calibrated",criteria:"Start, stop, and high-high levels verified against wetwell as-built levels"}
-  ]},
-  { id:"S5", title:"Functional Pump Testing", items:[
-    {ref:"S5.01",desc:"Duty pump run test — minimum 2-hour continuous operation at design flow",criteria:"Flow rate and head confirmed ±10% of design point. No unusual vibration/noise",measured:true,unit:"l/s"},
-    {ref:"S5.02",desc:"Standby pump run test — minimum 1-hour continuous operation",criteria:"Standby pump performs to same criteria as duty pump",measured:true,unit:"l/s"},
-    {ref:"S5.03",desc:"Duty/standby auto-changeover tested (on fault and on manual command)",criteria:"Changeover occurs within 5 seconds. Alarm generated in MCC and at SCADA",measured:true,unit:"s",measurementSpec:{max:5,label:"≤ 5"}},
-    {ref:"S5.04",desc:"Float/level control start and stop sequencing verified",criteria:"Pumps start and stop at correct wetwell levels. Levels match control set-points"},
-    {ref:"S5.05",desc:"High-level alarm tested and confirmed at SCADA/OCC",criteria:"SMS/SCADA alarm received by OCC within 2 minutes of trigger",measured:true,unit:"min",measurementSpec:{max:2,label:"≤ 2"}},
-    {ref:"S5.06",desc:"Dry run protection (undercurrent / dry run relay) tested",criteria:"Pump trips within set time delay when running dry. Alarm generated"}
-  ]},
-  { id:"S6", title:"Health, Safety & Environment", items:[
-    {ref:"S6.01",desc:"Confined space rescue and access equipment on site (ladder, harness, tripod, gas detector)",criteria:"Equipment calibrated and within service date. Rescue procedure posted"},
-    {ref:"S6.02",desc:"Hazardous zone (ATEX) signage posted at wet well access points",criteria:"Correct ATEX zone 1/2 signage as per Ex assessment. No ignition sources in zone"},
-    {ref:"S6.03",desc:"Site security measures in place (CCTV, lighting, fencing, lock-bar)",criteria:"CCTV operational and recording. Perimeter lit to min 50 lux at access points"},
-    {ref:"S6.04",desc:"Spill containment bund (if chemical dosing) inspected",criteria:"Bund volume ≥ 110% largest vessel. No cracks or gaps in seal"},
-    {ref:"S6.05",desc:"Environmental licence / EPA conditions confirmed as met pre-handover",criteria:"EPA licence conditions reviewed. Relevant discharge consent in place"}
-  ]}
-];
-
 const ITEM_LOOKUP = Object.fromEntries(
   SAT_SECTIONS.flatMap(section => section.items.map(item => [item.ref, item]))
 );
 const ITEM_SECTION_LOOKUP = Object.fromEntries(
   SAT_SECTIONS.flatMap(section => section.items.map(item => [item.ref, section.id]))
 );
+const SELECTION_LOOKUP = Object.fromEntries(SAT_SELECTIONS.map(selection => [selection.id, selection]));
+const INTRO_SELECTIONS = SAT_SECTIONS.map(section => {
+  const workbookSelection = SELECTION_LOOKUP[section.id];
+  return {
+    id: section.id,
+    ref: workbookSelection?.ref || section.title.replace(/^SAT-?/i, '').split(':')[0].trim(),
+    title: workbookSelection?.title || section.title,
+    sheetName: workbookSelection?.sheetName || section.sheetName || section.title,
+    elements: workbookSelection?.elements || []
+  };
+});
+const WORKFLOW_STAGES = ['project','selection','testing','signoff','results'];
 
 /* ════════════════════════════════════════════════════════════
    SESSION MANAGEMENT
@@ -591,6 +661,9 @@ let pendingSWRefresh = false;
 let mediaDbPromise = null;
 let sessionLoadToken = 0;
 let focusedItemRef = null;
+let config = freshConfig();
+let flowAnimationTimer = null;
+let flowAnimationCleanupTimer = null;
 
 function freshState() {
   const s = {};
@@ -602,6 +675,16 @@ function freshState() {
 
 function freshSigs() {
   return {contractor:null, ue:null};
+}
+
+function freshConfig() {
+  return {
+    workflowStage: 'project',
+    selectedSections: Object.fromEntries(SAT_SECTIONS.map(section => [section.id, true])),
+    selectedElements: Object.fromEntries(INTRO_SELECTIONS.map(selection => [selection.id, selection.elements.map(element => element.id)])),
+    overallResult: '',
+    overallComments: ''
+  };
 }
 
 function getDefaultMeta() {
@@ -666,6 +749,26 @@ function cloneSigs(rawSigs) {
       updatedAt: stored.updatedAt || ''
     };
   });
+  return next;
+}
+
+function cloneConfig(rawConfig) {
+  const next = freshConfig();
+  const stored = rawConfig || {};
+  next.workflowStage = WORKFLOW_STAGES.includes(stored.workflowStage) ? stored.workflowStage : 'project';
+  SAT_SECTIONS.forEach(section => {
+    if (typeof stored.selectedSections?.[section.id] === 'boolean') {
+      next.selectedSections[section.id] = stored.selectedSections[section.id];
+    }
+  });
+  INTRO_SELECTIONS.forEach(selection => {
+    const storedIds = stored.selectedElements?.[selection.id];
+    if (Array.isArray(storedIds)) {
+      next.selectedElements[selection.id] = storedIds.filter(id => selection.elements.some(element => element.id === id));
+    }
+  });
+  next.overallResult = stored.overallResult || '';
+  next.overallComments = stored.overallComments || '';
   return next;
 }
 
@@ -865,8 +968,11 @@ function loadSessions() {
     if (raw) sessions = JSON.parse(raw);
   } catch(e) {}
   if (!sessions.default) {
-    sessions.default = {state:freshState(),meta:getDefaultMeta(),sigs:freshSigs(),theme:'dark'};
+    sessions.default = {state:freshState(),meta:getDefaultMeta(),sigs:freshSigs(),theme:'dark',config:freshConfig()};
   }
+  Object.values(sessions).forEach(session => {
+    if (!session.config) session.config = freshConfig();
+  });
 }
 
 function saveSessions() {
@@ -874,6 +980,7 @@ function saveSessions() {
     sessions[currentSession].meta = getCurrentMeta();
     sessions[currentSession].state = serializeStateForStorage(state);
     sessions[currentSession].sigs  = serializeSigsForStorage(sigs);
+    sessions[currentSession].config = {...config};
   }
   try {
     localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions));
@@ -891,7 +998,7 @@ async function newSession() {
   const name = prompt('Session name (e.g. "Ballybeg PS — Run 2"):');
   if (!name || !name.trim()) return;
   const key = 'sess_' + Date.now();
-  sessions[key] = {name:name.trim(), state:freshState(), meta:getCurrentMeta(), sigs:freshSigs(), theme:currentTheme};
+  sessions[key] = {name:name.trim(), state:freshState(), meta:getCurrentMeta(), sigs:freshSigs(), theme:currentTheme, config:freshConfig()};
   currentSession = key;
   rebuildSessionSelect();
   await loadSessionIntoUI();
@@ -923,6 +1030,7 @@ async function loadSessionIntoUI() {
   if (!sess) return;
   state = cloneState(sess.state);
   sigs  = cloneSigs(sess.sigs);
+  config = cloneConfig(sess.config);
   const meta = {...getDefaultMeta(), ...(sess.meta || {})};
   ['contractRef','assetName','satDate','inspectorName'].forEach(id => {
     document.getElementById(id).value = meta[id] || '';
@@ -935,6 +1043,13 @@ async function loadSessionIntoUI() {
     console.warn('Media load:', e);
   }
   if (token !== sessionLoadToken) return;
+  rebuildChecklistUI();
+  renderSessionStateToDOM();
+  syncWorkflowInputs();
+  renderWorkflowPanel({animate:false});
+}
+
+function renderSessionStateToDOM() {
   SAT_SECTIONS.forEach(sec => sec.items.forEach(item => {
     const r = state[item.ref]?.result;
     ['pass','fail','na'].forEach(t => document.getElementById(`btn-${t}-${item.ref}`)?.classList.toggle('active', t===r));
@@ -955,8 +1070,10 @@ async function loadSessionIntoUI() {
     updateItemState(item.ref);
     renderPhotos(item.ref);
   }));
+  ensureFocusedItemRef();
   syncMobileFocusItem();
   updateMobileDock();
+  updateSummary();
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -974,6 +1091,51 @@ function applyTheme() {
   document.documentElement.style.colorScheme = currentTheme;
   document.getElementById('themeBtn').textContent = currentTheme === 'dark' ? '☀ LIGHT' : '☾ DARK';
   document.getElementById('themeColorMeta').content = currentTheme === 'dark' ? '#003da5' : '#e0ecf8';
+}
+
+function getActiveSections() {
+  return SAT_SECTIONS.filter(section => config.selectedSections[section.id] !== false);
+}
+
+function getActiveItems() {
+  return getActiveSections().flatMap(section => section.items.map(item => ({
+    ...item,
+    sectionId: section.id,
+    sectionTitle: section.title
+  })));
+}
+
+function ensureFocusedItemRef() {
+  const activeItems = getActiveItems();
+  if (!activeItems.length) {
+    focusedItemRef = null;
+    return null;
+  }
+  if (focusedItemRef && activeItems.some(item => item.ref === focusedItemRef)) {
+    return focusedItemRef;
+  }
+  focusedItemRef = findNextUnresolvedRef() || activeItems[0].ref;
+  return focusedItemRef;
+}
+
+function rebuildChecklistUI() {
+  buildQuickNav();
+  buildSections();
+}
+
+function syncWorkflowInputs() {
+  const map = [
+    ['flowContractRef', 'contractRef'],
+    ['flowAssetName', 'assetName'],
+    ['flowSatDate', 'satDate'],
+    ['flowInspectorName', 'inspectorName']
+  ];
+  map.forEach(([flowId, sourceId]) => {
+    const flowInput = document.getElementById(flowId);
+    const sourceInput = document.getElementById(sourceId);
+    if (!flowInput || !sourceInput) return;
+    flowInput.value = sourceInput.value;
+  });
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -995,11 +1157,7 @@ async function init() {
   currentTheme = sessions[currentSession]?.theme || 'dark';
   applyTheme();
   rebuildSessionSelect();
-
-  buildQuickNav();
-  buildSections();
   await loadSessionIntoUI();
-  updateSummary();
   registerSW();
   setupInstallPrompt();
   setupOfflineDetection();
@@ -1014,7 +1172,7 @@ async function init() {
 function buildQuickNav() {
   const nav = document.getElementById('quickNav');
   nav.innerHTML = '';
-  SAT_SECTIONS.forEach(sec => {
+  getActiveSections().forEach(sec => {
     const btn = document.createElement('button');
     btn.className = 'qnav-btn';
     btn.id = 'qnav-' + sec.id;
@@ -1031,7 +1189,7 @@ function buildQuickNav() {
 }
 
 function updateQuickNav() {
-  SAT_SECTIONS.forEach(sec => {
+  getActiveSections().forEach(sec => {
     const btn = document.getElementById('qnav-' + sec.id);
     const dot = document.getElementById('qdot-' + sec.id);
     if (!btn || !dot) return;
@@ -1057,13 +1215,19 @@ function updateQuickNav() {
 function buildSections() {
   const container = document.getElementById('testSections');
   container.innerHTML = '';
-  SAT_SECTIONS.forEach(sec => {
+  getActiveSections().forEach(sec => {
+    const sectionBadge = (sec.title || sec.sheetName || sec.id).split(':')[0];
+    const intro = sec.initialConditions ? `
+      <div class="section-intro">
+        <span class="section-intro-label">INITIAL CONDITIONS</span>
+        <div class="section-intro-text">${sec.initialConditions}</div>
+      </div>` : '';
     const div = document.createElement('div');
     div.className = 'section';
     div.id = 'sec-' + sec.id;
     div.innerHTML = `
       <button class="section-header" type="button" onclick="toggleSection('${sec.id}')" aria-expanded="true" aria-controls="secBody-${sec.id}" id="secToggle-${sec.id}">
-        <span class="section-num">${sec.id}</span>
+        <span class="section-num">${sectionBadge}</span>
         <svg class="section-ring" viewBox="0 0 28 28" id="ring-${sec.id}">
           <circle class="ring-bg" cx="14" cy="14" r="11"/>
           <circle class="ring-fill" id="ringFill-${sec.id}" cx="14" cy="14" r="11"
@@ -1076,6 +1240,7 @@ function buildSections() {
         <span class="section-chevron open" id="secChevron-${sec.id}">▶</span>
       </button>
       <div class="section-body" id="secBody-${sec.id}">
+        ${intro}
         ${sec.items.map(renderItem).join('')}
       </div>`;
     container.appendChild(div);
@@ -1252,7 +1417,7 @@ function toggleItem(ref) {
 }
 
 function findNextUnresolvedRef() {
-  for (const section of SAT_SECTIONS) {
+  for (const section of getActiveSections()) {
     for (const item of section.items) {
       if (!state[item.ref]?.result) return item.ref;
     }
@@ -1269,7 +1434,7 @@ function syncMobileFocusItem() {
     document.querySelectorAll('.test-item').forEach(item => item.classList.add('open'));
     return;
   }
-  const target = focusedItemRef || findNextUnresolvedRef() || SAT_SECTIONS[0]?.items[0]?.ref;
+  const target = focusedItemRef || findNextUnresolvedRef() || getActiveItems()[0]?.ref || null;
   if (target) {
     openItem(target);
   }
@@ -1305,6 +1470,472 @@ function focusNextFromDock() {
   openItem(nextRef, {scroll:true});
 }
 
+function isProjectInfoComplete() {
+  const meta = getCurrentMeta();
+  return !!(meta.contractRef && meta.assetName && meta.satDate && meta.inspectorName);
+}
+
+function hasAnySelectedSections() {
+  return getActiveSections().length > 0;
+}
+
+function areActiveTestsComplete() {
+  const items = getActiveItems();
+  return items.length > 0 && items.every(item => !!state[item.ref]?.result);
+}
+
+function areSignaturesComplete() {
+  return !!(sigs.contractor?.dataUrl && sigs.ue?.dataUrl);
+}
+
+function getWorkflowStageIndex(stage = config.workflowStage) {
+  return Math.max(0, WORKFLOW_STAGES.indexOf(stage));
+}
+
+function getCurrentFlowItem() {
+  const currentRef = ensureFocusedItemRef();
+  if (!currentRef) return null;
+  return getActiveItems().find(item => item.ref === currentRef) || null;
+}
+
+function getFlowCompletionCounts() {
+  const items = getActiveItems();
+  const resolved = items.filter(item => !!state[item.ref]?.result).length;
+  return {resolved, total: items.length};
+}
+
+function getCriteriaLines(criteria) {
+  return String(criteria || '')
+    .split(/\n+|•/g)
+    .map(line => line.trim())
+    .filter(Boolean);
+}
+
+function getSelectedElementSummary() {
+  return INTRO_SELECTIONS
+    .filter(selection => config.selectedSections[selection.id] !== false)
+    .map(selection => {
+      const chosen = selection.elements.filter(element => (config.selectedElements[selection.id] || []).includes(element.id));
+      if (!chosen.length) return '';
+      return `${selection.title}: ${chosen.map(element => element.title).join(', ')}`;
+    })
+    .filter(Boolean);
+}
+
+function toggleSectionSelection(sectionId, checked) {
+  config.selectedSections[sectionId] = !!checked;
+  if (!checked) focusedItemRef = null;
+  rebuildChecklistUI();
+  renderSessionStateToDOM();
+  renderWorkflowPanel({direction:'next', animate:false});
+  saveAll();
+}
+
+function toggleElementSelection(sectionId, elementId, checked) {
+  const current = new Set(config.selectedElements[sectionId] || []);
+  if (checked) current.add(elementId);
+  else current.delete(elementId);
+  config.selectedElements[sectionId] = Array.from(current);
+  saveSessions();
+  renderWorkflowPanel({direction:'next', animate:false});
+}
+
+function updateProjectField(id, value) {
+  const input = document.getElementById(id);
+  if (!input) return;
+  input.value = value;
+  saveAll();
+  const continueBtn = document.getElementById('projectContinueBtn');
+  if (continueBtn) continueBtn.disabled = !isProjectInfoComplete();
+}
+
+function updateOverallField(key, value) {
+  config[key] = value;
+  saveSessions();
+}
+
+function setOverallResult(value) {
+  config.overallResult = value;
+  saveAll();
+  renderWorkflowPanel({direction:'next', animate:false});
+}
+
+function goToWorkflowStage(stage, options = {}) {
+  if (!WORKFLOW_STAGES.includes(stage)) return;
+  config.workflowStage = stage;
+  saveSessions();
+  renderWorkflowPanel({
+    direction: options.direction || 'next',
+    animate: options.animate !== false
+  });
+}
+
+function continueWorkflow() {
+  if (config.workflowStage === 'project') {
+    if (!isProjectInfoComplete()) return;
+    return goToWorkflowStage('selection', {direction:'next'});
+  }
+  if (config.workflowStage === 'selection') {
+    if (!hasAnySelectedSections()) return;
+    ensureFocusedItemRef();
+    return goToWorkflowStage('testing', {direction:'next'});
+  }
+  if (config.workflowStage === 'testing') {
+    if (!areActiveTestsComplete()) return;
+    return goToWorkflowStage('signoff', {direction:'next'});
+  }
+  if (config.workflowStage === 'signoff') {
+    if (!areSignaturesComplete()) return;
+    return goToWorkflowStage('results', {direction:'next'});
+  }
+}
+
+function openSignatureFor(role) {
+  switchSigTab(role);
+  openSigModal();
+}
+
+function moveFlowStep(offset) {
+  const items = getActiveItems();
+  const current = getCurrentFlowItem();
+  if (!items.length || !current) return;
+  const index = items.findIndex(item => item.ref === current.ref);
+  const target = items[index + offset];
+  if (!target) {
+    if (offset > 0 && areActiveTestsComplete()) {
+      goToWorkflowStage('signoff', {direction:'next'});
+    }
+    return;
+  }
+  focusedItemRef = target.ref;
+  renderWorkflowPanel({direction: offset > 0 ? 'next' : 'back'});
+}
+
+function setFlowResult(result) {
+  const current = getCurrentFlowItem();
+  if (!current) return;
+  setResult(current.ref, result);
+  renderWorkflowPanel({direction:'next', animate:false});
+  if (result === 'fail') return;
+  const items = getActiveItems();
+  const index = items.findIndex(item => item.ref === current.ref);
+  const next = items[index + 1];
+  window.clearTimeout(flowAnimationTimer);
+  flowAnimationTimer = window.setTimeout(() => {
+    if (next) {
+      focusedItemRef = next.ref;
+      renderWorkflowPanel({direction:'next'});
+    } else if (areActiveTestsComplete()) {
+      goToWorkflowStage('signoff', {direction:'next'});
+    }
+  }, 220);
+}
+
+function renderWorkflowPanel({direction = 'next', animate = true} = {}) {
+  const shell = document.getElementById('workflowShell');
+  const stage = document.getElementById('workflowStage');
+  if (!shell || !stage) return;
+  if (!isMobileViewport()) {
+    shell.style.display = 'none';
+    return;
+  }
+  shell.style.display = 'block';
+  const markup = renderWorkflowCardMarkup();
+  const existing = stage.querySelector('.workflow-card');
+  if (!animate || !existing) {
+    stage.innerHTML = markup;
+    syncWorkflowInputs();
+    return;
+  }
+  existing.classList.remove('roll-in-next','roll-in-back');
+  existing.classList.add(direction === 'back' ? 'roll-out-back' : 'roll-out-next');
+  window.clearTimeout(flowAnimationCleanupTimer);
+  flowAnimationCleanupTimer = window.setTimeout(() => {
+    stage.innerHTML = markup;
+    syncWorkflowInputs();
+    const nextCard = stage.querySelector('.workflow-card');
+    if (!nextCard) return;
+    nextCard.classList.add(direction === 'back' ? 'roll-in-back' : 'roll-in-next');
+  }, 190);
+}
+
+function renderWorkflowCardMarkup() {
+  const index = getWorkflowStageIndex();
+  const steps = WORKFLOW_STAGES.map((stage, stepIndex) => {
+    const classes = ['workflow-step-pill'];
+    if (stage === config.workflowStage) classes.push('active');
+    if (stepIndex < index) classes.push('done');
+    return `<div class="${classes.join(' ')}">${stepIndex + 1}. ${stage === 'selection' ? 'SATs' : stage === 'testing' ? 'Test' : stage === 'signoff' ? 'Sign' : stage === 'results' ? 'Result' : 'Project'}</div>`;
+  }).join('');
+  return `
+    <div class="workflow-card">
+      <div class="workflow-steps">${steps}</div>
+      ${renderWorkflowStageBody()}
+    </div>`;
+}
+
+function renderWorkflowStageBody() {
+  if (config.workflowStage === 'project') return renderProjectStage();
+  if (config.workflowStage === 'selection') return renderSelectionStage();
+  if (config.workflowStage === 'testing') return renderTestingStage();
+  if (config.workflowStage === 'signoff') return renderSignoffStage();
+  return renderResultsStage();
+}
+
+function renderProjectStage() {
+  const meta = getCurrentMeta();
+  return `
+    <div class="workflow-top">
+      <div>
+        <div class="workflow-kicker">Step 1</div>
+        <div class="workflow-title">Project Introduction</div>
+      </div>
+      <div class="workflow-step-badge">DETAILS</div>
+    </div>
+    <div class="workflow-copy">Complete the project information first so every report, signature summary, and SAT result stays aligned to the correct site details.</div>
+    <div class="workflow-grid">
+      <div class="workflow-field">
+        <label for="flowContractRef">Contract</label>
+        <input id="flowContractRef" type="text" value="${escapeAttr(meta.contractRef)}" oninput="updateProjectField('contractRef',this.value)">
+      </div>
+      <div class="workflow-field">
+        <label for="flowAssetName">Asset</label>
+        <input id="flowAssetName" type="text" value="${escapeAttr(meta.assetName)}" oninput="updateProjectField('assetName',this.value)">
+      </div>
+      <div class="workflow-field">
+        <label for="flowSatDate">SAT Date</label>
+        <input id="flowSatDate" type="date" value="${escapeAttr(meta.satDate)}" oninput="updateProjectField('satDate',this.value)">
+      </div>
+      <div class="workflow-field">
+        <label for="flowInspectorName">Inspector</label>
+        <input id="flowInspectorName" type="text" value="${escapeAttr(meta.inspectorName)}" oninput="updateProjectField('inspectorName',this.value)">
+      </div>
+    </div>
+    <div class="flow-nav">
+      <button class="flow-btn" type="button" disabled>BACK</button>
+      <button class="flow-btn primary" id="projectContinueBtn" type="button" onclick="continueWorkflow()" ${isProjectInfoComplete() ? '' : 'disabled'}>CONTINUE</button>
+    </div>`;
+}
+
+function renderSelectionStage() {
+  const rows = INTRO_SELECTIONS.map(selection => {
+    const enabled = config.selectedSections[selection.id] !== false;
+    const elements = selection.elements.length ? `
+      <div class="selection-elements">
+        ${selection.elements.map(element => `
+          <label class="selection-chip">
+            <input type="checkbox" ${enabled && (config.selectedElements[selection.id] || []).includes(element.id) ? 'checked' : ''} ${enabled ? '' : 'disabled'}
+              onchange="toggleElementSelection('${selection.id}','${element.id}',this.checked)">
+            <span>${escapeHtml(element.title)}</span>
+          </label>`).join('')}
+      </div>` : '';
+    return `
+      <div class="selection-card">
+        <div class="selection-head">
+          <input class="selection-check" type="checkbox" ${enabled ? 'checked' : ''} onchange="toggleSectionSelection('${selection.id}',this.checked)">
+          <div>
+            <div class="selection-title">${escapeHtml(selection.ref)} · ${escapeHtml(selection.title)}</div>
+            <div class="selection-meta">${escapeHtml(selection.sheetName)}</div>
+          </div>
+        </div>
+        ${elements}
+      </div>`;
+  }).join('');
+  return `
+    <div class="workflow-top">
+      <div>
+        <div class="workflow-kicker">Step 2</div>
+        <div class="workflow-title">Select Required SATs</div>
+      </div>
+      <div class="workflow-step-badge">${getActiveSections().length} LIVE</div>
+    </div>
+    <div class="workflow-copy">Choose the SAT schedules that apply for this project. Element selections are stored with the introduction summary so the generated output matches the chosen scope.</div>
+    <div class="workflow-section">
+      <div class="selection-list">${rows}</div>
+    </div>
+    <div class="flow-nav">
+      <button class="flow-btn" type="button" onclick="goToWorkflowStage('project',{direction:'back'})">BACK</button>
+      <button class="flow-btn primary" type="button" onclick="continueWorkflow()" ${hasAnySelectedSections() ? '' : 'disabled'}>START TESTING</button>
+    </div>`;
+}
+
+function renderTestingStage() {
+  const current = getCurrentFlowItem();
+  if (!current) {
+    return `
+      <div class="workflow-top">
+        <div>
+          <div class="workflow-kicker">Step 3</div>
+          <div class="workflow-title">Testing Flow</div>
+        </div>
+        <div class="workflow-step-badge">NO SATS</div>
+      </div>
+      <div class="workflow-copy">No SAT sections are selected yet. Go back to Step 2 and choose at least one SAT schedule.</div>
+      <div class="flow-nav">
+        <button class="flow-btn" type="button" onclick="goToWorkflowStage('selection',{direction:'back'})">BACK</button>
+        <button class="flow-btn primary" type="button" onclick="goToWorkflowStage('selection',{direction:'back'})">CHOOSE SATs</button>
+      </div>`;
+  }
+  const items = getActiveItems();
+  const index = items.findIndex(item => item.ref === current.ref);
+  const counts = getFlowCompletionCounts();
+  const progress = counts.total ? Math.round((counts.resolved / counts.total) * 100) : 0;
+  const currentState = state[current.ref] || {};
+  const criteria = getCriteriaLines(current.criteria).map(line => `<div class="flow-criteria-item">${escapeHtml(line)}</div>`).join('');
+  const photoStrip = (currentState.photos || []).length ? `
+    <div class="flow-photo-strip">
+      ${(currentState.photos || []).map((photo, photoIndex) => `
+        <div class="flow-photo-chip">
+          <img src="${photo.dataUrl}" alt="Photo for ${current.ref}" onclick="openLightbox('${current.ref}',${photoIndex})">
+          <button type="button" onclick="deletePhoto('${current.ref}',${photoIndex})">×</button>
+        </div>`).join('')}
+    </div>` : '';
+  const measured = current.measured ? `
+    <div class="workflow-field">
+      <label for="flowMeasured-${current.ref}">Measured value ${current.unit ? `(${escapeHtml(current.unit)})` : ''}</label>
+      <input id="flowMeasured-${current.ref}" type="text" inputmode="decimal" value="${escapeAttr(currentState.measured || '')}" oninput="setMeasured('${current.ref}',this.value)">
+    </div>` : '';
+  const failControls = currentState.result === 'fail' ? `
+    <div class="flow-inline-note">
+      <div class="workflow-subtitle">Failure detail</div>
+      <div class="flow-action-row">
+        <button class="flow-btn ${currentState.severity === 'minor' ? 'active' : ''}" type="button" onclick="setSeverity('${current.ref}','minor');renderWorkflowPanel({direction:'next',animate:false})">MINOR</button>
+        <button class="flow-btn ${currentState.severity === 'major' ? 'active' : ''}" type="button" onclick="setSeverity('${current.ref}','major');renderWorkflowPanel({direction:'next',animate:false})">MAJOR</button>
+        <button class="flow-btn ${currentState.severity === 'critical' ? 'active' : ''}" type="button" onclick="setSeverity('${current.ref}','critical');renderWorkflowPanel({direction:'next',animate:false})">CRITICAL</button>
+      </div>
+      <button class="flow-btn ${currentState.retested ? 'active' : ''}" type="button" onclick="toggleRetest('${current.ref}');renderWorkflowPanel({direction:'next',animate:false})">MARK RE-TESTED</button>
+    </div>` : '';
+  return `
+    <div class="workflow-top">
+      <div>
+        <div class="workflow-kicker">Step 3</div>
+        <div class="workflow-title">Run The SAT</div>
+      </div>
+      <div class="workflow-step-badge">${index + 1} / ${items.length}</div>
+    </div>
+    <div class="flow-progress">
+      <div class="flow-progress-copy"><span>${escapeHtml(current.sectionTitle)}</span><span>${progress}% COMPLETE</span></div>
+      <div class="flow-progress-track"><div class="flow-progress-fill" style="width:${progress}%"></div></div>
+    </div>
+    <div class="flow-step-card">
+      <div class="flow-step-top">
+        <div>
+          <div class="flow-step-title">${escapeHtml(current.sectionTitle)}</div>
+          <div class="flow-step-desc">${escapeHtml(current.desc)}</div>
+        </div>
+        <div class="flow-step-ref">${escapeHtml(current.ref)}</div>
+      </div>
+      <div class="flow-criteria">${criteria || '<div class="flow-criteria-item">No expected result captured in the workbook for this line.</div>'}</div>
+      ${measured}
+      <div class="flow-action-row">
+        <button class="flow-btn pass ${currentState.result === 'pass' ? 'active' : ''}" type="button" onclick="setFlowResult('pass')">PASS</button>
+        <button class="flow-btn fail ${currentState.result === 'fail' ? 'active' : ''}" type="button" onclick="setFlowResult('fail')">FAIL</button>
+        <button class="flow-btn na ${currentState.result === 'na' ? 'active' : ''}" type="button" onclick="setFlowResult('na')">N/A</button>
+      </div>
+      <div class="flow-inline-note">
+        <div class="workflow-subtitle">Notes and evidence</div>
+        <textarea class="flow-textarea" placeholder="Notes, NCR reference, observations..." oninput="setNote('${current.ref}',this.value)">${escapeHtml(currentState.note || '')}</textarea>
+        <button class="flow-btn primary" type="button" onclick="triggerCamera('${current.ref}')">ADD PHOTO</button>
+        ${photoStrip}
+      </div>
+      ${failControls}
+    </div>
+    <div class="flow-nav">
+      <button class="flow-btn" type="button" onclick="moveFlowStep(-1)" ${index === 0 ? 'disabled' : ''}>PREVIOUS</button>
+      <button class="flow-btn primary" type="button" onclick="${index === items.length - 1 ? "continueWorkflow()" : "moveFlowStep(1)"}" ${index === items.length - 1 && !areActiveTestsComplete() ? 'disabled' : ''}>${index === items.length - 1 ? 'SIGN OFF' : 'NEXT STEP'}</button>
+    </div>`;
+}
+
+function renderSignoffStage() {
+  return `
+    <div class="workflow-top">
+      <div>
+        <div class="workflow-kicker">Step 4</div>
+        <div class="workflow-title">Review And Sign</div>
+      </div>
+      <div class="workflow-step-badge">2 SIGS</div>
+    </div>
+    <div class="workflow-copy">Capture both signatures to confirm the Contractor and the Uisce Éireann representative have reviewed the test outcome.</div>
+    <div class="signature-grid">
+      <div class="signature-card">
+        <div class="signature-meta">
+          <strong>Contractor Representative</strong>
+          <span class="${sigs.contractor?.dataUrl ? 'ok' : ''}">${sigs.contractor?.dataUrl ? 'Signature captured' : 'Awaiting signature'}</span>
+        </div>
+        <button class="flow-btn primary" type="button" onclick="openSignatureFor('contractor')">${sigs.contractor?.dataUrl ? 'UPDATE' : 'SIGN'}</button>
+      </div>
+      <div class="signature-card">
+        <div class="signature-meta">
+          <strong>UÉ Representative</strong>
+          <span class="${sigs.ue?.dataUrl ? 'ok' : ''}">${sigs.ue?.dataUrl ? 'Signature captured' : 'Awaiting signature'}</span>
+        </div>
+        <button class="flow-btn primary" type="button" onclick="openSignatureFor('ue')">${sigs.ue?.dataUrl ? 'UPDATE' : 'SIGN'}</button>
+      </div>
+    </div>
+    <div class="flow-nav">
+      <button class="flow-btn" type="button" onclick="goToWorkflowStage('testing',{direction:'back'})">BACK</button>
+      <button class="flow-btn primary" type="button" onclick="continueWorkflow()" ${areSignaturesComplete() ? '' : 'disabled'}>OVERALL RESULT</button>
+    </div>`;
+}
+
+function renderResultsStage() {
+  const activeSections = getActiveSections();
+  const counts = getFlowCompletionCounts();
+  const passCount = getActiveItems().filter(item => state[item.ref]?.result === 'pass').length;
+  const failCount = getActiveItems().filter(item => state[item.ref]?.result === 'fail').length;
+  return `
+    <div class="workflow-top">
+      <div>
+        <div class="workflow-kicker">Step 5</div>
+        <div class="workflow-title">Overall Result</div>
+      </div>
+      <div class="workflow-step-badge">${counts.total} TESTS</div>
+    </div>
+    <div class="workflow-copy">Complete the overall result once all selected SAT schedules are finished and both signatories have reviewed the outcome.</div>
+    <div class="flow-status-grid">
+      <div class="flow-stat"><div class="flow-stat-value">${passCount}</div><div class="flow-stat-label">PASS</div></div>
+      <div class="flow-stat"><div class="flow-stat-value">${failCount}</div><div class="flow-stat-label">FAIL</div></div>
+    </div>
+    <div class="workflow-section">
+      <div class="workflow-subtitle">SAT-xxx overall result</div>
+      <div class="flow-action-row">
+        <button class="flow-btn pass ${config.overallResult === 'pass' ? 'active' : ''}" type="button" onclick="setOverallResult('pass')">PASS</button>
+        <button class="flow-btn fail ${config.overallResult === 'fail' ? 'active' : ''}" type="button" onclick="setOverallResult('fail')">FAIL</button>
+        <button class="flow-btn" type="button" onclick="setOverallResult('')" ${config.overallResult ? '' : 'disabled'}>CLEAR</button>
+      </div>
+    </div>
+    <div class="workflow-field">
+      <label for="overallComments">Comments</label>
+      <textarea id="overallComments" oninput="updateOverallField('overallComments',this.value)">${escapeHtml(config.overallComments || '')}</textarea>
+    </div>
+    <div class="flow-summary-list">
+      <div class="flow-summary-item"><strong>Project:</strong> ${escapeHtml(document.getElementById('assetName').value || 'Not set')}</div>
+      <div class="flow-summary-item"><strong>Contract:</strong> ${escapeHtml(document.getElementById('contractRef').value || 'Not set')}</div>
+      <div class="flow-summary-item"><strong>Selected SATs:</strong> ${escapeHtml(activeSections.map(section => section.title).join(', ') || 'None selected')}</div>
+    </div>
+    <div class="flow-nav">
+      <button class="flow-btn" type="button" onclick="goToWorkflowStage('signoff',{direction:'back'})">BACK</button>
+      <button class="flow-btn primary" type="button" onclick="openReport()">PREVIEW REPORT</button>
+    </div>
+    <div class="flow-cta-stack">
+      <button class="btn-report" type="button" onclick="openReport()">◈ GENERATE SAT REPORT</button>
+      <a class="btn-email" href="#" onclick="emailReport(event)">✉ EMAIL REPORT</a>
+      <button class="btn-clear" type="button" onclick="showConfirm()">CLEAR SESSION & RESET</button>
+    </div>`;
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function escapeAttr(value) {
+  return escapeHtml(value).replace(/'/g, '&#39;');
+}
+
 /* ════════════════════════════════════════════════════════════
    INTERACTIONS
 ════════════════════════════════════════════════════════════ */
@@ -1315,8 +1946,8 @@ function toggleSection(id) {
   document.getElementById('secChevron-'+id).classList.toggle('open');
   toggle?.setAttribute('aria-expanded', String(!body.classList.contains('collapsed')));
 }
-function collapseAll() { SAT_SECTIONS.forEach(s => { document.getElementById('secBody-'+s.id).classList.add('collapsed'); document.getElementById('secChevron-'+s.id).classList.remove('open'); document.getElementById('secToggle-'+s.id)?.setAttribute('aria-expanded','false'); }); }
-function expandAll()   { SAT_SECTIONS.forEach(s => { document.getElementById('secBody-'+s.id).classList.remove('collapsed'); document.getElementById('secChevron-'+s.id).classList.add('open'); document.getElementById('secToggle-'+s.id)?.setAttribute('aria-expanded','true'); }); }
+function collapseAll() { getActiveSections().forEach(s => { document.getElementById('secBody-'+s.id)?.classList.add('collapsed'); document.getElementById('secChevron-'+s.id)?.classList.remove('open'); document.getElementById('secToggle-'+s.id)?.setAttribute('aria-expanded','false'); }); }
+function expandAll()   { getActiveSections().forEach(s => { document.getElementById('secBody-'+s.id)?.classList.remove('collapsed'); document.getElementById('secChevron-'+s.id)?.classList.add('open'); document.getElementById('secToggle-'+s.id)?.setAttribute('aria-expanded','true'); }); }
 
 function setResult(ref, result) {
   if (!state[ref]) state[ref] = {result:null,note:'',photos:[],severity:null,retested:false,measured:''};
@@ -1360,7 +1991,7 @@ function toggleRetest(ref) {
    JUMP TO NEXT UNRESOLVED
 ════════════════════════════════════════════════════════════ */
 function jumpNext() {
-  for (const sec of SAT_SECTIONS) {
+  for (const sec of getActiveSections()) {
     for (const item of sec.items) {
       if (!state[item.ref]?.result) {
         // Expand section
@@ -1422,6 +2053,7 @@ function handlePhoto(ref, input) {
           }
           state[ref].photos.push(photo);
           renderPhotos(ref);
+          if (focusedItemRef === ref) renderWorkflowPanel({direction:'next', animate:false});
           document.getElementById('storWarn-'+ref)?.classList.remove('show');
           saveAll();
         } catch(e) {
@@ -1463,6 +2095,7 @@ function renderPhotos(ref) {
 async function deletePhoto(ref, idx) {
   const removed = state[ref]?.photos.splice(idx,1)?.[0];
   renderPhotos(ref);
+  if (focusedItemRef === ref) renderWorkflowPanel({direction:'next', animate:false});
   document.getElementById('storWarn-'+ref)?.classList.remove('show');
   if (supportsMediaDB() && removed?.id) {
     try {
@@ -1491,7 +2124,7 @@ function closeLightbox(){setOverlayOpen('lightbox', false);document.getElementBy
 ════════════════════════════════════════════════════════════ */
 function updateSummary() {
   let pass=0,fail=0,na=0,pend=0,total=0;
-  SAT_SECTIONS.forEach(sec => {
+  getActiveSections().forEach(sec => {
     let sp=0,sf=0,sn=0,spe=0;
     sec.items.forEach(item => {
       total++;
@@ -1530,7 +2163,8 @@ function updateSummary() {
   document.getElementById('progressFill').style.width=pct+'%';
   // Verdict
   const vbar=document.getElementById('verdictBar');
-  if(pend>0){vbar.className='verdict-bar pending';vbar.textContent=`${pct}% COMPLETE — ${pend} OUTSTANDING`;}
+  if(total===0){vbar.className='verdict-bar pending';vbar.textContent='SELECT SATs TO START THE MOBILE FLOW';}
+  else if(pend>0){vbar.className='verdict-bar pending';vbar.textContent=`${pct}% COMPLETE — ${pend} OUTSTANDING`;}
   else if(fail===0){vbar.className='verdict-bar pass';vbar.textContent='✓ SAT PASSED — RECOMMENDED FOR PROVISIONAL HANDOVER';}
   else if(fail<=3){vbar.className='verdict-bar partial';vbar.textContent=`⚠ CONDITIONAL — ${fail} NCR(s) REQUIRE RESOLUTION`;}
   else{vbar.className='verdict-bar fail';vbar.textContent=`✗ SAT FAILED — ${fail} DEFECTS — DO NOT HANDOVER`;}
@@ -1540,7 +2174,7 @@ function updateSummary() {
   // Fail list
   const fl=document.getElementById('failList');
   const fails=[];
-  SAT_SECTIONS.forEach(sec=>sec.items.forEach(item=>{if(state[item.ref]?.result==='fail')fails.push(item);}));
+  getActiveSections().forEach(sec=>sec.items.forEach(item=>{if(state[item.ref]?.result==='fail')fails.push(item);}));
   if(fails.length>0){
     fl.style.display='block';
     fl.innerHTML=`<div class="fail-list-header">▸ OUTSTANDING FAILURES / NCRs (${fails.length})</div>`+
@@ -1632,6 +2266,7 @@ async function saveSig() {
     document.getElementById('sigSignedIndicator').textContent = '✓ SIGNATURE SAVED';
     if (navigator.vibrate) navigator.vibrate(30);
     saveAll();
+    renderWorkflowPanel({direction:'next', animate:false});
   } catch (e) {
     console.warn('Signature save:', e);
   }
@@ -1643,6 +2278,7 @@ async function saveSig() {
 function buildReportLines() {
   const lines=[];
   const date=document.getElementById('satDate').value||new Date().toISOString().split('T')[0];
+  const selectedElements = getSelectedElementSummary();
   lines.push('════════════════════════════════════════════════════════');
   lines.push('  UISCE ÉIREANN — SITE ACCEPTANCE TEST REPORT');
   lines.push('  Wastewater Pumping Station');
@@ -1652,10 +2288,12 @@ function buildReportLines() {
   lines.push(`  Asset        : ${document.getElementById('assetName').value}`);
   lines.push(`  SAT Date     : ${date}`);
   lines.push(`  Inspector    : ${document.getElementById('inspectorName').value}`);
+  lines.push(`  SAT Scope    : ${getActiveSections().map(section => section.title).join(', ') || 'None selected'}`);
+  if (selectedElements.length) lines.push(`  Elements     : ${selectedElements.join(' | ')}`);
   lines.push('────────────────────────────────────────────────────────');
   let tp=0,tf=0,tn=0,tpe=0,totalPhotos=0;
   const photoItems=[];
-  SAT_SECTIONS.forEach(sec=>{
+  getActiveSections().forEach(sec=>{
     lines.push('');lines.push(`  [${sec.id}] ${sec.title.toUpperCase()}`);lines.push('  '+'─'.repeat(52));
     sec.items.forEach(item=>{
       const r=state[item.ref]?.result;
@@ -1677,6 +2315,8 @@ function buildReportLines() {
   lines.push(`  N/A     : ${tn}`);lines.push(`  PENDING : ${tpe}`);
   lines.push(`  PHOTOS  : ${totalPhotos}`);lines.push('');
   lines.push(`  VERDICT : ${document.getElementById('verdictBar').textContent}`);
+  lines.push(`  OVERALL : ${config.overallResult ? config.overallResult.toUpperCase() : 'NOT SET'}`);
+  if (config.overallComments) lines.push(`  COMMENTS: ${config.overallComments}`);
   lines.push('════════════════════════════════════════════════════════');
   lines.push('');
   lines.push(`  Contractor Representative: ${sigs.contractor?'[SIGNED — see attached]':'________________________'}`);
@@ -1733,11 +2373,16 @@ function exportJSON() {
       inspectorName: document.getElementById('inspectorName').value
     },
     verdict: document.getElementById('verdictBar').textContent,
+    overallResult: config.overallResult || null,
+    overallComments: config.overallComments || '',
+    selectedSections: getActiveSections().map(section => section.title),
+    selectedElements: getSelectedElementSummary(),
     items: {}
   };
-  SAT_SECTIONS.forEach(sec=>sec.items.forEach(item=>{
+  getActiveSections().forEach(sec=>sec.items.forEach(item=>{
     const s=state[item.ref]||{};
     payload.items[item.ref]={
+      section: sec.title,
       description: item.desc,
       result:    s.result||null,
       severity:  s.severity||null,
@@ -1770,12 +2415,14 @@ async function clearAll(){
   const sessionKey = currentSession;
   state=freshState();
   sigs=freshSigs();
+  config=freshConfig();
   const defaults = getDefaultMeta();
   Object.keys(defaults).forEach(id => { document.getElementById(id).value = defaults[id]; });
   if(sessions[sessionKey]){
     sessions[sessionKey].state=serializeStateForStorage(state);
     sessions[sessionKey].sigs=serializeSigsForStorage(sigs);
     sessions[sessionKey].meta=defaults;
+    sessions[sessionKey].config={...config};
   }
   if (supportsMediaDB()) {
     try {
@@ -1786,6 +2433,7 @@ async function clearAll(){
   }
   localStorage.setItem(SESSIONS_KEY,JSON.stringify(sessions));
   hideConfirm();
+  rebuildChecklistUI();
   document.querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.note-input').forEach(n=>n.value='');
   document.querySelectorAll('.measured-input').forEach(n=>{
@@ -1795,8 +2443,9 @@ async function clearAll(){
   SAT_SECTIONS.forEach(section => section.items.forEach(item => updateMeasuredStatus(item.ref)));
   document.querySelectorAll('.ncr-row').forEach(r=>r.classList.remove('show'));
   SAT_SECTIONS.forEach(s=>s.items.forEach(i=>renderPhotos(i.ref)));
-  focusedItemRef = findNextUnresolvedRef() || SAT_SECTIONS[0]?.items[0]?.ref || null;
+  focusedItemRef = findNextUnresolvedRef() || getActiveItems()[0]?.ref || null;
   syncMobileFocusItem();
+  renderWorkflowPanel({direction:'back', animate:false});
   updateStoragePill();
   flashSaved();
   updateSummary();
@@ -1840,6 +2489,7 @@ function setupGlobalUI() {
   window.addEventListener('resize', () => {
     syncMobileFocusItem();
     updateMobileDock();
+    renderWorkflowPanel({direction:'next', animate:false});
   });
 }
 
