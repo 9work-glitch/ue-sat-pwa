@@ -152,11 +152,25 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .section-body.collapsed{display:none}
 
 /* ═══════════════════════════════════════════════════ TEST ITEM ═ */
-.test-item{border-bottom:1px solid var(--border);padding:12px 12px 10px;transition:background .15s}
+.test-item{border-bottom:1px solid var(--border);transition:background .15s,border-color .15s}
 .test-item:last-child{border-bottom:none}
-.test-item.resolved{opacity:.65}
-.test-ref{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--accent);margin-bottom:3px;letter-spacing:1px}
-.test-desc{font-size:13.5px;font-weight:400;color:var(--text);line-height:1.45;margin-bottom:3px}
+.test-item.resolved{opacity:.78}
+.test-item.open{background:linear-gradient(180deg,rgba(0,198,255,.04),transparent 40%)}
+.test-item-head{width:100%;background:transparent;border:none;color:inherit;text-align:left;padding:12px 12px 10px;display:flex;flex-direction:column;gap:7px;cursor:pointer}
+.test-item-head-top{display:flex;align-items:center;gap:8px}
+.test-item-head-bottom{display:flex;align-items:center;gap:8px}
+.test-item-status{margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;padding:3px 7px;border:1px solid var(--border);color:var(--text-dim);white-space:nowrap}
+.test-item-status.pass{color:var(--green);border-color:rgba(0,230,118,.4);background:rgba(0,230,118,.08)}
+.test-item-status.fail{color:var(--red);border-color:rgba(255,68,68,.4);background:rgba(255,68,68,.08)}
+.test-item-status.na{color:var(--amber);border-color:rgba(255,179,0,.45);background:rgba(255,179,0,.08)}
+.test-item-status.pending{color:var(--text-dim);border-color:var(--border2);background:rgba(255,255,255,.02)}
+.test-item-hint{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;color:var(--text-dim)}
+.test-item-chevron{margin-left:auto;color:var(--text-dim);font-size:11px;transition:transform .2s}
+.test-item-chevron.open{transform:rotate(90deg)}
+.test-item-body{padding:0 12px 12px}
+.test-item-body.collapsed{display:none}
+.test-ref{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:1px}
+.test-desc{font-size:13.5px;font-weight:400;color:var(--text);line-height:1.45}
 .test-criteria{font-size:11px;color:var(--text-dim);font-style:italic;line-height:1.35;margin-bottom:10px}
 .test-criteria strong{color:rgba(0,198,255,.75);font-style:normal;font-weight:500}
 
@@ -165,7 +179,13 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .measured-label{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--text-dim);letter-spacing:1px;white-space:nowrap}
 .measured-input{background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:11px;padding:5px 8px;outline:none;width:120px;transition:border-color .15s}
 .measured-input:focus{border-color:var(--accent)}
+.measured-input.is-valid{border-color:var(--green)}
+.measured-input.is-invalid{border-color:var(--red)}
 .measured-unit{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--text-dim)}
+.measured-status{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;padding:3px 6px;border:1px solid var(--border);color:var(--text-dim)}
+.measured-status.ok{border-color:var(--green);color:var(--green);background:rgba(0,230,118,.08)}
+.measured-status.error{border-color:var(--red);color:var(--red);background:rgba(255,68,68,.08)}
+.measured-status.pending{border-color:var(--border2);color:var(--text-dim)}
 
 /* Controls row */
 .test-controls{display:flex;gap:5px;align-items:center;flex-wrap:wrap;margin-bottom:7px}
@@ -222,6 +242,9 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .btn-email:hover{color:var(--text);border-color:var(--accent)}
 .btn-clear{display:block;width:100%;padding:11px;background:transparent;border:1px solid rgba(255,68,68,.25);color:rgba(255,68,68,.55);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:2px;cursor:pointer;transition:all .2s;min-height:42px}
 .btn-clear:hover{border-color:var(--red);color:var(--red);background:rgba(255,68,68,.05)}
+
+/* ═══════════════════════════════════════════════════ MOBILE DOCK ═ */
+.mobile-dock{display:none}
 
 /* ═══════════════════════════════════════════════════ VERDICT BAR ═ */
 .verdict-bar{position:sticky;bottom:0;z-index:55;padding:11px 14px;font-family:'Barlow Condensed',sans-serif;font-size:15px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-align:center;border-top:2px solid;transition:all .3s}
@@ -305,6 +328,40 @@ body.light .sig-preview img{background:#fff}
 
 @media (prefers-reduced-motion: reduce){
   *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+
+@media (max-width: 820px){
+  .container{padding:10px 8px 160px}
+  .chips{grid-template-columns:repeat(2,1fr)}
+  .meta-strip{gap:10px;padding:10px}
+  .meta-field{width:calc(50% - 5px);min-width:0;flex-direction:column;align-items:flex-start;gap:4px}
+  .meta-field input{width:100%;min-width:0}
+  .section{border-radius:16px;margin-bottom:12px}
+  .section-header{padding:12px 10px}
+  .section-status{display:none}
+  .test-item{border-bottom:none;border-top:1px solid rgba(255,255,255,.03)}
+  .test-item-head{padding:12px 10px}
+  .test-item-body{padding:0 10px 12px}
+  .test-controls{flex-direction:column;align-items:stretch}
+  .btn-group{display:grid;grid-template-columns:repeat(3,1fr);width:100%}
+  .btn{min-width:0}
+  .note-input{width:100%}
+  .measured-row{flex-wrap:wrap}
+  .measured-input{width:calc(50% - 4px);min-width:120px}
+  .measured-status{margin-left:auto}
+  .photo-row{align-items:flex-start}
+  .btn-camera{width:100%;justify-content:center}
+  .mobile-dock{position:fixed;left:10px;right:10px;bottom:64px;z-index:57;display:grid;gap:10px;padding:12px;border:1px solid var(--border2);background:linear-gradient(180deg,rgba(10,15,20,.97),rgba(17,24,34,.97));backdrop-filter:blur(10px);box-shadow:0 18px 40px rgba(0,0,0,.35);border-radius:18px}
+  .mobile-dock.hidden{display:none}
+  .mobile-dock-meta{display:flex;align-items:center;gap:8px;min-width:0}
+  .mobile-dock-ref{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--accent);padding:4px 7px;border:1px solid rgba(0,198,255,.35);background:rgba(0,198,255,.08)}
+  .mobile-dock-title{font-size:11px;color:var(--text);line-height:1.35;min-width:0}
+  .mobile-dock-actions{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+  .mobile-dock-btn{min-height:44px;font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;border:1px solid var(--border2);background:var(--surface2);color:var(--text);cursor:pointer}
+  .mobile-dock-btn.pass{border-color:rgba(0,230,118,.35);color:var(--green)}
+  .mobile-dock-btn.fail{border-color:rgba(255,68,68,.35);color:var(--red)}
+  .mobile-dock-btn.na{border-color:rgba(255,179,0,.35);color:var(--amber)}
+  .mobile-dock-btn.next{border-color:rgba(0,198,255,.35);color:var(--accent)}
 }
 </style>
 </head>
@@ -392,6 +449,18 @@ body.light .sig-preview img{background:#fff}
 </main>
 
 <!-- VERDICT BAR -->
+<div class="mobile-dock hidden" id="mobileDock">
+  <div class="mobile-dock-meta">
+    <span class="mobile-dock-ref" id="mobileDockRef">SELECT</span>
+    <div class="mobile-dock-title" id="mobileDockTitle">Open a checklist item to record a result quickly.</div>
+  </div>
+  <div class="mobile-dock-actions">
+    <button class="mobile-dock-btn pass" type="button" onclick="applyFocusedResult('pass')">PASS</button>
+    <button class="mobile-dock-btn fail" type="button" onclick="applyFocusedResult('fail')">FAIL</button>
+    <button class="mobile-dock-btn na" type="button" onclick="applyFocusedResult('na')">N/A</button>
+    <button class="mobile-dock-btn next" type="button" onclick="focusNextFromDock()">NEXT</button>
+  </div>
+</div>
 <div class="verdict-bar pending" id="verdictBar" aria-live="polite">AWAITING TEST COMPLETION</div>
 
 <!-- LIGHTBOX -->
@@ -465,7 +534,7 @@ const SAT_SECTIONS = [
   ]},
   { id:"S2", title:"Civil & Structural Works", items:[
     {ref:"S2.01",desc:"Wet well dimensions, levels, and wall finish compliant with drawings",criteria:"Invert, crown, and soffit levels within ±10mm of design. Smooth render, no honeycombing"},
-    {ref:"S2.02",desc:"Wet well water-tightness test passed (IS EN 1610 Section 13)",criteria:"Infiltration/exfiltration ≤ 0.15 l/(m²·day). Test certificate on file",measured:true,unit:"l/(m²·day)"},
+    {ref:"S2.02",desc:"Wet well water-tightness test passed (IS EN 1610 Section 13)",criteria:"Infiltration/exfiltration ≤ 0.15 l/(m²·day). Test certificate on file",measured:true,unit:"l/(m²·day)",measurementSpec:{max:0.15,label:"≤ 0.15"}},
     {ref:"S2.03",desc:"Access covers, frames, and gratings to correct loading class and flush with finished grade",criteria:"Cover class D400 min in trafficked areas. No rocking. Anti-tilt feature fitted"},
     {ref:"S2.04",desc:"Site drainage, paving, and boundary fencing complete",criteria:"Hardstand graded to drain away from kiosk. 2.4m security fencing with lock-bar gate"},
     {ref:"S2.05",desc:"Concrete kiosk/structure free from cracks, spalling, or defects",criteria:"Visual inspection — no structural cracks >0.3mm, no exposed rebar"}
@@ -483,15 +552,15 @@ const SAT_SECTIONS = [
     {ref:"S4.02",desc:"Power supply, earthing, and lightning protection installed and tested",criteria:"Earth loop impedance tested and within limits. RCD tested. SPD fitted",measured:true,unit:"Ω"},
     {ref:"S4.03",desc:"Emergency stop buttons positioned per layout drawing and tested",criteria:"E-stops accessible at each pump and at panel. Latching type, key/tool release"},
     {ref:"S4.04",desc:"SCADA/telemetry RTU connected and communicating with UÉ National OCC",criteria:"Live data feed confirmed by OCC. All required data points mapped and tagged"},
-    {ref:"S4.05",desc:"Generator changeover panel (ATS) installed and tested",criteria:"Auto changeover tested — transfer time ≤30s. Manual changeover also tested",measured:true,unit:"s"},
+    {ref:"S4.05",desc:"Generator changeover panel (ATS) installed and tested",criteria:"Auto changeover tested — transfer time ≤30s. Manual changeover also tested",measured:true,unit:"s",measurementSpec:{max:30,label:"≤ 30"}},
     {ref:"S4.06",desc:"Level monitoring (float switches / ultrasonic / pressure transducers) calibrated",criteria:"Start, stop, and high-high levels verified against wetwell as-built levels"}
   ]},
   { id:"S5", title:"Functional Pump Testing", items:[
     {ref:"S5.01",desc:"Duty pump run test — minimum 2-hour continuous operation at design flow",criteria:"Flow rate and head confirmed ±10% of design point. No unusual vibration/noise",measured:true,unit:"l/s"},
     {ref:"S5.02",desc:"Standby pump run test — minimum 1-hour continuous operation",criteria:"Standby pump performs to same criteria as duty pump",measured:true,unit:"l/s"},
-    {ref:"S5.03",desc:"Duty/standby auto-changeover tested (on fault and on manual command)",criteria:"Changeover occurs within 5 seconds. Alarm generated in MCC and at SCADA",measured:true,unit:"s"},
+    {ref:"S5.03",desc:"Duty/standby auto-changeover tested (on fault and on manual command)",criteria:"Changeover occurs within 5 seconds. Alarm generated in MCC and at SCADA",measured:true,unit:"s",measurementSpec:{max:5,label:"≤ 5"}},
     {ref:"S5.04",desc:"Float/level control start and stop sequencing verified",criteria:"Pumps start and stop at correct wetwell levels. Levels match control set-points"},
-    {ref:"S5.05",desc:"High-level alarm tested and confirmed at SCADA/OCC",criteria:"SMS/SCADA alarm received by OCC within 2 minutes of trigger",measured:true,unit:"min"},
+    {ref:"S5.05",desc:"High-level alarm tested and confirmed at SCADA/OCC",criteria:"SMS/SCADA alarm received by OCC within 2 minutes of trigger",measured:true,unit:"min",measurementSpec:{max:2,label:"≤ 2"}},
     {ref:"S5.06",desc:"Dry run protection (undercurrent / dry run relay) tested",criteria:"Pump trips within set time delay when running dry. Alarm generated"}
   ]},
   { id:"S6", title:"Health, Safety & Environment", items:[
@@ -503,13 +572,25 @@ const SAT_SECTIONS = [
   ]}
 ];
 
+const ITEM_LOOKUP = Object.fromEntries(
+  SAT_SECTIONS.flatMap(section => section.items.map(item => [item.ref, item]))
+);
+const ITEM_SECTION_LOOKUP = Object.fromEntries(
+  SAT_SECTIONS.flatMap(section => section.items.map(item => [item.ref, section.id]))
+);
+
 /* ════════════════════════════════════════════════════════════
    SESSION MANAGEMENT
 ════════════════════════════════════════════════════════════ */
 const SESSIONS_KEY = 'ue_sat_sessions_v1';
+const MEDIA_DB_NAME = 'ue_sat_media_v1';
+const MEDIA_STORE = 'media';
 let currentSession = 'default';
 let sessions = {};
 let pendingSWRefresh = false;
+let mediaDbPromise = null;
+let sessionLoadToken = 0;
+let focusedItemRef = null;
 
 function freshState() {
   const s = {};
@@ -517,6 +598,10 @@ function freshState() {
     s[i.ref] = {result:null,note:'',photos:[],severity:null,retested:false,measured:''};
   }));
   return s;
+}
+
+function freshSigs() {
+  return {contractor:null, ue:null};
 }
 
 function getDefaultMeta() {
@@ -537,22 +622,258 @@ function getCurrentMeta() {
   };
 }
 
+function supportsMediaDB() {
+  return typeof indexedDB !== 'undefined';
+}
+
+function createMediaId(kind, sessionKey, ref) {
+  return [kind, sessionKey, ref, Date.now().toString(36), Math.random().toString(36).slice(2,8)].join(':');
+}
+
+function cloneState(rawState) {
+  const next = freshState();
+  SAT_SECTIONS.forEach(sec => sec.items.forEach(item => {
+    const stored = rawState?.[item.ref] || {};
+    next[item.ref] = {
+      result: stored.result ?? null,
+      note: stored.note || '',
+      photos: Array.isArray(stored.photos) ? stored.photos.map(photo => ({
+        id: photo?.id || null,
+        ts: photo?.ts || '',
+        loc: photo?.loc || null,
+        dataUrl: photo?.dataUrl || ''
+      })) : [],
+      severity: stored.severity ?? null,
+      retested: !!stored.retested,
+      measured: stored.measured || ''
+    };
+  }));
+  return next;
+}
+
+function cloneSigs(rawSigs) {
+  const next = freshSigs();
+  ['contractor','ue'].forEach(role => {
+    const stored = rawSigs?.[role];
+    if (!stored) return;
+    if (typeof stored === 'string') {
+      next[role] = {id:null, dataUrl:stored, updatedAt:new Date().toISOString()};
+      return;
+    }
+    next[role] = {
+      id: stored.id || null,
+      dataUrl: stored.dataUrl || '',
+      updatedAt: stored.updatedAt || ''
+    };
+  });
+  return next;
+}
+
+function serializeStateForStorage(currentState) {
+  const next = {};
+  SAT_SECTIONS.forEach(sec => sec.items.forEach(item => {
+    const stored = currentState?.[item.ref] || {};
+    next[item.ref] = {
+      result: stored.result ?? null,
+      note: stored.note || '',
+      photos: Array.isArray(stored.photos) ? stored.photos.map(photo => {
+        if (!supportsMediaDB() || !photo?.id) {
+          return {
+            id: photo?.id || null,
+            ts: photo?.ts || '',
+            loc: photo?.loc || null,
+            dataUrl: photo?.dataUrl || ''
+          };
+        }
+        return {
+          id: photo.id,
+          ts: photo.ts || '',
+          loc: photo.loc || null
+        };
+      }) : [],
+      severity: stored.severity ?? null,
+      retested: !!stored.retested,
+      measured: stored.measured || ''
+    };
+  }));
+  return next;
+}
+
+function serializeSigsForStorage(currentSigs) {
+  const next = freshSigs();
+  ['contractor','ue'].forEach(role => {
+    const sig = currentSigs?.[role];
+    if (!sig) return;
+    if (!supportsMediaDB() || !sig.id) {
+      next[role] = sig.dataUrl || null;
+      return;
+    }
+    next[role] = {
+      id: sig.id,
+      updatedAt: sig.updatedAt || ''
+    };
+  });
+  return next;
+}
+
+function openMediaDB() {
+  if (!supportsMediaDB()) return Promise.resolve(null);
+  if (mediaDbPromise) return mediaDbPromise;
+  mediaDbPromise = new Promise((resolve, reject) => {
+    const request = indexedDB.open(MEDIA_DB_NAME, 1);
+    request.onupgradeneeded = () => {
+      const db = request.result;
+      if (!db.objectStoreNames.contains(MEDIA_STORE)) {
+        const store = db.createObjectStore(MEDIA_STORE, {keyPath:'id'});
+        store.createIndex('sessionKey', 'sessionKey', {unique:false});
+      }
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error || new Error('Failed to open media storage'));
+  });
+  return mediaDbPromise;
+}
+
+async function putMediaRecord(record) {
+  const db = await openMediaDB();
+  if (!db) return record;
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(MEDIA_STORE, 'readwrite');
+    tx.objectStore(MEDIA_STORE).put(record);
+    tx.oncomplete = () => resolve(record);
+    tx.onerror = () => reject(tx.error || new Error('Failed to save media'));
+  });
+}
+
+async function getSessionMediaRecords(sessionKey) {
+  const db = await openMediaDB();
+  if (!db) return [];
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(MEDIA_STORE, 'readonly');
+    const request = tx.objectStore(MEDIA_STORE).index('sessionKey').getAll(sessionKey);
+    request.onsuccess = () => resolve(request.result || []);
+    request.onerror = () => reject(request.error || new Error('Failed to load media'));
+  });
+}
+
+async function deleteMediaRecord(id) {
+  if (!id) return;
+  const db = await openMediaDB();
+  if (!db) return;
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(MEDIA_STORE, 'readwrite');
+    tx.objectStore(MEDIA_STORE).delete(id);
+    tx.oncomplete = () => resolve();
+    tx.onerror = () => reject(tx.error || new Error('Failed to delete media'));
+  });
+}
+
+async function deleteSessionMedia(sessionKey) {
+  const records = await getSessionMediaRecords(sessionKey);
+  await Promise.all(records.map(record => deleteMediaRecord(record.id)));
+}
+
+async function migrateLegacyMedia() {
+  if (!supportsMediaDB()) return;
+  let changed = false;
+
+  for (const [sessionKey, session] of Object.entries(sessions)) {
+    const nextState = cloneState(session.state);
+    const nextSigs = cloneSigs(session.sigs);
+    let sessionChanged = false;
+
+    for (const sec of SAT_SECTIONS) {
+      for (const item of sec.items) {
+        for (const photo of nextState[item.ref].photos) {
+          if (!photo?.dataUrl) continue;
+          const id = photo.id || createMediaId('photo', sessionKey, item.ref);
+          await putMediaRecord({
+            id,
+            sessionKey,
+            kind: 'photo',
+            ref: item.ref,
+            dataUrl: photo.dataUrl,
+            ts: photo.ts || '',
+            loc: photo.loc || null,
+            updatedAt: new Date().toISOString()
+          });
+          photo.id = id;
+          delete photo.dataUrl;
+          sessionChanged = true;
+        }
+      }
+    }
+
+    for (const role of ['contractor','ue']) {
+      const sig = nextSigs[role];
+      if (!sig?.dataUrl) continue;
+      const id = sig.id || createMediaId('signature', sessionKey, role);
+      const updatedAt = sig.updatedAt || new Date().toISOString();
+      await putMediaRecord({
+        id,
+        sessionKey,
+        kind: 'signature',
+        role,
+        dataUrl: sig.dataUrl,
+        updatedAt
+      });
+      nextSigs[role] = {id, updatedAt};
+      sessionChanged = true;
+    }
+
+    if (sessionChanged) {
+      session.state = serializeStateForStorage(nextState);
+      session.sigs = serializeSigsForStorage(nextSigs);
+      changed = true;
+    }
+  }
+
+  if (changed) {
+    localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions));
+  }
+}
+
+async function hydrateCurrentSessionMedia() {
+  if (!supportsMediaDB()) return;
+  const records = await getSessionMediaRecords(currentSession);
+  const mediaById = new Map(records.map(record => [record.id, record]));
+
+  SAT_SECTIONS.forEach(sec => sec.items.forEach(item => {
+    state[item.ref].photos = (state[item.ref]?.photos || []).map(photo => {
+      const stored = photo.id ? mediaById.get(photo.id) : null;
+      return {
+        id: photo.id || null,
+        ts: photo.ts || '',
+        loc: photo.loc || null,
+        dataUrl: stored?.dataUrl || photo.dataUrl || ''
+      };
+    }).filter(photo => photo.dataUrl);
+  }));
+
+  ['contractor','ue'].forEach(role => {
+    const sig = sigs[role];
+    if (!sig) return;
+    const stored = sig.id ? mediaById.get(sig.id) : null;
+    const dataUrl = stored?.dataUrl || sig.dataUrl || '';
+    sigs[role] = dataUrl ? {...sig, dataUrl} : null;
+  });
+}
+
 function loadSessions() {
   try {
     const raw = localStorage.getItem(SESSIONS_KEY);
     if (raw) sessions = JSON.parse(raw);
   } catch(e) {}
   if (!sessions.default) {
-    sessions.default = {state:freshState(),meta:getDefaultMeta(),sigs:{contractor:null,ue:null},theme:'dark'};
+    sessions.default = {state:freshState(),meta:getDefaultMeta(),sigs:freshSigs(),theme:'dark'};
   }
 }
 
 function saveSessions() {
-  // Capture current UI meta into session
   if (sessions[currentSession]) {
     sessions[currentSession].meta = getCurrentMeta();
-    sessions[currentSession].state = state;
-    sessions[currentSession].sigs  = sigs;
+    sessions[currentSession].state = serializeStateForStorage(state);
+    sessions[currentSession].sigs  = serializeSigsForStorage(sigs);
   }
   try {
     localStorage.setItem(SESSIONS_KEY, JSON.stringify(sessions));
@@ -566,21 +887,21 @@ function saveSessions() {
 
 function saveAll() { saveSessions(); updateSummary(); }
 
-function newSession() {
+async function newSession() {
   const name = prompt('Session name (e.g. "Ballybeg PS — Run 2"):');
   if (!name || !name.trim()) return;
   const key = 'sess_' + Date.now();
-  sessions[key] = {name:name.trim(), state:freshState(), meta:getCurrentMeta(), sigs:{contractor:null,ue:null}, theme:currentTheme};
+  sessions[key] = {name:name.trim(), state:freshState(), meta:getCurrentMeta(), sigs:freshSigs(), theme:currentTheme};
   currentSession = key;
   rebuildSessionSelect();
-  loadSessionIntoUI();
+  await loadSessionIntoUI();
   saveAll();
 }
 
-function switchSession(key) {
-  saveAll(); // save current first
+async function switchSession(key) {
+  saveAll();
   currentSession = key;
-  loadSessionIntoUI();
+  await loadSessionIntoUI();
   updateSummary();
 }
 
@@ -596,26 +917,34 @@ function rebuildSessionSelect() {
   });
 }
 
-function loadSessionIntoUI() {
+async function loadSessionIntoUI() {
+  const token = ++sessionLoadToken;
   const sess = sessions[currentSession];
   if (!sess) return;
-  state = sess.state || freshState();
-  sigs  = sess.sigs  || {contractor:null, ue:null};
+  state = cloneState(sess.state);
+  sigs  = cloneSigs(sess.sigs);
   const meta = {...getDefaultMeta(), ...(sess.meta || {})};
   ['contractRef','assetName','satDate','inspectorName'].forEach(id => {
     document.getElementById(id).value = meta[id] || '';
   });
   if (!document.getElementById('satDate').value)
     document.getElementById('satDate').value = new Date().toISOString().split('T')[0];
-  // Restore button states
+  try {
+    await hydrateCurrentSessionMedia();
+  } catch (e) {
+    console.warn('Media load:', e);
+  }
+  if (token !== sessionLoadToken) return;
   SAT_SECTIONS.forEach(sec => sec.items.forEach(item => {
     const r = state[item.ref]?.result;
     ['pass','fail','na'].forEach(t => document.getElementById(`btn-${t}-${item.ref}`)?.classList.toggle('active', t===r));
     const nEl = document.getElementById(`note-${item.ref}`);
     if (nEl) nEl.value = state[item.ref]?.note || '';
     const mEl = document.getElementById(`measured-${item.ref}`);
-    if (mEl) mEl.value = state[item.ref]?.measured || '';
-    // NCR
+    if (mEl) {
+      mEl.value = state[item.ref]?.measured || '';
+      updateMeasuredStatus(item.ref);
+    }
     const ncrRow = document.getElementById(`ncr-${item.ref}`);
     if (ncrRow) {
       ncrRow.classList.toggle('show', r==='fail');
@@ -623,8 +952,11 @@ function loadSessionIntoUI() {
       const rt = ncrRow.querySelector('.retest-btn');
       if (rt) rt.classList.toggle('active', !!state[item.ref]?.retested);
     }
+    updateItemState(item.ref);
     renderPhotos(item.ref);
   }));
+  syncMobileFocusItem();
+  updateMobileDock();
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -648,21 +980,25 @@ function applyTheme() {
    STATE
 ════════════════════════════════════════════════════════════ */
 let state = freshState();
-let sigs  = {contractor:null, ue:null};
+let sigs  = freshSigs();
 
 /* ════════════════════════════════════════════════════════════
    INIT
 ════════════════════════════════════════════════════════════ */
-function init() {
+async function init() {
   loadSessions();
-  // Restore theme from session
+  try {
+    await migrateLegacyMedia();
+  } catch (e) {
+    console.warn('Media migration:', e);
+  }
   currentTheme = sessions[currentSession]?.theme || 'dark';
   applyTheme();
   rebuildSessionSelect();
 
   buildQuickNav();
   buildSections();
-  loadSessionIntoUI();
+  await loadSessionIntoUI();
   updateSummary();
   registerSW();
   setupInstallPrompt();
@@ -753,43 +1089,220 @@ function renderItem(item) {
       <input class="measured-input" type="text" placeholder="Enter result…"
         id="measured-${item.ref}" inputmode="decimal" oninput="setMeasured('${item.ref}',this.value)">
       <span class="measured-unit">${item.unit||''}</span>
+      <span class="measured-status pending" id="measuredStatus-${item.ref}">${getMeasuredStatusText(item)}</span>
     </div>` : '';
 
   return `
     <div class="test-item" id="item-${item.ref}">
-      <div class="test-ref">${item.ref}</div>
-      <div class="test-desc">${item.desc}</div>
-      <div class="test-criteria"><strong>Criteria:</strong> ${item.criteria}</div>
-      ${measuredRow}
-      <div class="test-controls">
-        <div class="btn-group">
-          <button class="btn btn-pass" type="button" id="btn-pass-${item.ref}" onclick="setResult('${item.ref}','pass')">✓ PASS</button>
-          <button class="btn btn-fail" type="button" id="btn-fail-${item.ref}" onclick="setResult('${item.ref}','fail')">✗ FAIL</button>
-          <button class="btn btn-na" type="button" id="btn-na-${item.ref}" onclick="setResult('${item.ref}','na')">N/A</button>
+      <button class="test-item-head" type="button" id="itemToggle-${item.ref}" aria-expanded="true" aria-controls="itemBody-${item.ref}" onclick="toggleItem('${item.ref}')">
+        <div class="test-item-head-top">
+          <span class="test-ref">${item.ref}</span>
+          <span class="test-item-status pending" id="itemState-${item.ref}">PENDING</span>
         </div>
-        <input class="note-input" type="text" placeholder="Note / NCR ref…"
-          aria-label="Note for ${item.ref}"
-          id="note-${item.ref}" oninput="setNote('${item.ref}',this.value)">
+        <div class="test-desc">${item.desc}</div>
+        <div class="test-item-head-bottom">
+          <span class="test-item-hint">Tap to review criteria, result, notes and photos</span>
+          <span class="test-item-chevron open" id="itemChevron-${item.ref}">▶</span>
+        </div>
+      </button>
+      <div class="test-item-body" id="itemBody-${item.ref}">
+        <div class="test-criteria"><strong>Criteria:</strong> ${item.criteria}</div>
+        ${measuredRow}
+        <div class="test-controls">
+          <div class="btn-group">
+            <button class="btn btn-pass" type="button" id="btn-pass-${item.ref}" onclick="setResult('${item.ref}','pass')">✓ PASS</button>
+            <button class="btn btn-fail" type="button" id="btn-fail-${item.ref}" onclick="setResult('${item.ref}','fail')">✗ FAIL</button>
+            <button class="btn btn-na" type="button" id="btn-na-${item.ref}" onclick="setResult('${item.ref}','na')">N/A</button>
+          </div>
+          <input class="note-input" type="text" placeholder="Note / NCR ref…"
+            aria-label="Note for ${item.ref}"
+            id="note-${item.ref}" oninput="setNote('${item.ref}',this.value)">
+        </div>
+        <div class="ncr-row" id="ncr-${item.ref}">
+          <span class="ncr-label">SEVERITY:</span>
+          <button class="ncr-btn" type="button" data-sev="minor" onclick="setSeverity('${item.ref}','minor')">MINOR</button>
+          <button class="ncr-btn" type="button" data-sev="major" onclick="setSeverity('${item.ref}','major')">MAJOR</button>
+          <button class="ncr-btn" type="button" data-sev="critical" onclick="setSeverity('${item.ref}','critical')">CRITICAL</button>
+          <button class="retest-btn" type="button" id="retest-${item.ref}" onclick="toggleRetest('${item.ref}')">✓ RE-TESTED</button>
+        </div>
+        <div class="photo-row" id="photoRow-${item.ref}">
+          <button class="btn-camera" type="button" id="camBtn-${item.ref}" onclick="triggerCamera('${item.ref}')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            PHOTO
+          </button>
+          <input type="file" accept="image/*" capture="environment"
+            class="photo-file-input" id="photoInput-${item.ref}"
+            onchange="handlePhoto('${item.ref}',this)">
+          <div class="photo-thumbs" id="thumbs-${item.ref}"></div>
+        </div>
+        <div class="storage-warn" id="storWarn-${item.ref}">⚠ Storage nearly full — delete some photos</div>
       </div>
-      <div class="ncr-row" id="ncr-${item.ref}">
-        <span class="ncr-label">SEVERITY:</span>
-        <button class="ncr-btn" type="button" data-sev="minor" onclick="setSeverity('${item.ref}','minor')">MINOR</button>
-        <button class="ncr-btn" type="button" data-sev="major" onclick="setSeverity('${item.ref}','major')">MAJOR</button>
-        <button class="ncr-btn" type="button" data-sev="critical" onclick="setSeverity('${item.ref}','critical')">CRITICAL</button>
-        <button class="retest-btn" type="button" id="retest-${item.ref}" onclick="toggleRetest('${item.ref}')">✓ RE-TESTED</button>
-      </div>
-      <div class="photo-row" id="photoRow-${item.ref}">
-        <button class="btn-camera" type="button" id="camBtn-${item.ref}" onclick="triggerCamera('${item.ref}')">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
-          PHOTO
-        </button>
-        <input type="file" accept="image/*" capture="environment"
-          class="photo-file-input" id="photoInput-${item.ref}"
-          onchange="handlePhoto('${item.ref}',this)">
-        <div class="photo-thumbs" id="thumbs-${item.ref}"></div>
-      </div>
-      <div class="storage-warn" id="storWarn-${item.ref}">⚠ Storage nearly full — delete some photos</div>
     </div>`;
+}
+
+function parseMeasuredNumber(value) {
+  const normalized = String(value || '').trim().replace(',', '.');
+  if (!normalized) return null;
+  const parsed = Number(normalized);
+  return Number.isFinite(parsed) ? parsed : NaN;
+}
+
+function getMeasuredStatusText(item) {
+  return item.measurementSpec ? `SPEC ${item.measurementSpec.label}` : 'NUMERIC';
+}
+
+function evaluateMeasuredValue(item, rawValue) {
+  const parsed = parseMeasuredNumber(rawValue);
+  if (parsed === null) {
+    return {tone:'pending', text:getMeasuredStatusText(item)};
+  }
+  if (Number.isNaN(parsed)) {
+    return {tone:'error', text:'USE NUMBER'};
+  }
+  if (item.measurementSpec?.max != null) {
+    return parsed <= item.measurementSpec.max
+      ? {tone:'ok', text:'WITHIN SPEC'}
+      : {tone:'error', text:'OVER SPEC'};
+  }
+  return {tone:'ok', text:'RECORDED'};
+}
+
+function updateMeasuredStatus(ref) {
+  const item = ITEM_LOOKUP[ref];
+  if (!item?.measured) return;
+  const input = document.getElementById(`measured-${ref}`);
+  const status = document.getElementById(`measuredStatus-${ref}`);
+  if (!input || !status) return;
+  const evaluation = evaluateMeasuredValue(item, input.value);
+  input.classList.toggle('is-valid', evaluation.tone === 'ok');
+  input.classList.toggle('is-invalid', evaluation.tone === 'error');
+  status.className = `measured-status ${evaluation.tone}`;
+  status.textContent = evaluation.text;
+}
+
+function isMobileViewport() {
+  return window.matchMedia('(max-width: 820px)').matches;
+}
+
+function updateItemState(ref) {
+  const badge = document.getElementById(`itemState-${ref}`);
+  const itemEl = document.getElementById(`item-${ref}`);
+  if (!badge || !itemEl) return;
+  const result = state[ref]?.result;
+  badge.className = 'test-item-status';
+  if (result === 'pass') {
+    badge.classList.add('pass');
+    badge.textContent = 'PASS';
+  } else if (result === 'fail') {
+    badge.classList.add('fail');
+    badge.textContent = state[ref]?.retested ? 'FAIL / RETEST' : 'FAIL';
+  } else if (result === 'na') {
+    badge.classList.add('na');
+    badge.textContent = 'N/A';
+  } else {
+    badge.classList.add('pending');
+    badge.textContent = 'PENDING';
+  }
+  itemEl.classList.toggle('resolved', !!state[ref]?.retested);
+}
+
+function setFocusedItem(ref) {
+  focusedItemRef = ref;
+  updateMobileDock();
+}
+
+function openItem(ref, options = {}) {
+  const sectionId = ITEM_SECTION_LOOKUP[ref];
+  if (sectionId) {
+    document.getElementById(`secBody-${sectionId}`)?.classList.remove('collapsed');
+    document.getElementById(`secChevron-${sectionId}`)?.classList.add('open');
+    document.getElementById(`secToggle-${sectionId}`)?.setAttribute('aria-expanded', 'true');
+  }
+  if (isMobileViewport()) {
+    document.querySelectorAll('.test-item-body').forEach(body => body.classList.add('collapsed'));
+    document.querySelectorAll('.test-item-head').forEach(head => head.setAttribute('aria-expanded', 'false'));
+    document.querySelectorAll('.test-item-chevron').forEach(icon => icon.classList.remove('open'));
+    document.querySelectorAll('.test-item').forEach(item => item.classList.remove('open'));
+  }
+  document.getElementById(`itemBody-${ref}`)?.classList.remove('collapsed');
+  document.getElementById(`itemToggle-${ref}`)?.setAttribute('aria-expanded', 'true');
+  document.getElementById(`itemChevron-${ref}`)?.classList.add('open');
+  document.getElementById(`item-${ref}`)?.classList.add('open');
+  setFocusedItem(ref);
+  if (options.scroll) {
+    document.getElementById(`item-${ref}`)?.scrollIntoView({behavior:'smooth', block:'center'});
+  }
+}
+
+function closeItem(ref) {
+  document.getElementById(`itemBody-${ref}`)?.classList.add('collapsed');
+  document.getElementById(`itemToggle-${ref}`)?.setAttribute('aria-expanded', 'false');
+  document.getElementById(`itemChevron-${ref}`)?.classList.remove('open');
+  document.getElementById(`item-${ref}`)?.classList.remove('open');
+}
+
+function toggleItem(ref) {
+  const body = document.getElementById(`itemBody-${ref}`);
+  if (!body) return;
+  if (body.classList.contains('collapsed')) {
+    openItem(ref, {scroll:isMobileViewport()});
+  } else {
+    closeItem(ref);
+  }
+}
+
+function findNextUnresolvedRef() {
+  for (const section of SAT_SECTIONS) {
+    for (const item of section.items) {
+      if (!state[item.ref]?.result) return item.ref;
+    }
+  }
+  return null;
+}
+
+function syncMobileFocusItem() {
+  if (!isMobileViewport()) {
+    document.getElementById('mobileDock')?.classList.add('hidden');
+    document.querySelectorAll('.test-item-body').forEach(body => body.classList.remove('collapsed'));
+    document.querySelectorAll('.test-item-head').forEach(head => head.setAttribute('aria-expanded', 'true'));
+    document.querySelectorAll('.test-item-chevron').forEach(icon => icon.classList.add('open'));
+    document.querySelectorAll('.test-item').forEach(item => item.classList.add('open'));
+    return;
+  }
+  const target = focusedItemRef || findNextUnresolvedRef() || SAT_SECTIONS[0]?.items[0]?.ref;
+  if (target) {
+    openItem(target);
+  }
+}
+
+function updateMobileDock() {
+  const dock = document.getElementById('mobileDock');
+  if (!dock) return;
+  if (!isMobileViewport()) {
+    dock.classList.add('hidden');
+    return;
+  }
+  dock.classList.remove('hidden');
+  const refEl = document.getElementById('mobileDockRef');
+  const titleEl = document.getElementById('mobileDockTitle');
+  if (!focusedItemRef || !ITEM_LOOKUP[focusedItemRef]) {
+    refEl.textContent = 'SELECT';
+    titleEl.textContent = 'Open a checklist item to record a result quickly.';
+    return;
+  }
+  refEl.textContent = focusedItemRef;
+  titleEl.textContent = ITEM_LOOKUP[focusedItemRef].desc;
+}
+
+function applyFocusedResult(result) {
+  if (!focusedItemRef) return;
+  setResult(focusedItemRef, result);
+}
+
+function focusNextFromDock() {
+  const nextRef = findNextUnresolvedRef();
+  if (!nextRef) return;
+  openItem(nextRef, {scroll:true});
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -812,13 +1325,19 @@ function setResult(ref, result) {
   // NCR row
   const ncrRow = document.getElementById('ncr-'+ref);
   if (ncrRow) ncrRow.classList.toggle('show', result==='fail');
+  updateItemState(ref);
+  setFocusedItem(ref);
   // Haptic
   if (navigator.vibrate) navigator.vibrate(result==='fail' ? [30,20,30] : 20);
   saveAll();
 }
 
 function setNote(ref, val) { if(state[ref]) state[ref].note = val; saveSessions(); }
-function setMeasured(ref, val) { if(state[ref]) state[ref].measured = val; saveSessions(); }
+function setMeasured(ref, val) {
+  if(state[ref]) state[ref].measured = val;
+  updateMeasuredStatus(ref);
+  saveSessions();
+}
 
 function setSeverity(ref, sev) {
   if (!state[ref]) return;
@@ -833,7 +1352,7 @@ function toggleRetest(ref) {
   state[ref].retested = !state[ref].retested;
   const btn = document.getElementById('retest-'+ref);
   if (btn) btn.classList.toggle('active', state[ref].retested);
-  document.getElementById('item-'+ref)?.classList.toggle('resolved', state[ref].retested);
+  updateItemState(ref);
   saveAll();
 }
 
@@ -848,7 +1367,7 @@ function jumpNext() {
         document.getElementById('secBody-'+sec.id).classList.remove('collapsed');
         document.getElementById('secChevron-'+sec.id).classList.add('open');
         setTimeout(() => {
-          document.getElementById('item-'+item.ref)?.scrollIntoView({behavior:'smooth',block:'center'});
+          openItem(item.ref, {scroll:true});
           // Flash highlight
           const el = document.getElementById('item-'+item.ref);
           if (el) { el.style.background='rgba(0,198,255,.1)'; setTimeout(()=>el.style.background='',800); }
@@ -867,6 +1386,7 @@ function triggerCamera(ref) { document.getElementById('photoInput-'+ref).click()
 function handlePhoto(ref, input) {
   const file = input.files[0];
   if (!file) return;
+  const sessionKey = currentSession;
   const reader = new FileReader();
   reader.onload = e => {
     const img = new Image();
@@ -879,22 +1399,43 @@ function handlePhoto(ref, input) {
       canvas.getContext('2d').drawImage(img,0,0,w,h);
       const dataUrl = canvas.toDataURL('image/jpeg', 0.78);
       const ts = new Date().toLocaleTimeString('en-IE',{hour:'2-digit',minute:'2-digit'});
-      // Try GPS
-      const pushPhoto = (loc) => {
+      const pushPhoto = async (loc) => {
         if (!state[ref]) return;
-        state[ref].photos.push({dataUrl, ts, loc: loc||null});
-        renderPhotos(ref);
-        try { saveAll(); } catch(e) {
+        const photo = {
+          id: createMediaId('photo', sessionKey, ref),
+          dataUrl,
+          ts,
+          loc: loc || null
+        };
+        try {
+          if (supportsMediaDB()) {
+            await putMediaRecord({
+              id: photo.id,
+              sessionKey,
+              kind: 'photo',
+              ref,
+              dataUrl: photo.dataUrl,
+              ts: photo.ts,
+              loc: photo.loc,
+              updatedAt: new Date().toISOString()
+            });
+          }
+          state[ref].photos.push(photo);
+          renderPhotos(ref);
+          document.getElementById('storWarn-'+ref)?.classList.remove('show');
+          saveAll();
+        } catch(e) {
+          console.warn('Photo save:', e);
           document.getElementById('storWarn-'+ref)?.classList.add('show');
         }
       };
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
-          p => pushPhoto(`${p.coords.latitude.toFixed(5)},${p.coords.longitude.toFixed(5)}`),
-          () => pushPhoto(null),
+          p => { void pushPhoto(`${p.coords.latitude.toFixed(5)},${p.coords.longitude.toFixed(5)}`); },
+          () => { void pushPhoto(null); },
           {timeout:3000}
         );
-      } else { pushPhoto(null); }
+      } else { void pushPhoto(null); }
     };
     img.src = e.target.result;
   };
@@ -916,12 +1457,20 @@ function renderPhotos(ref) {
       <img class="photo-thumb" src="${p.dataUrl}" alt="Site photo for ${ref}" onclick="openLightbox('${ref}',${idx})">
       <button class="photo-thumb-del" type="button" aria-label="Delete photo ${idx + 1} for ${ref}" onclick="deletePhoto('${ref}',${idx})">×</button>
     </div>`).join('');
+  updateItemState(ref);
 }
 
-function deletePhoto(ref, idx) {
-  state[ref]?.photos.splice(idx,1);
+async function deletePhoto(ref, idx) {
+  const removed = state[ref]?.photos.splice(idx,1)?.[0];
   renderPhotos(ref);
   document.getElementById('storWarn-'+ref)?.classList.remove('show');
+  if (supportsMediaDB() && removed?.id) {
+    try {
+      await deleteMediaRecord(removed.id);
+    } catch (e) {
+      console.warn('Photo delete:', e);
+    }
+  }
   saveAll();
 }
 
@@ -1045,11 +1594,11 @@ function loadSigForTab() {
   const existing = sigs[currentSigTab];
   const ind = document.getElementById('sigSignedIndicator');
   clearSig();
-  if (existing) {
+  if (existing?.dataUrl) {
     ind.textContent = '✓ SIGNATURE SAVED';
     const img = new Image();
     img.onload = () => sigCtx.drawImage(img,0,0,sigCanvas.width,sigCanvas.height);
-    img.src = existing;
+    img.src = existing.dataUrl;
   } else {
     ind.textContent = '';
   }
@@ -1060,11 +1609,32 @@ function clearSig() {
   sigDrawing = false;
 }
 
-function saveSig() {
-  sigs[currentSigTab] = sigCanvas.toDataURL('image/png');
-  document.getElementById('sigSignedIndicator').textContent = '✓ SIGNATURE SAVED';
-  if (navigator.vibrate) navigator.vibrate(30);
-  saveAll();
+async function saveSig() {
+  const sessionKey = currentSession;
+  const role = currentSigTab;
+  const signature = {
+    id: sigs[role]?.id || createMediaId('signature', sessionKey, role),
+    dataUrl: sigCanvas.toDataURL('image/png'),
+    updatedAt: new Date().toISOString()
+  };
+  try {
+    if (supportsMediaDB()) {
+      await putMediaRecord({
+        id: signature.id,
+        sessionKey,
+        kind: 'signature',
+        role,
+        dataUrl: signature.dataUrl,
+        updatedAt: signature.updatedAt
+      });
+    }
+    sigs[role] = signature;
+    document.getElementById('sigSignedIndicator').textContent = '✓ SIGNATURE SAVED';
+    if (navigator.vibrate) navigator.vibrate(30);
+    saveAll();
+  } catch (e) {
+    console.warn('Signature save:', e);
+  }
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -1093,7 +1663,7 @@ function buildReportLines() {
       const note=state[item.ref]?.note?`  → ${state[item.ref].note}`:'';
       const sev=state[item.ref]?.severity?` [${state[item.ref].severity.toUpperCase()}]`:'';
       const retested=state[item.ref]?.retested?' [RE-TESTED ✓]':'';
-      const meas=state[item.ref]?.measured?`  [Measured: ${state[item.ref].measured} ${SAT_SECTIONS.flatMap(s=>s.items).find(i=>i.ref===item.ref)?.unit||''}]`:'';
+      const meas=state[item.ref]?.measured?`  [Measured: ${state[item.ref].measured} ${ITEM_LOOKUP[item.ref]?.unit||''}]`:'';
       const pc=state[item.ref]?.photos.length||0;
       const pt=pc>0?`  [${pc} photo${pc>1?'s':''}]`:'';
       lines.push(`  ${item.ref}  [${tag}]${sev}${retested}  ${item.desc}${note}${meas}${pt}`);
@@ -1126,7 +1696,7 @@ function openReport() {
     ['contractor','ue'].forEach(tab=>{
       if(sigs[tab]){
         const label=tab==='contractor'?'Contractor Rep':'UÉ Representative';
-        spRow.innerHTML+=`<div class="sig-preview"><div class="sig-preview-label">${label}</div><img src="${sigs[tab]}" alt="Signature"></div>`;
+        spRow.innerHTML+=`<div class="sig-preview"><div class="sig-preview-label">${label}</div><img src="${sigs[tab].dataUrl}" alt="Signature"></div>`;
       }
     });
   } else { spRow.innerHTML=''; }
@@ -1196,19 +1766,37 @@ function emailReport(e) {
 ════════════════════════════════════════════════════════════ */
 function showConfirm(){setOverlayOpen('confirmOverlay', true);}
 function hideConfirm(){setOverlayOpen('confirmOverlay', false);}
-function clearAll(){
+async function clearAll(){
+  const sessionKey = currentSession;
   state=freshState();
-  sigs={contractor:null,ue:null};
+  sigs=freshSigs();
   const defaults = getDefaultMeta();
   Object.keys(defaults).forEach(id => { document.getElementById(id).value = defaults[id]; });
-  if(sessions[currentSession]){sessions[currentSession].state=state;sessions[currentSession].sigs=sigs;sessions[currentSession].meta=defaults;}
+  if(sessions[sessionKey]){
+    sessions[sessionKey].state=serializeStateForStorage(state);
+    sessions[sessionKey].sigs=serializeSigsForStorage(sigs);
+    sessions[sessionKey].meta=defaults;
+  }
+  if (supportsMediaDB()) {
+    try {
+      await deleteSessionMedia(sessionKey);
+    } catch (e) {
+      console.warn('Media clear:', e);
+    }
+  }
   localStorage.setItem(SESSIONS_KEY,JSON.stringify(sessions));
   hideConfirm();
   document.querySelectorAll('.btn').forEach(b=>b.classList.remove('active'));
   document.querySelectorAll('.note-input').forEach(n=>n.value='');
-  document.querySelectorAll('.measured-input').forEach(n=>n.value='');
+  document.querySelectorAll('.measured-input').forEach(n=>{
+    n.value='';
+    n.classList.remove('is-valid','is-invalid');
+  });
+  SAT_SECTIONS.forEach(section => section.items.forEach(item => updateMeasuredStatus(item.ref)));
   document.querySelectorAll('.ncr-row').forEach(r=>r.classList.remove('show'));
   SAT_SECTIONS.forEach(s=>s.items.forEach(i=>renderPhotos(i.ref)));
+  focusedItemRef = findNextUnresolvedRef() || SAT_SECTIONS[0]?.items[0]?.ref || null;
+  syncMobileFocusItem();
   updateStoragePill();
   flashSaved();
   updateSummary();
@@ -1249,13 +1837,31 @@ function setupGlobalUI() {
     if (document.getElementById('sigModalOverlay').classList.contains('open')) return closeSigModal();
     if (document.getElementById('lightbox').classList.contains('open')) return closeLightbox();
   });
+  window.addEventListener('resize', () => {
+    syncMobileFocusItem();
+    updateMobileDock();
+  });
 }
 
-function updateStoragePill(){
+async function updateStoragePill(){
+  const pill=document.getElementById('storagePill');
+  if (!pill) return;
   try {
+    if (navigator.storage?.estimate) {
+      const estimate = await navigator.storage.estimate();
+      const usage = estimate.usage || 0;
+      const quota = estimate.quota || 0;
+      const mb = usage / (1024 * 1024);
+      const text = mb >= 1 ? `${mb.toFixed(mb >= 10 ? 0 : 1)}MB` : `${Math.round(usage / 1024)}KB`;
+      const pct = quota ? (usage / quota) * 100 : 0;
+      pill.textContent = text;
+      pill.setAttribute('aria-label', quota ? `Storage usage ${text}, about ${Math.round(pct)} percent of available quota` : `Storage usage ${text}`);
+      pill.style.borderColor = pct > 85 ? 'var(--red)' : pct > 70 ? 'var(--amber)' : 'var(--border2)';
+      pill.style.color = pct > 85 ? 'var(--red)' : pct > 70 ? 'var(--amber)' : 'var(--text-dim)';
+      return;
+    }
     const raw=localStorage.getItem(SESSIONS_KEY)||'';
     const kb=Math.round(raw.length*2/1024);
-    const pill=document.getElementById('storagePill');
     pill.textContent=kb+'KB';
     pill.setAttribute('aria-label', `Local session storage usage ${kb} kilobytes`);
     pill.style.borderColor=kb>3500?'var(--red)':kb>2000?'var(--amber)':'var(--border2)';
