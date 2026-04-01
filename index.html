@@ -130,34 +130,46 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .jump-btn.hidden{display:none}
 
 /* ═══════════════════════════════════════════════════ WORKFLOW ═ */
-.workflow-shell{display:none;margin-bottom:14px}
-.workflow-stage{position:relative;perspective:1400px;transform-style:preserve-3d;min-height:440px}
-.workflow-card{position:relative;background:linear-gradient(180deg,rgba(0,198,255,.06),rgba(17,24,34,.96) 18%,rgba(10,15,20,.98));border:1px solid var(--border2);box-shadow:0 22px 55px rgba(0,0,0,.28);padding:18px 16px 18px;border-radius:24px;overflow:hidden;transform-origin:center center}
+.workflow-shell{display:block;margin:16px 0 18px}
+.workflow-stage{position:relative;perspective:1600px;transform-style:preserve-3d;min-height:520px}
+.workflow-stage::before,.workflow-stage::after{content:'';position:absolute;left:16px;right:16px;height:100%;border-radius:26px;pointer-events:none;border:1px solid rgba(255,255,255,.04);background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,.01));transform-origin:center center}
+.workflow-stage::before{top:12px;opacity:.4;transform:scale(.985) translateZ(-30px)}
+.workflow-stage::after{top:22px;opacity:.22;transform:scale(.97) translateZ(-60px)}
+.workflow-card{position:relative;background:linear-gradient(180deg,rgba(0,198,255,.08),rgba(17,24,34,.97) 16%,rgba(10,15,20,.99));border:1px solid var(--border2);box-shadow:0 24px 60px rgba(0,0,0,.3);padding:18px 16px 18px;border-radius:24px;overflow:hidden;transform-origin:center center}
 .workflow-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at top right,rgba(0,198,255,.12),transparent 38%);pointer-events:none}
 .workflow-card.roll-out-next{animation:rollOutNext .22s ease forwards}
-.workflow-card.roll-in-next{animation:rollInNext .42s cubic-bezier(.2,.8,.2,1) both}
+.workflow-card.roll-in-next{animation:rollInNext .46s cubic-bezier(.16,.84,.24,1) both}
 .workflow-card.roll-out-back{animation:rollOutBack .22s ease forwards}
-.workflow-card.roll-in-back{animation:rollInBack .42s cubic-bezier(.2,.8,.2,1) both}
+.workflow-card.roll-in-back{animation:rollInBack .46s cubic-bezier(.16,.84,.24,1) both}
 @keyframes rollInNext{
-  from{opacity:0;transform:translateX(24%) rotateY(-26deg) rotateZ(3deg) scale(.94)}
+  from{opacity:0;transform:translateX(26%) rotateY(-30deg) rotateZ(3deg) scale(.93)}
   to{opacity:1;transform:translateX(0) rotateY(0) rotateZ(0) scale(1)}
 }
 @keyframes rollOutNext{
   from{opacity:1;transform:translateX(0) rotateY(0) rotateZ(0) scale(1)}
-  to{opacity:0;transform:translateX(-14%) rotateY(18deg) rotateZ(-2deg) scale(.97)}
+  to{opacity:0;transform:translateX(-16%) rotateY(20deg) rotateZ(-2deg) scale(.975)}
 }
 @keyframes rollInBack{
-  from{opacity:0;transform:translateX(-24%) rotateY(26deg) rotateZ(-3deg) scale(.94)}
+  from{opacity:0;transform:translateX(-26%) rotateY(30deg) rotateZ(-3deg) scale(.93)}
   to{opacity:1;transform:translateX(0) rotateY(0) rotateZ(0) scale(1)}
 }
 @keyframes rollOutBack{
   from{opacity:1;transform:translateX(0) rotateY(0) rotateZ(0) scale(1)}
-  to{opacity:0;transform:translateX(14%) rotateY(-18deg) rotateZ(2deg) scale(.97)}
+  to{opacity:0;transform:translateX(16%) rotateY(-20deg) rotateZ(2deg) scale(.975)}
 }
 .workflow-top{position:relative;z-index:1;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:16px}
 .workflow-kicker{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1.8px;color:var(--accent);text-transform:uppercase;margin-bottom:7px}
 .workflow-title{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:27px;line-height:1.05;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-bright)}
 .workflow-copy{position:relative;z-index:1;font-size:13px;line-height:1.5;color:var(--text);margin-bottom:16px}
+.workflow-hero{position:relative;z-index:1;margin-bottom:18px}
+.workflow-hero-actions{display:grid;gap:8px;margin-top:16px}
+.workflow-overview-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:18px}
+.workflow-overview-step{padding:14px;border:1px solid var(--border);background:rgba(255,255,255,.025);border-radius:20px}
+.workflow-overview-num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:999px;border:1px solid rgba(0,198,255,.35);background:rgba(0,198,255,.08);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:1px;color:var(--accent);margin-bottom:10px}
+.workflow-overview-title{font-family:'Barlow Condensed',sans-serif;font-size:21px;line-height:1;color:var(--text-bright);letter-spacing:1px;text-transform:uppercase;margin-bottom:7px}
+.workflow-overview-copy{font-size:12.5px;line-height:1.5;color:var(--text)}
+.workflow-summary-band{position:relative;z-index:1;display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.workflow-summary-chip{padding:9px 11px;border:1px solid var(--border2);border-radius:999px;background:rgba(255,255,255,.03);font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--text-dim)}
 .workflow-step-badge{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--text-dim);padding:6px 9px;border:1px solid var(--border2);background:rgba(255,255,255,.03);white-space:nowrap}
 .workflow-steps{position:relative;z-index:1;display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:16px}
 .workflow-step-pill{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:1px;padding:8px 6px;border:1px solid var(--border);background:rgba(255,255,255,.02);color:var(--text-dim);text-align:center}
@@ -217,6 +229,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{ou
 .flow-summary-list{position:relative;z-index:1;display:grid;gap:8px;margin-bottom:14px}
 .flow-summary-item{padding:10px 12px;border:1px solid var(--border);border-radius:16px;background:rgba(255,255,255,.02);font-size:12px;line-height:1.45;color:var(--text)}
 .flow-cta-stack{position:relative;z-index:1;display:grid;gap:8px;margin-top:12px}
+
+.meta-strip,.chips,.jump-btn,#testSections,#failList,.quick-nav,.progress-track,.action-stack,.mobile-dock{display:none!important}
 
 /* ═══════════════════════════════════════════════════ SECTION ═ */
 .section{margin-bottom:10px;border:1px solid var(--border);background:var(--surface);overflow:hidden;transition:background .25s,border-color .25s}
@@ -423,8 +437,7 @@ body.light .sig-preview img{background:#fff}
 }
 
 @media (max-width: 820px){
-  .container{padding:10px 8px 160px}
-  .workflow-shell{display:block}
+  .container{padding:10px 8px 120px}
   .chips{grid-template-columns:repeat(2,1fr)}
   .meta-strip{gap:10px;padding:10px}
   .meta-field{width:calc(50% - 5px);min-width:0;flex-direction:column;align-items:flex-start;gap:4px}
@@ -455,8 +468,8 @@ body.light .sig-preview img{background:#fff}
   .mobile-dock-btn.fail{border-color:rgba(255,68,68,.35);color:var(--red)}
   .mobile-dock-btn.na{border-color:rgba(255,179,0,.35);color:var(--amber)}
   .mobile-dock-btn.next{border-color:rgba(0,198,255,.35);color:var(--accent)}
-  .meta-strip,.chips,.jump-btn,#testSections,#failList,.quick-nav,.progress-track,.action-stack,.mobile-dock{display:none!important}
   .workflow-grid,.flow-status-grid{grid-template-columns:1fr}
+  .workflow-overview-grid{grid-template-columns:1fr}
   .workflow-steps{grid-template-columns:repeat(5,minmax(0,1fr))}
   .workflow-step-pill{font-size:8px;padding:7px 3px}
   .flow-step-title{font-size:19px}
@@ -492,8 +505,6 @@ body.light .sig-preview img{background:#fff}
   <button class="toolbar-btn" type="button" onclick="newSession()">+ NEW</button>
   <div class="toolbar-sep"></div>
   <button class="toolbar-btn" type="button" id="themeBtn" onclick="toggleTheme()">☀ LIGHT</button>
-  <button class="toolbar-btn" type="button" onclick="collapseAll()">⊟ ALL</button>
-  <button class="toolbar-btn" type="button" onclick="expandAll()">⊞ ALL</button>
   <button class="toolbar-btn" type="button" onclick="openSigModal()">✍ SIGN</button>
 </div>
 
@@ -647,7 +658,15 @@ const INTRO_SELECTIONS = SAT_SECTIONS.map(section => {
     elements: workbookSelection?.elements || []
   };
 });
-const WORKFLOW_STAGES = ['project','selection','testing','signoff','results'];
+const WORKFLOW_STAGES = ['overview','project','selection','testing','signoff','results'];
+const NUMBERED_WORKFLOW_STAGES = ['project','selection','testing','signoff','results'];
+const WORKFLOW_STAGE_LABELS = {
+  project: 'Project',
+  selection: 'SATs',
+  testing: 'Test',
+  signoff: 'Sign',
+  results: 'Result'
+};
 
 /* ════════════════════════════════════════════════════════════
    SESSION MANAGEMENT
@@ -679,7 +698,7 @@ function freshSigs() {
 
 function freshConfig() {
   return {
-    workflowStage: 'project',
+    workflowStage: 'overview',
     selectedSections: Object.fromEntries(SAT_SECTIONS.map(section => [section.id, true])),
     selectedElements: Object.fromEntries(INTRO_SELECTIONS.map(selection => [selection.id, selection.elements.map(element => element.id)])),
     overallResult: '',
@@ -755,7 +774,7 @@ function cloneSigs(rawSigs) {
 function cloneConfig(rawConfig) {
   const next = freshConfig();
   const stored = rawConfig || {};
-  next.workflowStage = WORKFLOW_STAGES.includes(stored.workflowStage) ? stored.workflowStage : 'project';
+  next.workflowStage = WORKFLOW_STAGES.includes(stored.workflowStage) ? stored.workflowStage : 'overview';
   SAT_SECTIONS.forEach(section => {
     if (typeof stored.selectedSections?.[section.id] === 'boolean') {
       next.selectedSections[section.id] = stored.selectedSections[section.id];
@@ -1031,6 +1050,7 @@ async function loadSessionIntoUI() {
   state = cloneState(sess.state);
   sigs  = cloneSigs(sess.sigs);
   config = cloneConfig(sess.config);
+  config.workflowStage = 'overview';
   const meta = {...getDefaultMeta(), ...(sess.meta || {})};
   ['contractRef','assetName','satDate','inspectorName'].forEach(id => {
     document.getElementById(id).value = meta[id] || '';
@@ -1119,8 +1139,10 @@ function ensureFocusedItemRef() {
 }
 
 function rebuildChecklistUI() {
-  buildQuickNav();
-  buildSections();
+  const nav = document.getElementById('quickNav');
+  const sections = document.getElementById('testSections');
+  if (nav) nav.innerHTML = '';
+  if (sections) sections.innerHTML = '';
 }
 
 function syncWorkflowInputs() {
@@ -1489,7 +1511,15 @@ function areSignaturesComplete() {
 }
 
 function getWorkflowStageIndex(stage = config.workflowStage) {
-  return Math.max(0, WORKFLOW_STAGES.indexOf(stage));
+  return NUMBERED_WORKFLOW_STAGES.indexOf(stage);
+}
+
+function getRecommendedWorkflowStage() {
+  if (!isProjectInfoComplete()) return 'project';
+  if (!hasAnySelectedSections()) return 'selection';
+  if (!areActiveTestsComplete()) return 'testing';
+  if (!areSignaturesComplete()) return 'signoff';
+  return 'results';
 }
 
 function getCurrentFlowItem() {
@@ -1571,6 +1601,9 @@ function goToWorkflowStage(stage, options = {}) {
 }
 
 function continueWorkflow() {
+  if (config.workflowStage === 'overview') {
+    return goToWorkflowStage(getRecommendedWorkflowStage(), {direction:'next'});
+  }
   if (config.workflowStage === 'project') {
     if (!isProjectInfoComplete()) return;
     return goToWorkflowStage('selection', {direction:'next'});
@@ -1635,10 +1668,6 @@ function renderWorkflowPanel({direction = 'next', animate = true} = {}) {
   const shell = document.getElementById('workflowShell');
   const stage = document.getElementById('workflowStage');
   if (!shell || !stage) return;
-  if (!isMobileViewport()) {
-    shell.style.display = 'none';
-    return;
-  }
   shell.style.display = 'block';
   const markup = renderWorkflowCardMarkup();
   const existing = stage.querySelector('.workflow-card');
@@ -1661,25 +1690,90 @@ function renderWorkflowPanel({direction = 'next', animate = true} = {}) {
 
 function renderWorkflowCardMarkup() {
   const index = getWorkflowStageIndex();
-  const steps = WORKFLOW_STAGES.map((stage, stepIndex) => {
+  const steps = NUMBERED_WORKFLOW_STAGES.map((stage, stepIndex) => {
     const classes = ['workflow-step-pill'];
     if (stage === config.workflowStage) classes.push('active');
-    if (stepIndex < index) classes.push('done');
-    return `<div class="${classes.join(' ')}">${stepIndex + 1}. ${stage === 'selection' ? 'SATs' : stage === 'testing' ? 'Test' : stage === 'signoff' ? 'Sign' : stage === 'results' ? 'Result' : 'Project'}</div>`;
+    if (index > -1 && stepIndex < index) classes.push('done');
+    return `<div class="${classes.join(' ')}">${stepIndex + 1}. ${WORKFLOW_STAGE_LABELS[stage]}</div>`;
   }).join('');
   return `
     <div class="workflow-card">
-      <div class="workflow-steps">${steps}</div>
+      ${config.workflowStage === 'overview' ? '' : `<div class="workflow-steps">${steps}</div>`}
       ${renderWorkflowStageBody()}
     </div>`;
 }
 
 function renderWorkflowStageBody() {
+  if (config.workflowStage === 'overview') return renderOverviewStage();
   if (config.workflowStage === 'project') return renderProjectStage();
   if (config.workflowStage === 'selection') return renderSelectionStage();
   if (config.workflowStage === 'testing') return renderTestingStage();
   if (config.workflowStage === 'signoff') return renderSignoffStage();
   return renderResultsStage();
+}
+
+function renderOverviewStage() {
+  const recommendedStage = getRecommendedWorkflowStage();
+  const completed = getFlowCompletionCounts();
+  const summaryChips = [
+    `${getActiveSections().length} SATs selected`,
+    `${completed.resolved}/${completed.total} tests complete`,
+    `${sigs.contractor?.dataUrl ? 'Contractor signed' : 'Contractor pending'}`,
+    `${sigs.ue?.dataUrl ? 'UÉ signed' : 'UÉ pending'}`
+  ].map(text => `<div class="workflow-summary-chip">${escapeHtml(text)}</div>`).join('');
+  const steps = [
+    {
+      num: '1',
+      title: 'Project Info',
+      copy: 'Complete the Introduction project details so every generated item matches the correct contract, asset, date, and inspector.'
+    },
+    {
+      num: '2',
+      title: 'Choose SATs',
+      copy: 'Select the required SAT schedules and any corresponding elements from the Introduction selection area before testing starts.'
+    },
+    {
+      num: '3',
+      title: 'Run Each Test',
+      copy: 'Follow one action screen at a time, check the expected or required result, and record Pass, Fail, or N/A.'
+    },
+    {
+      num: '4',
+      title: 'Sign Review',
+      copy: 'Capture the Contractor and Uisce Éireann signatures once the selected SATs have been reviewed.'
+    },
+    {
+      num: '5',
+      title: 'Overall Result',
+      copy: 'Finish with the project-wide overall result and comments after all selected SAT checks are completed.'
+    }
+  ].map(step => `
+    <div class="workflow-overview-step">
+      <div class="workflow-overview-num">${step.num}</div>
+      <div class="workflow-overview-title">${step.title}</div>
+      <div class="workflow-overview-copy">${step.copy}</div>
+    </div>`).join('');
+  const buttonLabel = recommendedStage === 'project'
+    ? 'START STEP 1'
+    : recommendedStage === 'selection'
+      ? 'CONTINUE TO STEP 2'
+      : recommendedStage === 'testing'
+        ? 'RESUME STEP 3'
+        : recommendedStage === 'signoff'
+          ? 'CONTINUE TO STEP 4'
+          : 'GO TO STEP 5';
+  return `
+    <div class="workflow-hero">
+      <div class="workflow-kicker">Guided Flow</div>
+      <div class="workflow-title">Site Acceptance Test Journey</div>
+      <div class="workflow-copy">Start here. This app now runs as a guided sequence instead of a long checklist, so the first screen shows the five workbook stages and then opens the next step you need to complete.</div>
+    </div>
+    <div class="workflow-summary-band">${summaryChips}</div>
+    <div class="workflow-overview-grid">${steps}</div>
+    <div class="workflow-hero-actions">
+      <button class="btn-report" type="button" onclick="continueWorkflow()">${buttonLabel}</button>
+      <button class="btn-email" type="button" onclick="goToWorkflowStage('results',{direction:'next'})" ${areActiveTestsComplete() && areSignaturesComplete() ? '' : 'disabled'}>OPEN STEP 5 SUMMARY</button>
+    </div>`;
 }
 
 function renderProjectStage() {
@@ -1692,7 +1786,7 @@ function renderProjectStage() {
       </div>
       <div class="workflow-step-badge">DETAILS</div>
     </div>
-    <div class="workflow-copy">Complete the project information first so every report, signature summary, and SAT result stays aligned to the correct site details.</div>
+    <div class="workflow-copy">Complete the Introduction project information first. Everything generated later in the SAT flow uses these details.</div>
     <div class="workflow-grid">
       <div class="workflow-field">
         <label for="flowContractRef">Contract</label>
@@ -1712,7 +1806,7 @@ function renderProjectStage() {
       </div>
     </div>
     <div class="flow-nav">
-      <button class="flow-btn" type="button" disabled>BACK</button>
+      <button class="flow-btn" type="button" onclick="goToWorkflowStage('overview',{direction:'back'})">BACK</button>
       <button class="flow-btn primary" id="projectContinueBtn" type="button" onclick="continueWorkflow()" ${isProjectInfoComplete() ? '' : 'disabled'}>CONTINUE</button>
     </div>`;
 }
@@ -1749,7 +1843,7 @@ function renderSelectionStage() {
       </div>
       <div class="workflow-step-badge">${getActiveSections().length} LIVE</div>
     </div>
-    <div class="workflow-copy">Choose the SAT schedules that apply for this project. Element selections are stored with the introduction summary so the generated output matches the chosen scope.</div>
+    <div class="workflow-copy">Select the required SAT schedules and any corresponding elements from the workbook introduction list. Only the chosen SATs feed into the guided test flow and report.</div>
     <div class="workflow-section">
       <div class="selection-list">${rows}</div>
     </div>
@@ -1813,6 +1907,7 @@ function renderTestingStage() {
       </div>
       <div class="workflow-step-badge">${index + 1} / ${items.length}</div>
     </div>
+    <div class="workflow-copy">Follow each action one screen at a time, compare it against the expected or required result, and record the outcome before moving on.</div>
     <div class="flow-progress">
       <div class="flow-progress-copy"><span>${escapeHtml(current.sectionTitle)}</span><span>${progress}% COMPLETE</span></div>
       <div class="flow-progress-track"><div class="flow-progress-fill" style="width:${progress}%"></div></div>
@@ -1855,7 +1950,7 @@ function renderSignoffStage() {
       </div>
       <div class="workflow-step-badge">2 SIGS</div>
     </div>
-    <div class="workflow-copy">Capture both signatures to confirm the Contractor and the Uisce Éireann representative have reviewed the test outcome.</div>
+    <div class="workflow-copy">Capture both signatures to confirm the Contractor and the Uisce Éireann representative have reviewed the completed SAT checks.</div>
     <div class="signature-grid">
       <div class="signature-card">
         <div class="signature-meta">
